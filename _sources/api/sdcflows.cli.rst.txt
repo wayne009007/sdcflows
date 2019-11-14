@@ -1,0 +1,14 @@
+sdcflows.cli package
+====================
+
+.. automodule:: sdcflows.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   sdcflows.cli.run

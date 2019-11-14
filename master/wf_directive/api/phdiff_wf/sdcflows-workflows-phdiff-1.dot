@@ -1,0 +1,28 @@
+strict digraph  {
+"inputnode (utility)";
+"compfmap (fmap)";
+"magmrg (images)";
+"pha2rads (utility)";
+"outputnode (utility)";
+"n4 (ants)";
+"prelude (fsl)";
+"bet (masks)";
+"denoise (fsl)";
+cleanup_wf;
+"demean (utility)";
+"inputnode (utility)" -> "compfmap (fmap)";
+"inputnode (utility)" -> "magmrg (images)";
+"inputnode (utility)" -> "pha2rads (utility)";
+"compfmap (fmap)" -> "outputnode (utility)";
+"magmrg (images)" -> "n4 (ants)";
+"pha2rads (utility)" -> "prelude (fsl)";
+"n4 (ants)" -> "prelude (fsl)";
+"n4 (ants)" -> "bet (masks)";
+"prelude (fsl)" -> "denoise (fsl)";
+"bet (masks)" -> "prelude (fsl)";
+"bet (masks)" -> cleanup_wf;
+"bet (masks)" -> "outputnode (utility)";
+"denoise (fsl)" -> "demean (utility)";
+cleanup_wf -> "compfmap (fmap)";
+"demean (utility)" -> cleanup_wf;
+}

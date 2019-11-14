@@ -1,0 +1,35 @@
+strict digraph  {
+"inputnode (utility)";
+"magmrg (images)";
+"fmapmrg (images)";
+"ds_report_fmap_mask (bids)";
+"n4_correct (ants)";
+"torads (fmap)";
+"bet (masks)";
+"outputnode (utility)";
+"prelude (fsl)";
+cleanup_wf;
+"applymsk (fsl)";
+"tohz (fmap)";
+"denoise (fsl)";
+"demean (utility)";
+"inputnode (utility)" -> "magmrg (images)";
+"inputnode (utility)" -> "fmapmrg (images)";
+"inputnode (utility)" -> "ds_report_fmap_mask (bids)";
+"magmrg (images)" -> "n4_correct (ants)";
+"fmapmrg (images)" -> "torads (fmap)";
+"n4_correct (ants)" -> "bet (masks)";
+"torads (fmap)" -> "tohz (fmap)";
+"torads (fmap)" -> "prelude (fsl)";
+"bet (masks)" -> "outputnode (utility)";
+"bet (masks)" -> "ds_report_fmap_mask (bids)";
+"bet (masks)" -> "prelude (fsl)";
+"bet (masks)" -> cleanup_wf;
+"bet (masks)" -> "applymsk (fsl)";
+"prelude (fsl)" -> "tohz (fmap)";
+cleanup_wf -> "applymsk (fsl)";
+"applymsk (fsl)" -> "outputnode (utility)";
+"tohz (fmap)" -> "denoise (fsl)";
+"denoise (fsl)" -> "demean (utility)";
+"demean (utility)" -> cleanup_wf;
+}

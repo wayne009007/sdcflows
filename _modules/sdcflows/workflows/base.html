@@ -1,0 +1,451 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdcflows.workflows.base &mdash; sdcflows 0.1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/banner.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdcflows
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/sdcflows.html">sdcflows package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdcflows</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdcflows.workflows.base</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+
+
+
+
+
+<h1>Source code for sdcflows.workflows.base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-</span>
+<span class="c1"># vi: set ft=python sts=4 ts=4 sw=4 et:</span>
+<span class="sd">&quot;&quot;&quot;SDC workflows coordination.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">from</span> <span class="nn">nipype.pipeline</span> <span class="k">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">pe</span>
+<span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="k">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span>
+<span class="kn">from</span> <span class="nn">nipype</span> <span class="k">import</span> <span class="n">logging</span>
+
+<span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="k">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
+
+<span class="c1"># Fieldmap workflows</span>
+<span class="kn">from</span> <span class="nn">.pepolar</span> <span class="k">import</span> <span class="n">init_pepolar_unwarp_wf</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;nipype.workflow&#39;</span><span class="p">)</span>
+<span class="n">FMAP_PRIORITY</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;epi&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;fieldmap&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;phasediff&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s1">&#39;syn&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">DEFAULT_MEMORY_MIN_GB</span> <span class="o">=</span> <span class="mf">0.01</span>
+
+
+<div class="viewcode-block" id="init_sdc_wf"><a class="viewcode-back" href="../../../api/sdcflows.workflows.base.html#sdcflows.workflows.base.init_sdc_wf">[docs]</a><span class="k">def</span> <span class="nf">init_sdc_wf</span><span class="p">(</span><span class="n">distorted_ref</span><span class="p">,</span> <span class="n">omp_nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Build a :abbr:`SDC (susceptibility distortion correction)` workflow.</span>
+
+<span class="sd">    This workflow implements the heuristics to choose a</span>
+<span class="sd">    :abbr:`SDC (susceptibility distortion correction)` strategy.</span>
+<span class="sd">    When no field map information is present within the BIDS inputs,</span>
+<span class="sd">    the EXPERIMENTAL &quot;fieldmap-less SyN&quot; can be performed, using</span>
+<span class="sd">    the ``--use-syn`` argument. When ``--force-syn`` is specified,</span>
+<span class="sd">    then the &quot;fieldmap-less SyN&quot; is always executed and reported</span>
+<span class="sd">    despite of other fieldmaps available with higher priority.</span>
+<span class="sd">    In the latter case (some sort of fieldmap(s) is available and</span>
+<span class="sd">    ``--force-syn`` is requested), then the :abbr:`SDC (susceptibility</span>
+<span class="sd">    distortion correction)` method applied is that with the</span>
+<span class="sd">    highest priority.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    distorted_ref : pybids.BIDSFile</span>
+<span class="sd">        A BIDSFile object with suffix ``bold``, ``sbref`` or ``dwi``.</span>
+<span class="sd">    omp_nthreads : int</span>
+<span class="sd">        Maximum number of threads an individual process may use</span>
+<span class="sd">    debug : bool</span>
+<span class="sd">        Enable debugging outputs</span>
+
+<span class="sd">    Inputs</span>
+<span class="sd">    ------</span>
+<span class="sd">    distorted_ref</span>
+<span class="sd">        A reference image calculated at a previous stage</span>
+<span class="sd">    ref_brain</span>
+<span class="sd">        Same as above, but brain-masked</span>
+<span class="sd">    ref_mask</span>
+<span class="sd">        Brain mask for the run</span>
+<span class="sd">    t1_brain</span>
+<span class="sd">        T1w image, brain-masked, for the fieldmap-less SyN method</span>
+<span class="sd">    std2anat_xfm</span>
+<span class="sd">        List of standard-to-T1w transforms generated during spatial</span>
+<span class="sd">        normalization (only for the fieldmap-less SyN method).</span>
+<span class="sd">    template : str</span>
+<span class="sd">        Name of template from which prior knowledge will be mapped</span>
+<span class="sd">        into the subject&#39;s T1w reference</span>
+<span class="sd">        (only for the fieldmap-less SyN method)</span>
+<span class="sd">    templates : str</span>
+<span class="sd">        Name of templates that index the ``std2anat_xfm`` input list</span>
+<span class="sd">        (only for the fieldmap-less SyN method).</span>
+
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    distorted_ref</span>
+<span class="sd">        An unwarped BOLD reference</span>
+<span class="sd">    bold_mask</span>
+<span class="sd">        The corresponding new mask after unwarping</span>
+<span class="sd">    bold_ref_brain</span>
+<span class="sd">        Brain-extracted, unwarped BOLD reference</span>
+<span class="sd">    out_warp</span>
+<span class="sd">        The deformation field to unwarp the susceptibility distortions</span>
+<span class="sd">    syn_bold_ref</span>
+<span class="sd">        If ``--force-syn``, an unwarped BOLD reference with this</span>
+<span class="sd">        method (for reporting purposes)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ignore</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ignore</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ignore</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">ignore</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ignore</span><span class="p">)</span>
+
+    <span class="n">fmaps</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">for</span> <span class="n">associated</span> <span class="ow">in</span> <span class="n">distorted_ref</span><span class="o">.</span><span class="n">get_associations</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;InformedBy&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">associated</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">FMAP_PRIORITY</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">fmaps</span><span class="p">[</span><span class="n">associated</span><span class="o">.</span><span class="n">suffix</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">associated</span><span class="p">)</span>
+
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;sdc_wf&#39;</span> <span class="k">if</span> <span class="n">distorted_ref</span> <span class="k">else</span> <span class="s1">&#39;sdc_bypass_wf&#39;</span><span class="p">)</span>
+    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;distorted_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;ref_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;ref_mask&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;t1_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;std2anat_xfm&#39;</span><span class="p">,</span> <span class="s1">&#39;template&#39;</span><span class="p">,</span> <span class="s1">&#39;templates&#39;</span><span class="p">]),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;inputnode&#39;</span><span class="p">)</span>
+
+    <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;output_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;ref_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;ref_brain&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;out_warp&#39;</span><span class="p">,</span> <span class="s1">&#39;syn_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;method&#39;</span><span class="p">]),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;outputnode&#39;</span><span class="p">)</span>
+
+    <span class="c1"># No fieldmaps - forward inputs to outputs</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fmaps</span> <span class="ow">or</span> <span class="s1">&#39;fieldmaps&#39;</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">:</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">__postdesc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">Susceptibility distortion correction (SDC) has been skipped because the</span>
+<span class="s2">dataset does not contain extra field map acquisitions correctly described</span>
+<span class="s2">with metadata, and the experimental SDC-SyN method was not explicitly selected.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+        <span class="n">outputnode</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+            <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;distorted_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;output_ref&#39;</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="s1">&#39;ref_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;ref_mask&#39;</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="s1">&#39;ref_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;ref_brain&#39;</span><span class="p">)]),</span>
+        <span class="p">])</span>
+        <span class="k">return</span> <span class="n">workflow</span>
+
+    <span class="n">workflow</span><span class="o">.</span><span class="n">__postdesc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">Based on the estimated susceptibility distortion, an</span>
+<span class="s2">unwarped BOLD reference was calculated for a more accurate</span>
+<span class="s2">co-registration with the anatomical reference.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+    <span class="c1"># PEPOLAR path</span>
+    <span class="k">if</span> <span class="s1">&#39;epi&#39;</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">:</span>
+        <span class="n">outputnode</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;PEB/PEPOLAR (phase-encoding based / PE-POLARity)&#39;</span>
+        <span class="c1"># Get EPI polarities and their metadata</span>
+        <span class="n">sdc_unwarp_wf</span> <span class="o">=</span> <span class="n">init_pepolar_unwarp_wf</span><span class="p">(</span>
+            <span class="n">bold_meta</span><span class="o">=</span><span class="n">distorted_ref</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(),</span>
+            <span class="n">epi_fmaps</span><span class="o">=</span><span class="p">[(</span><span class="n">fmap</span><span class="p">,</span> <span class="n">fmap</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">()[</span><span class="s2">&quot;PhaseEncodingDirection&quot;</span><span class="p">])</span>
+                       <span class="k">for</span> <span class="n">fmap</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">[</span><span class="s1">&#39;epi&#39;</span><span class="p">]],</span>
+            <span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;pepolar_unwarp_wf&#39;</span><span class="p">)</span>
+
+        <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+            <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">sdc_unwarp_wf</span><span class="p">,</span> <span class="p">[</span>
+                <span class="p">(</span><span class="s1">&#39;distorted_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.in_reference&#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;bold_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.in_mask&#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;bold_ref_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.in_reference_brain&#39;</span><span class="p">)]),</span>
+        <span class="p">])</span>
+
+    <span class="c1"># FIELDMAP path</span>
+    <span class="c1"># elif &#39;fieldmap&#39; in fmaps:</span>
+    <span class="c1">#     # Import specific workflows here, so we don&#39;t break everything with one</span>
+    <span class="c1">#     # unused workflow.</span>
+    <span class="c1">#     suffices = {f.suffix for f in fmaps[&#39;fieldmap&#39;]}</span>
+    <span class="c1">#     if &#39;fieldmap&#39; in suffices:</span>
+    <span class="c1">#         from .fmap import init_fmap_wf</span>
+    <span class="c1">#         outputnode.inputs.method = &#39;FMB (fieldmap-based)&#39;</span>
+    <span class="c1">#         fmap_estimator_wf = init_fmap_wf(</span>
+    <span class="c1">#             omp_nthreads=omp_nthreads,</span>
+    <span class="c1">#             fmap_bspline=False)</span>
+    <span class="c1">#         # set inputs</span>
+    <span class="c1">#         fmap_estimator_wf.inputs.inputnode.fieldmap = fmap[&#39;fieldmap&#39;]</span>
+    <span class="c1">#         fmap_estimator_wf.inputs.inputnode.magnitude = fmap[&#39;magnitude&#39;]</span>
+
+    <span class="c1">#     if fmap[&#39;suffix&#39;] == &#39;phasediff&#39;:</span>
+    <span class="c1">#         from .phdiff import init_phdiff_wf</span>
+    <span class="c1">#         fmap_estimator_wf = init_phdiff_wf(omp_nthreads=omp_nthreads)</span>
+    <span class="c1">#         # set inputs</span>
+    <span class="c1">#         fmap_estimator_wf.inputs.inputnode.phasediff = fmap[&#39;phasediff&#39;]</span>
+    <span class="c1">#         fmap_estimator_wf.inputs.inputnode.magnitude = [</span>
+    <span class="c1">#             fmap_ for key, fmap_ in sorted(fmap.items())</span>
+    <span class="c1">#             if key.startswith(&quot;magnitude&quot;)</span>
+    <span class="c1">#         ]</span>
+
+    <span class="c1">#     sdc_unwarp_wf = init_sdc_unwarp_wf(</span>
+    <span class="c1">#         omp_nthreads=omp_nthreads,</span>
+    <span class="c1">#         fmap_demean=fmap_demean,</span>
+    <span class="c1">#         debug=debug,</span>
+    <span class="c1">#         name=&#39;sdc_unwarp_wf&#39;)</span>
+    <span class="c1">#     sdc_unwarp_wf.inputs.inputnode.metadata = bold_meta</span>
+
+    <span class="c1">#     workflow.connect([</span>
+    <span class="c1">#         (inputnode, sdc_unwarp_wf, [</span>
+    <span class="c1">#             (&#39;distorted_ref&#39;, &#39;inputnode.in_reference&#39;),</span>
+    <span class="c1">#             (&#39;bold_ref_brain&#39;, &#39;inputnode.in_reference_brain&#39;),</span>
+    <span class="c1">#             (&#39;bold_mask&#39;, &#39;inputnode.in_mask&#39;)]),</span>
+    <span class="c1">#         (fmap_estimator_wf, sdc_unwarp_wf, [</span>
+    <span class="c1">#             (&#39;outputnode.fmap&#39;, &#39;inputnode.fmap&#39;),</span>
+    <span class="c1">#             (&#39;outputnode.fmap_ref&#39;, &#39;inputnode.fmap_ref&#39;),</span>
+    <span class="c1">#             (&#39;outputnode.fmap_mask&#39;, &#39;inputnode.fmap_mask&#39;)]),</span>
+    <span class="c1">#     ])</span>
+
+    <span class="c1"># # FIELDMAP-less path</span>
+    <span class="c1"># if any(fm[&#39;suffix&#39;] == &#39;syn&#39; for fm in fmaps):</span>
+    <span class="c1">#     # Select template</span>
+    <span class="c1">#     sdc_select_std = pe.Node(KeySelect(</span>
+    <span class="c1">#         fields=[&#39;std2anat_xfm&#39;]),</span>
+    <span class="c1">#         name=&#39;sdc_select_std&#39;, run_without_submitting=True)</span>
+
+    <span class="c1">#     syn_sdc_wf = init_syn_sdc_wf(</span>
+    <span class="c1">#         bold_pe=bold_meta.get(&#39;PhaseEncodingDirection&#39;, None),</span>
+    <span class="c1">#         omp_nthreads=omp_nthreads)</span>
+
+    <span class="c1">#     workflow.connect([</span>
+    <span class="c1">#         (inputnode, sdc_select_std, [</span>
+    <span class="c1">#             (&#39;template&#39;, &#39;key&#39;),</span>
+    <span class="c1">#             (&#39;templates&#39;, &#39;keys&#39;),</span>
+    <span class="c1">#             (&#39;std2anat_xfm&#39;, &#39;std2anat_xfm&#39;)]),</span>
+    <span class="c1">#         (sdc_select_std, syn_sdc_wf, [</span>
+    <span class="c1">#             (&#39;std2anat_xfm&#39;, &#39;inputnode.std2anat_xfm&#39;)]),</span>
+    <span class="c1">#         (inputnode, syn_sdc_wf, [</span>
+    <span class="c1">#             (&#39;t1_brain&#39;, &#39;inputnode.t1_brain&#39;),</span>
+    <span class="c1">#             (&#39;distorted_ref&#39;, &#39;inputnode.distorted_ref&#39;),</span>
+    <span class="c1">#             (&#39;bold_ref_brain&#39;, &#39;inputnode.bold_ref_brain&#39;),</span>
+    <span class="c1">#             (&#39;template&#39;, &#39;inputnode.template&#39;)]),</span>
+    <span class="c1">#     ])</span>
+
+    <span class="c1">#     # XXX Eliminate branch when forcing isn&#39;t an option</span>
+    <span class="c1">#     if fmap[&#39;suffix&#39;] == &#39;syn&#39;:  # No fieldmaps, but --use-syn</span>
+    <span class="c1">#         outputnode.inputs.method = &#39;FLB (&quot;fieldmap-less&quot;, SyN-based)&#39;</span>
+    <span class="c1">#         sdc_unwarp_wf = syn_sdc_wf</span>
+    <span class="c1">#     else:  # --force-syn was called when other fieldmap was present</span>
+    <span class="c1">#         sdc_unwarp_wf.__desc__ = None</span>
+    <span class="c1">#         workflow.connect([</span>
+    <span class="c1">#             (syn_sdc_wf, outputnode, [</span>
+    <span class="c1">#                 (&#39;outputnode.out_reference&#39;, &#39;syn_bold_ref&#39;)]),</span>
+    <span class="c1">#         ])</span>
+
+    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+        <span class="p">(</span><span class="n">sdc_unwarp_wf</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;outputnode.out_warp&#39;</span><span class="p">,</span> <span class="s1">&#39;out_warp&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;outputnode.out_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;distorted_ref&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;outputnode.out_reference_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;bold_ref_brain&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;outputnode.out_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;bold_mask&#39;</span><span class="p">)]),</span>
+    <span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">workflow</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Copyright 2019, Center for Reproducible Neuroscience, Stanford University
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: master
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../../../docs_test/index.html">docs_test</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="../../../master/_modules/sdcflows/workflows/base.html">master</a></dd>
+        </dl>
+    </div>
+</div>
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
