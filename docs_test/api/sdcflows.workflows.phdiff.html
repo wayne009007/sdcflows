@@ -193,7 +193,16 @@ sequence.</p>
 <dd><p>Distortion correction of EPI sequences using phase-difference maps.</p>
 <p>Estimates the fieldmap using a phase-difference image and one or more
 magnitude images corresponding to two or more <abbr title="Gradient Echo sequence">GRE</abbr>
-acquisitions. The <a class="reference external" href="https://github.com/nipy/nipype/blob/0.12.1/nipype/workflows/dmri/fsl/artifacts.py#L514">original code was taken from nipype</a>.</p>
+acquisitions.
+The most delicate bit of this workflow is the phase-unwrapping process: phase maps
+are clipped in the range <span class="math notranslate nohighlight">\([0 \dotsb 2 \cdot \pi )\)</span>.
+To find the integer number of offsets that make a region continously smooth with
+its neighbour, FSL PRELUDE is run <a class="reference internal" href="#jenkinson2003" id="id1"><span>[Jenkinson2003]</span></a>.
+FSL PRELUDE takes wrapped maps in the range 0 to 6.28, <a class="reference external" href="https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FUGUE/Guide#Step_2_-_Getting_.28wrapped.29_phase_in_radians">as per the user guide</a>.
+For the phase-difference maps, recentering back to <span class="math notranslate nohighlight">\([-\pi \dotsb \pi )\)</span> is necessary.
+After some massaging and the application of the effective echo spacing parameter,
+the phase-difference maps can be converted into a <em>B0 field map</em> in Hz units.
+The <a class="reference external" href="https://github.com/nipy/nipype/blob/0.12.1/nipype/workflows/dmri/fsl/artifacts.py#L514">original code was taken from nipype</a>.</p>
 <dl>
 <dt>Workflow Graph</dt><dd><div class="figure align-default">
 <img alt="../_images/sdcflows-workflows-phdiff-1.png" src="../_images/sdcflows-workflows-phdiff-1.png" />
@@ -218,6 +227,13 @@ acquisitions. The <a class="reference external" href="https://github.com/nipy/ni
 <li><p><strong>fmap_mask</strong> (<em>pathlike</em>) – The brain mask applied to the fieldmap</p></li>
 <li><p><strong>fmap</strong> (<em>pathlike</em>) – The estimated fieldmap in Hz</p></li>
 </ul>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<dl class="citation">
+<dt class="label" id="jenkinson2003"><span class="brackets"><a class="fn-backref" href="#id1">Jenkinson2003</a></span></dt>
+<dd><p>Jenkinson, M. (2003) Fast, automated, N-dimensional phase-unwrapping
+algorithm. MRM 49(1):193-197. doi:<a class="reference external" href="10.1002/mrm.10354">10.1002/mrm.10354</a>.</p>
 </dd>
 </dl>
 </dd></dl>

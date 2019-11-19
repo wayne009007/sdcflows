@@ -177,21 +177,31 @@
 <span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="k">import</span> <span class="n">ants</span><span class="p">,</span> <span class="n">fsl</span><span class="p">,</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span>
 <span class="kn">from</span> <span class="nn">nipype.pipeline</span> <span class="k">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">pe</span>
 <span class="kn">from</span> <span class="nn">niflow.nipype1.workflows.dmri.fsl.utils</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">siemens2rads</span><span class="p">,</span> <span class="n">demean_image</span><span class="p">,</span> <span class="n">cleanup_edge_pipeline</span><span class="p">)</span>
+    <span class="n">demean_image</span><span class="p">,</span> <span class="n">cleanup_edge_pipeline</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="k">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
 <span class="kn">from</span> <span class="nn">niworkflows.interfaces.images</span> <span class="k">import</span> <span class="n">IntraModalMerge</span>
 <span class="kn">from</span> <span class="nn">niworkflows.interfaces.masks</span> <span class="k">import</span> <span class="n">BETRPT</span>
 
-<span class="kn">from</span> <span class="nn">..interfaces.fmap</span> <span class="k">import</span> <span class="n">Phasediff2Fieldmap</span>
+<span class="kn">from</span> <span class="nn">..interfaces.fmap</span> <span class="k">import</span> <span class="n">Phasediff2Fieldmap</span><span class="p">,</span> <span class="n">PhaseMap2rads</span>
 
 
 <div class="viewcode-block" id="init_phdiff_wf"><a class="viewcode-back" href="../../../api/sdcflows.workflows.phdiff.html#sdcflows.workflows.phdiff.init_phdiff_wf">[docs]</a><span class="k">def</span> <span class="nf">init_phdiff_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;phdiff_wf&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Distortion correction of EPI sequences using phase-difference maps.</span>
 
 <span class="sd">    Estimates the fieldmap using a phase-difference image and one or more</span>
 <span class="sd">    magnitude images corresponding to two or more :abbr:`GRE (Gradient Echo sequence)`</span>
-<span class="sd">    acquisitions. The `original code was taken from nipype</span>
+<span class="sd">    acquisitions.</span>
+<span class="sd">    The most delicate bit of this workflow is the phase-unwrapping process: phase maps</span>
+<span class="sd">    are clipped in the range :math:`[0 \dotsb 2 \cdot \pi )`.</span>
+<span class="sd">    To find the integer number of offsets that make a region continously smooth with</span>
+<span class="sd">    its neighbour, FSL PRELUDE is run [Jenkinson2003]_.</span>
+<span class="sd">    FSL PRELUDE takes wrapped maps in the range 0 to 6.28, `as per the user guide</span>
+<span class="sd">    &lt;https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FUGUE/Guide#Step_2_-_Getting_.28wrapped.29_phase_in_radians&gt;`__.</span>
+<span class="sd">    For the phase-difference maps, recentering back to :math:`[-\pi \dotsb \pi )` is necessary.</span>
+<span class="sd">    After some massaging and the application of the effective echo spacing parameter,</span>
+<span class="sd">    the phase-difference maps can be converted into a *B0 field map* in Hz units.</span>
+<span class="sd">    The `original code was taken from nipype</span>
 <span class="sd">    &lt;https://github.com/nipy/nipype/blob/0.12.1/nipype/workflows/dmri/fsl/artifacts.py#L514&gt;`_.</span>
 
 <span class="sd">    Workflow Graph</span>
@@ -225,6 +235,11 @@
 <span class="sd">    fmap : pathlike</span>
 <span class="sd">        The estimated fieldmap in Hz</span>
 
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [Jenkinson2003] Jenkinson, M. (2003) Fast, automated, N-dimensional phase-unwrapping</span>
+<span class="sd">        algorithm. MRM 49(1):193-197. doi:`10.1002/mrm.10354 &lt;10.1002/mrm.10354&gt;`__.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="n">workflow</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
@@ -255,10 +270,14 @@
     <span class="c1">#     nan2zeros=True, args=&#39;-kernel sphere 5 -dilM&#39;), name=&#39;MskDilate&#39;)</span>
 
     <span class="c1"># phase diff -&gt; radians</span>
-    <span class="n">pha2rads</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">siemens2rads</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;pha2rads&#39;</span><span class="p">)</span>
+    <span class="n">phmap2rads</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">PhaseMap2rads</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;phmap2rads&#39;</span><span class="p">,</span>
+                         <span class="n">run_without_submitting</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># FSL PRELUDE will perform phase-unwrapping</span>
     <span class="n">prelude</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">fsl</span><span class="o">.</span><span class="n">PRELUDE</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;prelude&#39;</span><span class="p">)</span>
+
+    <span class="n">recenter</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">_recenter</span><span class="p">),</span>
+                       <span class="n">name</span><span class="o">=</span><span class="s1">&#39;recenter&#39;</span><span class="p">,</span> <span class="n">run_without_submitting</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">denoise</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">fsl</span><span class="o">.</span><span class="n">SpatialFilter</span><span class="p">(</span><span class="n">operation</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="n">kernel_shape</span><span class="o">=</span><span class="s1">&#39;sphere&#39;</span><span class="p">,</span>
                                         <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;denoise&#39;</span><span class="p">)</span>
@@ -269,11 +288,6 @@
 
     <span class="n">compfmap</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">Phasediff2Fieldmap</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;compfmap&#39;</span><span class="p">)</span>
 
-    <span class="c1"># The phdiff2fmap interface is equivalent to:</span>
-    <span class="c1"># rad2rsec (using rads2radsec from niflow.nipype1.workflows.dmri.fsl.utils)</span>
-    <span class="c1"># pre_fugue = pe.Node(fsl.FUGUE(save_fmap=True), name=&#39;ComputeFieldmapFUGUE&#39;)</span>
-    <span class="c1"># rsec2hz (divide by 2pi)</span>
-
     <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
         <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">compfmap</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;metadata&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">magmrg</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;magnitude&#39;</span><span class="p">,</span> <span class="s1">&#39;in_files&#39;</span><span class="p">)]),</span>
@@ -281,9 +295,10 @@
         <span class="p">(</span><span class="n">n4</span><span class="p">,</span> <span class="n">prelude</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;output_image&#39;</span><span class="p">,</span> <span class="s1">&#39;magnitude_file&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">n4</span><span class="p">,</span> <span class="n">bet</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;output_image&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">bet</span><span class="p">,</span> <span class="n">prelude</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;mask_file&#39;</span><span class="p">,</span> <span class="s1">&#39;mask_file&#39;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">pha2rads</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;phasediff&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">pha2rads</span><span class="p">,</span> <span class="n">prelude</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="s1">&#39;phase_file&#39;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">prelude</span><span class="p">,</span> <span class="n">denoise</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;unwrapped_phase_file&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">phmap2rads</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;phasediff&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">phmap2rads</span><span class="p">,</span> <span class="n">prelude</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out_file&#39;</span><span class="p">,</span> <span class="s1">&#39;phase_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">prelude</span><span class="p">,</span> <span class="n">recenter</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;unwrapped_phase_file&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">recenter</span><span class="p">,</span> <span class="n">denoise</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">denoise</span><span class="p">,</span> <span class="n">demean</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out_file&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">demean</span><span class="p">,</span> <span class="n">cleanup_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.in_file&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">bet</span><span class="p">,</span> <span class="n">cleanup_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;mask_file&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.in_mask&#39;</span><span class="p">)]),</span>
@@ -294,6 +309,25 @@
     <span class="p">])</span>
 
     <span class="k">return</span> <span class="n">workflow</span></div>
+
+
+<span class="k">def</span> <span class="nf">_recenter</span><span class="p">(</span><span class="n">in_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Recenter the phase-map distribution to the -pi..pi range.&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">os</span> <span class="k">import</span> <span class="n">getcwd</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="kn">import</span> <span class="nn">nibabel</span> <span class="k">as</span> <span class="nn">nb</span>
+    <span class="kn">from</span> <span class="nn">nipype.utils.filemanip</span> <span class="k">import</span> <span class="n">fname_presuffix</span>
+
+    <span class="n">nii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">nii</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">msk</span> <span class="o">=</span> <span class="n">data</span> <span class="o">!=</span> <span class="mi">0</span>
+    <span class="n">msk</span><span class="p">[</span><span class="n">data</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">data</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">msk</span><span class="p">])</span>
+
+    <span class="n">out_file</span> <span class="o">=</span> <span class="n">fname_presuffix</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;_recentered&#39;</span><span class="p">,</span>
+                               <span class="n">newpath</span><span class="o">=</span><span class="n">getcwd</span><span class="p">())</span>
+    <span class="n">nb</span><span class="o">.</span><span class="n">Nifti1Image</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nii</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="n">nii</span><span class="o">.</span><span class="n">header</span><span class="p">)</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">out_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out_file</span>
 </pre></div>
 
            </div>

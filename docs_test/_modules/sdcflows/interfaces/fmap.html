@@ -347,7 +347,16 @@
 
 
 <div class="viewcode-block" id="Phasediff2Fieldmap"><a class="viewcode-back" href="../../../api/sdcflows.interfaces.fmap.html#sdcflows.interfaces.fmap.Phasediff2Fieldmap">[docs]</a><span class="k">class</span> <span class="nc">Phasediff2Fieldmap</span><span class="p">(</span><span class="n">SimpleInterface</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert a phase difference map into a fieldmap in Hz.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a phase difference map into a fieldmap in Hz.</span>
+
+<span class="sd">    This interface is equivalent to running the following steps:</span>
+<span class="sd">      #. Convert from rad to rad/s</span>
+<span class="sd">         (``niflow.nipype1.workflows.dmri.fsl.utils.rads2radsec``)</span>
+<span class="sd">      #. FUGUE execution: fsl.FUGUE(save_fmap=True)</span>
+<span class="sd">      #. Conversion from rad/s to Hz (divide by 2pi, ``rsec2hz``).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">input_spec</span> <span class="o">=</span> <span class="n">_Phasediff2FieldmapInputSpec</span>
     <span class="n">output_spec</span> <span class="o">=</span> <span class="n">_Phasediff2FieldmapOutputSpec</span>
@@ -356,6 +365,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s1">&#39;out_file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phdiff2fmap</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_file</span><span class="p">,</span>
             <span class="n">_delta_te</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">metadata</span><span class="p">),</span>
+            <span class="n">newpath</span><span class="o">=</span><span class="n">runtime</span><span class="o">.</span><span class="n">cwd</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">runtime</span></div>
+
+
+<span class="k">class</span> <span class="nc">_PhaseMap2radsInputSpec</span><span class="p">(</span><span class="n">BaseInterfaceInputSpec</span><span class="p">):</span>
+    <span class="n">in_file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;input (wrapped) phase map&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_PhaseMap2radsOutputSpec</span><span class="p">(</span><span class="n">TraitedSpec</span><span class="p">):</span>
+    <span class="n">out_file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;the phase map in the range 0 - 6.28&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PhaseMap2rads"><a class="viewcode-back" href="../../../api/sdcflows.interfaces.fmap.html#sdcflows.interfaces.fmap.PhaseMap2rads">[docs]</a><span class="k">class</span> <span class="nc">PhaseMap2rads</span><span class="p">(</span><span class="n">SimpleInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert a phase map in a.u. to radians.&quot;&quot;&quot;</span>
+
+    <span class="n">input_spec</span> <span class="o">=</span> <span class="n">_PhaseMap2radsInputSpec</span>
+    <span class="n">output_spec</span> <span class="o">=</span> <span class="n">_PhaseMap2radsOutputSpec</span>
+
+    <span class="k">def</span> <span class="nf">_run_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runtime</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s1">&#39;out_file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">au2rads</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_file</span><span class="p">,</span>
             <span class="n">newpath</span><span class="o">=</span><span class="n">runtime</span><span class="o">.</span><span class="n">cwd</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">runtime</span></div>
 
@@ -691,6 +721,35 @@
             <span class="s1">&#39;EchoTime2 metadata field not found. Please consult the BIDS specification.&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">te2</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">te1</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="au2rads"><a class="viewcode-back" href="../../../api/sdcflows.interfaces.fmap.html#sdcflows.interfaces.fmap.au2rads">[docs]</a><span class="k">def</span> <span class="nf">au2rads</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert the input phase difference map in arbitrary units (a.u.) to rads.&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">mode</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">hdr</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># First center data around 0.0.</span>
+    <span class="n">data</span> <span class="o">-=</span> <span class="n">mode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Scale lower tail</span>
+    <span class="n">data</span><span class="p">[</span><span class="n">data</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+
+    <span class="c1"># Scale upper tail</span>
+    <span class="n">data</span><span class="p">[</span><span class="n">data</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="c1"># Offset to 0 - 2pi</span>
+    <span class="n">data</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+    <span class="c1"># Clip</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+    <span class="n">hdr</span><span class="o">.</span><span class="n">set_data_dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">hdr</span><span class="o">.</span><span class="n">set_xyzt_units</span><span class="p">(</span><span class="s1">&#39;mm&#39;</span><span class="p">)</span>
+    <span class="n">out_file</span> <span class="o">=</span> <span class="n">fname_presuffix</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;_rads&#39;</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="n">newpath</span><span class="p">)</span>
+    <span class="n">nb</span><span class="o">.</span><span class="n">Nifti1Image</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="n">hdr</span><span class="p">)</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">out_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out_file</span></div>
 </pre></div>
 
            </div>

@@ -240,10 +240,38 @@
 </dd></dl>
 
 <dl class="class">
+<dt id="sdcflows.interfaces.fmap.PhaseMap2rads">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">PhaseMap2rads</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#PhaseMap2rads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.PhaseMap2rads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
+<p>Convert a phase map in a.u. to radians.</p>
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.PhaseMap2rads.input_spec">
+<code class="sig-name descname">input_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.PhaseMap2rads.input_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_PhaseMap2radsInputSpec</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.PhaseMap2rads.output_spec">
+<code class="sig-name descname">output_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.PhaseMap2rads.output_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_PhaseMap2radsOutputSpec</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="sdcflows.interfaces.fmap.Phasediff2Fieldmap">
 <em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">Phasediff2Fieldmap</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#Phasediff2Fieldmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.Phasediff2Fieldmap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
 <p>Convert a phase difference map into a fieldmap in Hz.</p>
+<dl class="simple">
+<dt>This interface is equivalent to running the following steps:</dt><dd><ol class="arabic simple">
+<li><p>Convert from rad to rad/s
+(<code class="docutils literal notranslate"><span class="pre">niflow.nipype1.workflows.dmri.fsl.utils.rads2radsec</span></code>)</p></li>
+<li><p>FUGUE execution: fsl.FUGUE(save_fmap=True)</p></li>
+<li><p>Conversion from rad/s to Hz (divide by 2pi, <code class="docutils literal notranslate"><span class="pre">rsec2hz</span></code>).</p></li>
+</ol>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="sdcflows.interfaces.fmap.Phasediff2Fieldmap.input_spec">
 <code class="sig-name descname">input_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.Phasediff2Fieldmap.input_spec" title="Permalink to this definition">¶</a></dt>
@@ -256,6 +284,12 @@
 <dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_Phasediff2FieldmapOutputSpec</span></code></p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="sdcflows.interfaces.fmap.au2rads">
+<code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">au2rads</code><span class="sig-paren">(</span><em class="sig-param">in_file</em>, <em class="sig-param">newpath=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#au2rads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.au2rads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the input phase difference map in arbitrary units (a.u.) to rads.</p>
 </dd></dl>
 
 <dl class="function">

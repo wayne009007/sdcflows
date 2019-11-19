@@ -1,11 +1,12 @@
 digraph structs {
 node [shape=record];
 phdiff_wfinputnode [label="{IN}|{ inputnode | utility |  }|{OUT|<outmagnitude> magnitude|<outmetadata> metadata|<outphasediff> phasediff}"];
-phdiff_wfpha2rads [label="{IN|<ininfile> in_file}|{ pha2rads | utility |  }|{OUT|<outout> out}"];
+phdiff_wfphmap2rads [label="{IN|<ininfile> in_file}|{ phmap2rads | fmap |  }|{OUT|<outoutfile> out_file}"];
 phdiff_wfmagmrg [label="{IN|<ininfiles> in_files}|{ magmrg | images |  }|{OUT|<outoutavg> out_avg}"];
 phdiff_wfn4 [label="{IN|<ininputimage> input_image}|{ n4 | ants |  }|{OUT|<outoutputimage> output_image}"];
 phdiff_wfbet [label="{IN|<ininfile> in_file}|{ bet | masks |  }|{OUT|<outmaskfile> mask_file|<outoutfile> out_file}"];
 phdiff_wfprelude [label="{IN|<inmagnitudefile> magnitude_file|<inmaskfile> mask_file|<inphasefile> phase_file}|{ prelude | fsl |  }|{OUT|<outunwrappedphasefile> unwrapped_phase_file}"];
+phdiff_wfrecenter [label="{IN|<ininfile> in_file}|{ recenter | utility |  }|{OUT|<outout> out}"];
 phdiff_wfdenoise [label="{IN|<ininfile> in_file}|{ denoise | fsl |  }|{OUT|<outoutfile> out_file}"];
 phdiff_wfdemean [label="{IN|<ininfile> in_file}|{ demean | utility |  }|{OUT|<outout> out}"];
 phdiff_wfcleanup_wf [label="{IN|<ininputnodeinfile> inputnode.in_file|<ininputnodeinmask> inputnode.in_mask}|{ cleanup_wf |  |  }|{OUT|<outoutputnodeoutfile> outputnode.out_file}"];
@@ -21,10 +22,11 @@ phdiff_wfdemean:outout:e -> phdiff_wfcleanup_wf:ininputnodeinfile:w;
 phdiff_wfdenoise:outoutfile:e -> phdiff_wfdemean:ininfile:w;
 phdiff_wfinputnode:outmagnitude:e -> phdiff_wfmagmrg:ininfiles:w;
 phdiff_wfinputnode:outmetadata:e -> phdiff_wfcompfmap:inmetadata:w;
-phdiff_wfinputnode:outphasediff:e -> phdiff_wfpha2rads:ininfile:w;
+phdiff_wfinputnode:outphasediff:e -> phdiff_wfphmap2rads:ininfile:w;
 phdiff_wfmagmrg:outoutavg:e -> phdiff_wfn4:ininputimage:w;
 phdiff_wfn4:outoutputimage:e -> phdiff_wfbet:ininfile:w;
 phdiff_wfn4:outoutputimage:e -> phdiff_wfprelude:inmagnitudefile:w;
-phdiff_wfpha2rads:outout:e -> phdiff_wfprelude:inphasefile:w;
-phdiff_wfprelude:outunwrappedphasefile:e -> phdiff_wfdenoise:ininfile:w;
+phdiff_wfphmap2rads:outoutfile:e -> phdiff_wfprelude:inphasefile:w;
+phdiff_wfprelude:outunwrappedphasefile:e -> phdiff_wfrecenter:ininfile:w;
+phdiff_wfrecenter:outout:e -> phdiff_wfdenoise:ininfile:w;
 }
