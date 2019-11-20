@@ -7,6 +7,7 @@ cleanup_wf;
 "demean (utility)";
 "inputnode (utility)" -> cleanup_wf;
 "inputnode (utility)" -> "recenter (utility)";
+"inputnode (utility)" -> "outputnode (utility)";
 cleanup_wf -> "outputnode (utility)";
 "recenter (utility)" -> "denoise (fsl)";
 "denoise (fsl)" -> "demean (utility)";

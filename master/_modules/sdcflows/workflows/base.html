@@ -236,15 +236,6 @@
 <span class="sd">        method (for reporting purposes)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">ignore</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ignore</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ignore</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-        <span class="n">ignore</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ignore</span><span class="p">)</span>
-
-    <span class="c1"># TODO: To be removed (filter out unsupported fieldmaps):</span>
-    <span class="n">fmaps</span> <span class="o">=</span> <span class="p">[</span><span class="n">fmap</span> <span class="k">for</span> <span class="n">fmap</span> <span class="ow">in</span> <span class="n">fmaps</span> <span class="k">if</span> <span class="n">fmap</span><span class="p">[</span><span class="s1">&#39;suffix&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">FMAP_PRIORITY</span><span class="p">]</span>
-
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;sdc_estimate_wf&#39;</span> <span class="k">if</span> <span class="n">fmaps</span> <span class="k">else</span> <span class="s1">&#39;sdc_bypass_wf&#39;</span><span class="p">)</span>
     <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
         <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;epi_file&#39;</span><span class="p">,</span> <span class="s1">&#39;epi_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;epi_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;t1w_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;std2anat_xfm&#39;</span><span class="p">]),</span>
@@ -256,7 +247,8 @@
         <span class="n">name</span><span class="o">=</span><span class="s1">&#39;outputnode&#39;</span><span class="p">)</span>
 
     <span class="c1"># No fieldmaps - forward inputs to outputs</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">fmaps</span> <span class="ow">or</span> <span class="s1">&#39;fieldmaps&#39;</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">:</span>
+    <span class="n">ignored</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">ignore</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;fieldmaps&#39;</span> <span class="ow">in</span> <span class="n">ignore</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fmaps</span> <span class="ow">or</span> <span class="n">ignored</span><span class="p">:</span>
         <span class="n">workflow</span><span class="o">.</span><span class="n">__postdesc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
 <span class="s2">Susceptibility distortion correction (SDC) has been skipped because the</span>
 <span class="s2">dataset does not contain extra field map acquisitions correctly described</span>
@@ -276,18 +268,26 @@
 <span class="s2">accurate co-registration with the anatomical reference.</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-    <span class="c1"># In case there are multiple fieldmaps prefer EPI</span>
-    <span class="n">fmaps</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">fmap</span><span class="p">:</span> <span class="n">FMAP_PRIORITY</span><span class="p">[</span><span class="n">fmap</span><span class="p">[</span><span class="s1">&#39;suffix&#39;</span><span class="p">]])</span>
-    <span class="n">fmap</span> <span class="o">=</span> <span class="n">fmaps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">only_syn</span> <span class="o">=</span> <span class="s1">&#39;syn&#39;</span> <span class="ow">in</span> <span class="n">fmaps</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">fmaps</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
 
     <span class="c1"># PEPOLAR path</span>
     <span class="k">if</span> <span class="s1">&#39;epi&#39;</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">.pepolar</span> <span class="k">import</span> <span class="n">init_pepolar_unwarp_wf</span><span class="p">,</span> <span class="n">check_pes</span>
+
+        <span class="c1"># SyN works without this metadata</span>
+        <span class="k">if</span> <span class="n">epi_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;PhaseEncodingDirection is not defined within the metadata retrieved &#39;</span>
+                <span class="s1">&#39;for the intended EPI (DWI, BOLD, or SBRef) run.&#39;</span><span class="p">)</span>
         <span class="n">outputnode</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;PEB/PEPOLAR (phase-encoding based / PE-POLARity)&#39;</span>
 
-        <span class="c1"># Filter out EPI fieldmaps to be used</span>
-        <span class="n">fmaps_epi</span> <span class="o">=</span> <span class="p">[(</span><span class="n">epi</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">epi</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">()[</span><span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">])</span>
-                     <span class="k">for</span> <span class="n">epi</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">[</span><span class="s1">&#39;epi&#39;</span><span class="p">]]</span>
+        <span class="n">fmaps_epi</span> <span class="o">=</span> <span class="p">[(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">))</span>
+                     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">[</span><span class="s1">&#39;epi&#39;</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">fmaps_epi</span><span class="p">))[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;At least one of the EPI runs with alternative phase-encoding &#39;</span>
+                <span class="s1">&#39;blips is missing the required &quot;PhaseEncodingDirection&quot; metadata entry.&#39;</span><span class="p">)</span>
 
         <span class="c1"># Find matched PE directions</span>
         <span class="n">matched_pe</span> <span class="o">=</span> <span class="n">check_pes</span><span class="p">(</span><span class="n">fmaps_epi</span><span class="p">,</span> <span class="n">epi_meta</span><span class="p">[</span><span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">])</span>
@@ -307,32 +307,34 @@
         <span class="p">])</span>
 
     <span class="c1"># FIELDMAP path</span>
-    <span class="k">elif</span> <span class="s1">&#39;fieldmap&#39;</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="s1">&#39;fieldmap&#39;</span> <span class="ow">in</span> <span class="n">fmaps</span> <span class="ow">or</span> <span class="s1">&#39;phasediff&#39;</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">.unwarp</span> <span class="k">import</span> <span class="n">init_sdc_unwarp_wf</span>
-        <span class="c1"># Import specific workflows here, so we don&#39;t break everything with one</span>
-        <span class="c1"># unused workflow.</span>
-        <span class="n">suffices</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">suffix</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">[</span><span class="s1">&#39;fieldmap&#39;</span><span class="p">]}</span>
-        <span class="k">if</span> <span class="s1">&#39;fieldmap&#39;</span> <span class="ow">in</span> <span class="n">suffices</span><span class="p">:</span>
+
+        <span class="c1"># SyN works without this metadata</span>
+        <span class="k">if</span> <span class="n">epi_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;PhaseEncodingDirection is not defined within the metadata retrieved &#39;</span>
+                <span class="s1">&#39;for the intended EPI (DWI, BOLD, or SBRef) run.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;fieldmap&#39;</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.fmap</span> <span class="k">import</span> <span class="n">init_fmap_wf</span>
-            <span class="n">outputnode</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;FMB (fieldmap-based)&#39;</span>
+            <span class="n">outputnode</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;FMB (fieldmap-based) - directly measured B0 map&#39;</span>
             <span class="n">fmap_wf</span> <span class="o">=</span> <span class="n">init_fmap_wf</span><span class="p">(</span>
                 <span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">,</span>
                 <span class="n">fmap_bspline</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="c1"># set inputs</span>
-            <span class="n">fmap_wf</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">inputnode</span><span class="o">.</span><span class="n">magnitude</span> <span class="o">=</span> <span class="n">fmap</span><span class="p">[</span><span class="s1">&#39;magnitude&#39;</span><span class="p">]</span>
-            <span class="n">fmap_wf</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">inputnode</span><span class="o">.</span><span class="n">fieldmap</span> <span class="o">=</span> <span class="n">fmap</span><span class="p">[</span><span class="s1">&#39;fieldmap&#39;</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="s1">&#39;phasediff&#39;</span> <span class="ow">in</span> <span class="n">suffices</span><span class="p">:</span>
+            <span class="n">fmap_wf</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">inputnode</span><span class="o">.</span><span class="n">magnitude</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">m</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">[</span><span class="s1">&#39;fieldmap&#39;</span><span class="p">][</span><span class="s1">&#39;magnitude&#39;</span><span class="p">]]</span>
+            <span class="n">fmap_wf</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">inputnode</span><span class="o">.</span><span class="n">fieldmap</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">m</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">[</span><span class="s1">&#39;fieldmap&#39;</span><span class="p">][</span><span class="s1">&#39;fieldmap&#39;</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="s1">&#39;phasediff&#39;</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.phdiff</span> <span class="k">import</span> <span class="n">init_phdiff_wf</span>
+            <span class="n">outputnode</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;FMB (fieldmap-based) - phase-difference map&#39;</span>
             <span class="n">fmap_wf</span> <span class="o">=</span> <span class="n">init_phdiff_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">)</span>
             <span class="c1"># set inputs</span>
-            <span class="n">fmap_wf</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">inputnode</span><span class="o">.</span><span class="n">phasediff</span> <span class="o">=</span> <span class="n">fmap</span><span class="p">[</span><span class="s1">&#39;phasediff&#39;</span><span class="p">]</span>
             <span class="n">fmap_wf</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">inputnode</span><span class="o">.</span><span class="n">magnitude</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">fmap_</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">fmap_</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fmap</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-                <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;magnitude&quot;</span><span class="p">)</span>
-            <span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Fieldmaps of types </span><span class="si">%s</span><span class="s1"> are not supported&#39;</span> <span class="o">%</span>
-                             <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">suffices</span><span class="p">]))</span>
+                <span class="n">m</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">[</span><span class="s1">&#39;phasediff&#39;</span><span class="p">][</span><span class="s1">&#39;magnitude&#39;</span><span class="p">]]</span>
+            <span class="n">fmap_wf</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">inputnode</span><span class="o">.</span><span class="n">phasediff</span> <span class="o">=</span> <span class="n">fmaps</span><span class="p">[</span><span class="s1">&#39;phasediff&#39;</span><span class="p">][</span><span class="s1">&#39;phases&#39;</span><span class="p">]</span>
 
         <span class="n">sdc_unwarp_wf</span> <span class="o">=</span> <span class="n">init_sdc_unwarp_wf</span><span class="p">(</span>
             <span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">,</span>
@@ -350,9 +352,12 @@
                 <span class="p">(</span><span class="s1">&#39;outputnode.fmap_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.fmap_ref&#39;</span><span class="p">),</span>
                 <span class="p">(</span><span class="s1">&#39;outputnode.fmap_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.fmap_mask&#39;</span><span class="p">)]),</span>
         <span class="p">])</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">only_syn</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Fieldmaps of types </span><span class="si">%s</span><span class="s1"> are not supported&#39;</span> <span class="o">%</span>
+                         <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">]))</span>
 
     <span class="c1"># FIELDMAP-less path</span>
-    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">fm</span><span class="p">[</span><span class="s1">&#39;suffix&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;syn&#39;</span> <span class="k">for</span> <span class="n">fm</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s1">&#39;syn&#39;</span> <span class="ow">in</span> <span class="n">fmaps</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">.syn</span> <span class="k">import</span> <span class="n">init_syn_sdc_wf</span>
         <span class="n">syn_sdc_wf</span> <span class="o">=</span> <span class="n">init_syn_sdc_wf</span><span class="p">(</span>
             <span class="n">epi_pe</span><span class="o">=</span><span class="n">epi_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
@@ -360,14 +365,14 @@
 
         <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
             <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">syn_sdc_wf</span><span class="p">,</span> <span class="p">[</span>
+                <span class="p">(</span><span class="s1">&#39;epi_file&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.in_reference&#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;epi_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.in_reference_brain&#39;</span><span class="p">),</span>
                 <span class="p">(</span><span class="s1">&#39;t1w_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.t1w_brain&#39;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s1">&#39;epi_file&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.epi_file&#39;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s1">&#39;epi_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.epi_brain&#39;</span><span class="p">),</span>
                 <span class="p">(</span><span class="s1">&#39;std2anat_xfm&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.std2anat_xfm&#39;</span><span class="p">)]),</span>
         <span class="p">])</span>
 
         <span class="c1"># XXX Eliminate branch when forcing isn&#39;t an option</span>
-        <span class="k">if</span> <span class="n">fmap</span><span class="p">[</span><span class="s1">&#39;suffix&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;syn&#39;</span><span class="p">:</span>  <span class="c1"># No fieldmaps, but --use-syn</span>
+        <span class="k">if</span> <span class="n">only_syn</span><span class="p">:</span>  <span class="c1"># No fieldmaps, but --use-syn</span>
             <span class="n">outputnode</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;FLB (&quot;fieldmap-less&quot;, SyN-based)&#39;</span>
             <span class="n">sdc_unwarp_wf</span> <span class="o">=</span> <span class="n">syn_sdc_wf</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># --force-syn was called when other fieldmap was present</span>

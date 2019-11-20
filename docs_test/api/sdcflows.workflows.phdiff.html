@@ -216,9 +216,10 @@ The <a class="reference external" href="https://github.com/nipy/nipype/blob/0.12
 </dd>
 <dt class="field-even">Inputs</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>magnitude</strong> (<em>pathlike</em>) – Path to the corresponding magnitude path(s).</p></li>
-<li><p><strong>phasediff</strong> (<em>pathlike</em>) – Path to the corresponding phase-difference file.</p></li>
-<li><p><strong>metadata</strong> (<em>dict</em>) – Metadata dictionary corresponding to the phasediff input</p></li>
+<li><p><strong>magnitude</strong> (<em>list of os.pathlike</em>) – List of path(s) the GRE magnitude maps.</p></li>
+<li><p><strong>phasediff</strong> (<em>list of tuple(os.pathlike, dict)</em>) – List containing one GRE phase-difference map with its corresponding metadata
+(requires <code class="docutils literal notranslate"><span class="pre">EchoTime1</span></code> and <code class="docutils literal notranslate"><span class="pre">EchoTime2</span></code>), or the phase maps for the two
+subsequent echoes, with their metadata (requires <code class="docutils literal notranslate"><span class="pre">EchoTime</span></code>).</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Outputs</dt>
