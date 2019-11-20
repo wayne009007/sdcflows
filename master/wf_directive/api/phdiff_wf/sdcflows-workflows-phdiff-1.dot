@@ -1,30 +1,19 @@
 strict digraph  {
 "inputnode (utility)";
 "compfmap (fmap)";
-"magmrg (images)";
+magnitude_wf;
 "phmap2rads (fmap)";
 "outputnode (utility)";
-"n4 (ants)";
 "prelude (fsl)";
-"bet (masks)";
-"recenter (utility)";
-cleanup_wf;
-"denoise (fsl)";
-"demean (utility)";
+fmap_postproc_wf;
 "inputnode (utility)" -> "compfmap (fmap)";
-"inputnode (utility)" -> "magmrg (images)";
+"inputnode (utility)" -> magnitude_wf;
 "inputnode (utility)" -> "phmap2rads (fmap)";
 "compfmap (fmap)" -> "outputnode (utility)";
-"magmrg (images)" -> "n4 (ants)";
+magnitude_wf -> "prelude (fsl)";
+magnitude_wf -> fmap_postproc_wf;
+magnitude_wf -> "outputnode (utility)";
 "phmap2rads (fmap)" -> "prelude (fsl)";
-"n4 (ants)" -> "prelude (fsl)";
-"n4 (ants)" -> "bet (masks)";
-"prelude (fsl)" -> "recenter (utility)";
-"bet (masks)" -> "prelude (fsl)";
-"bet (masks)" -> cleanup_wf;
-"bet (masks)" -> "outputnode (utility)";
-"recenter (utility)" -> "denoise (fsl)";
-cleanup_wf -> "compfmap (fmap)";
-"denoise (fsl)" -> "demean (utility)";
-"demean (utility)" -> cleanup_wf;
+"prelude (fsl)" -> fmap_postproc_wf;
+fmap_postproc_wf -> "compfmap (fmap)";
 }

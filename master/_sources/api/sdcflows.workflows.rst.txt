@@ -13,6 +13,7 @@ Submodules
 
    sdcflows.workflows.base
    sdcflows.workflows.fmap
+   sdcflows.workflows.gre
    sdcflows.workflows.pepolar
    sdcflows.workflows.phdiff
    sdcflows.workflows.syn
