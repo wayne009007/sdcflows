@@ -226,7 +226,7 @@ gray-matter (GM), white-matter (WM) and cerebrospinal fluid (CSF)</p>
 
 <dl class="function">
 <dt id="sdcflows.workflows.unwarp.init_sdc_unwarp_wf">
-<code class="sig-prename descclassname">sdcflows.workflows.unwarp.</code><code class="sig-name descname">init_sdc_unwarp_wf</code><span class="sig-paren">(</span><em class="sig-param">omp_nthreads</em>, <em class="sig-param">fmap_demean</em>, <em class="sig-param">debug</em>, <em class="sig-param">name='sdc_unwarp_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/unwarp.html#init_sdc_unwarp_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.unwarp.init_sdc_unwarp_wf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sdcflows.workflows.unwarp.</code><code class="sig-name descname">init_sdc_unwarp_wf</code><span class="sig-paren">(</span><em class="sig-param">omp_nthreads</em>, <em class="sig-param">debug</em>, <em class="sig-param">name='sdc_unwarp_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/unwarp.html#init_sdc_unwarp_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.unwarp.init_sdc_unwarp_wf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply the warping given by a displacements fieldmap.</p>
 <p>This workflow takes in a displacements fieldmap and calculates the corresponding
 displacements field (in other words, an ANTs-compatible warp file).</p>
@@ -237,41 +237,36 @@ could not be performed.</p>
 <img alt="../_images/sdcflows-workflows-unwarp-2.png" src="../_images/sdcflows-workflows-unwarp-2.png" />
 </div>
 <p>(<a class="reference external" href="../api/sdcflows-workflows-unwarp-2.py">Source code</a>, <a class="reference external" href="../api/sdcflows-workflows-unwarp-2.png">png</a>, <a class="reference external" href="../api/sdcflows-workflows-unwarp-2.svg">svg</a>, <a class="reference external" href="../api/sdcflows-workflows-unwarp-2.pdf">pdf</a>)</p>
-<p>Inputs</p>
-<blockquote>
-<div><dl class="simple">
-<dt>in_reference</dt><dd><p>the reference image</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>omp_nthreads</strong> (<em>int</em>) – Maximum number of threads an individual process may use.</p></li>
+<li><p><strong>debug</strong> (<em>bool</em>) – Run fast configurations of registrations.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Unique name of this workflow.</p></li>
+</ul>
 </dd>
-<dt>in_reference_brain</dt><dd><p>the reference image (skull-stripped)</p>
+<dt class="field-even">Inputs</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>in_reference</strong> – the reference image</p></li>
+<li><p><strong>in_reference_brain</strong> – the reference image (skull-stripped)</p></li>
+<li><p><strong>in_mask</strong> – a brain mask corresponding to <code class="docutils literal notranslate"><span class="pre">in_reference</span></code></p></li>
+<li><p><strong>metadata</strong> – metadata associated to the <code class="docutils literal notranslate"><span class="pre">in_reference</span></code> EPI input</p></li>
+<li><p><strong>fmap</strong> – the fieldmap in Hz</p></li>
+<li><p><strong>fmap_ref</strong> – the reference (anatomical) image corresponding to <code class="docutils literal notranslate"><span class="pre">fmap</span></code></p></li>
+<li><p><strong>fmap_mask</strong> – a brain mask corresponding to <code class="docutils literal notranslate"><span class="pre">fmap</span></code></p></li>
+</ul>
 </dd>
-<dt>in_mask</dt><dd><p>a brain mask corresponding to <code class="docutils literal notranslate"><span class="pre">in_reference</span></code></p>
-</dd>
-<dt>metadata</dt><dd><p>metadata associated to the <code class="docutils literal notranslate"><span class="pre">in_reference</span></code> EPI input</p>
-</dd>
-<dt>fmap</dt><dd><p>the fieldmap in Hz</p>
-</dd>
-<dt>fmap_ref</dt><dd><p>the reference (anatomical) image corresponding to <code class="docutils literal notranslate"><span class="pre">fmap</span></code></p>
-</dd>
-<dt>fmap_mask</dt><dd><p>a brain mask corresponding to <code class="docutils literal notranslate"><span class="pre">fmap</span></code></p>
-</dd>
-</dl>
-</div></blockquote>
-<p>Outputs</p>
-<blockquote>
-<div><dl class="simple">
-<dt>out_reference</dt><dd><p>the <code class="docutils literal notranslate"><span class="pre">in_reference</span></code> after unwarping</p>
-</dd>
-<dt>out_reference_brain</dt><dd><p>the <code class="docutils literal notranslate"><span class="pre">in_reference</span></code> after unwarping and skullstripping</p>
-</dd>
-<dt>out_warp</dt><dd><p>the corresponding <abbr title="displacements field map">DFM</abbr> compatible with
-ANTs</p>
-</dd>
-<dt>out_jacobian</dt><dd><p>the jacobian of the field (for drop-out alleviation)</p>
-</dd>
-<dt>out_mask</dt><dd><p>mask of the unwarped input file</p>
+<dt class="field-odd">Outputs</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out_reference</strong> – the <code class="docutils literal notranslate"><span class="pre">in_reference</span></code> after unwarping</p></li>
+<li><p><strong>out_reference_brain</strong> – the <code class="docutils literal notranslate"><span class="pre">in_reference</span></code> after unwarping and skullstripping</p></li>
+<li><p><strong>out_warp</strong> – the corresponding <abbr title="displacements field map">DFM</abbr> compatible with
+ANTs</p></li>
+<li><p><strong>out_jacobian</strong> – the jacobian of the field (for drop-out alleviation)</p></li>
+<li><p><strong>out_mask</strong> – mask of the unwarped input file</p></li>
+</ul>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
 </div>

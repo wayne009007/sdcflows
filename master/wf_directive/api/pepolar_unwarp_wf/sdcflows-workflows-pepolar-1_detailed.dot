@@ -1,6 +1,6 @@
 digraph structs {
 node [shape=record];
-pepolar_unwarp_wfinputnode [label="{IN}|{ inputnode | utility |  }|{OUT|<outboldpedir> bold_pe_dir|<outfmapsepi> fmaps_epi|<outinreference> in_reference|<outinreferencebrain> in_reference_brain}"];
+pepolar_unwarp_wfinputnode [label="{IN}|{ inputnode | utility |  }|{OUT|<outepipedir> epi_pe_dir|<outfmapsepi> fmaps_epi|<outinreference> in_reference|<outinreferencebrain> in_reference_brain}"];
 pepolar_unwarp_wfprepare_epi_wf [label="{IN|<ininputnodeepipe> inputnode.epi_pe|<ininputnodemapspe> inputnode.maps_pe|<ininputnoderefbrain> inputnode.ref_brain}|{ prepare_epi_wf |  |  }|{OUT|<outoutputnodematchedpe> outputnode.matched_pe|<outoutputnodeopposedpe> outputnode.opposed_pe}"];
 pepolar_unwarp_wfqwarp [label="{IN|<inargs> args|<inbasefile> base_file|<ininfile> in_file}|{ qwarp | afni |  }|{OUT|<outsourcewarp> source_warp}"];
 pepolar_unwarp_wfcphdr_warp [label="{IN|<inhdrfile> hdr_file|<ininfile> in_file}|{ cphdr_warp | utils |  }|{OUT|<outoutfile> out_file}"];
@@ -11,8 +11,8 @@ pepolar_unwarp_wfoutputnode [label="{IN|<inoutmask> out_mask|<inoutreference> ou
 pepolar_unwarp_wfcphdr_warp:outoutfile:e -> pepolar_unwarp_wfto_ants:ininfile:w;
 pepolar_unwarp_wfenhance_and_skullstrip_bold_wf:outoutputnodemaskfile:e -> pepolar_unwarp_wfoutputnode:inoutmask:w;
 pepolar_unwarp_wfenhance_and_skullstrip_bold_wf:outoutputnodeskullstrippedfile:e -> pepolar_unwarp_wfoutputnode:inoutreferencebrain:w;
-pepolar_unwarp_wfinputnode:outboldpedir:e -> pepolar_unwarp_wfprepare_epi_wf:ininputnodeepipe:w;
-pepolar_unwarp_wfinputnode:outboldpedir:e -> pepolar_unwarp_wfqwarp:inargs:w;
+pepolar_unwarp_wfinputnode:outepipedir:e -> pepolar_unwarp_wfprepare_epi_wf:ininputnodeepipe:w;
+pepolar_unwarp_wfinputnode:outepipedir:e -> pepolar_unwarp_wfqwarp:inargs:w;
 pepolar_unwarp_wfinputnode:outfmapsepi:e -> pepolar_unwarp_wfprepare_epi_wf:ininputnodemapspe:w;
 pepolar_unwarp_wfinputnode:outinreference:e -> pepolar_unwarp_wfcphdr_warp:inhdrfile:w;
 pepolar_unwarp_wfinputnode:outinreference:e -> pepolar_unwarp_wfunwarp_reference:ininputimage:w;

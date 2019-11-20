@@ -23,7 +23,7 @@
 <polyline fill="none" stroke="#000000" points="177.0449,-857.5 177.0449,-972.5 "/>
 <text text-anchor="middle" x="253.0449" y="-957.3" font-family="Times,serif" font-size="14.00" fill="#000000">OUT</text>
 <polyline fill="none" stroke="#000000" points="177.0449,-949.5 329.0449,-949.5 "/>
-<text text-anchor="middle" x="253.0449" y="-934.3" font-family="Times,serif" font-size="14.00" fill="#000000">bold_pe_dir</text>
+<text text-anchor="middle" x="253.0449" y="-934.3" font-family="Times,serif" font-size="14.00" fill="#000000">epi_pe_dir</text>
 <polyline fill="none" stroke="#000000" points="177.0449,-926.5 329.0449,-926.5 "/>
 <text text-anchor="middle" x="253.0449" y="-911.3" font-family="Times,serif" font-size="14.00" fill="#000000">fmaps_epi</text>
 <polyline fill="none" stroke="#000000" points="177.0449,-903.5 329.0449,-903.5 "/>

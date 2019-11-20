@@ -193,7 +193,7 @@ be corrected using the fieldmap-based estimates.</p>
 <p>Feedback will be enthusiastically received.</p>
 <dl class="function">
 <dt id="sdcflows.workflows.syn.init_syn_sdc_wf">
-<code class="sig-prename descclassname">sdcflows.workflows.syn.</code><code class="sig-name descname">init_syn_sdc_wf</code><span class="sig-paren">(</span><em class="sig-param">omp_nthreads</em>, <em class="sig-param">bold_pe=None</em>, <em class="sig-param">atlas_threshold=3</em>, <em class="sig-param">name='syn_sdc_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/syn.html#init_syn_sdc_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.syn.init_syn_sdc_wf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sdcflows.workflows.syn.</code><code class="sig-name descname">init_syn_sdc_wf</code><span class="sig-paren">(</span><em class="sig-param">omp_nthreads</em>, <em class="sig-param">epi_pe=None</em>, <em class="sig-param">atlas_threshold=3</em>, <em class="sig-param">name='syn_sdc_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/syn.html#init_syn_sdc_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.syn.init_syn_sdc_wf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build the <em>fieldmap-less</em> susceptibility-distortion estimation workflow.</p>
 <p>This workflow takes a skull-stripped T1w image and reference BOLD image and
 estimates a susceptibility distortion correction warp, using ANTs symmetric
@@ -215,17 +215,17 @@ If no PE direction is specified, anterior-posterior PE is assumed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Inputs</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>bold_ref</strong> – reference image</p></li>
-<li><p><strong>bold_ref_brain</strong> – skull-stripped reference image</p></li>
+<li><p><strong>in_reference</strong> – reference image</p></li>
+<li><p><strong>in_reference_brain</strong> – skull-stripped reference image</p></li>
 <li><p><strong>template</strong> (<em>str</em>) – Name of template targeted by <code class="docutils literal notranslate"><span class="pre">template</span></code> output space</p></li>
-<li><p><strong>t1_brain</strong> – skull-stripped, bias-corrected structural image</p></li>
+<li><p><strong>t1w_brain</strong> – skull-stripped, bias-corrected structural image</p></li>
 <li><p><strong>std2anat_xfm</strong> – inverse registration transform of T1w image to MNI template</p></li>
 </ul>
 </dd>
 <dt class="field-even">Outputs</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>out_reference</strong> – the <code class="docutils literal notranslate"><span class="pre">bold_ref</span></code> image after unwarping</p></li>
-<li><p><strong>out_reference_brain</strong> – the <code class="docutils literal notranslate"><span class="pre">bold_ref_brain</span></code> image after unwarping</p></li>
+<li><p><strong>out_reference</strong> – the <code class="docutils literal notranslate"><span class="pre">in_reference</span></code> image after unwarping</p></li>
+<li><p><strong>out_reference_brain</strong> – the <code class="docutils literal notranslate"><span class="pre">in_reference_brain</span></code> image after unwarping</p></li>
 <li><p><strong>out_warp</strong> – the corresponding <abbr title="displacements field map">DFM</abbr> compatible with
 ANTs</p></li>
 <li><p><strong>out_mask</strong> – mask of the unwarped input file</p></li>

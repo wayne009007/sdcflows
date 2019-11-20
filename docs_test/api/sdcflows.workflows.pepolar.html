@@ -230,13 +230,13 @@ to determine whether they exist or not.</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>fmaps_epi</strong> (<em>list of tuple(pathlike, str)</em>) – The list of EPI images that will be used in PE-Polar correction, and
 their corresponding <code class="docutils literal notranslate"><span class="pre">PhaseEncodingDirection</span></code> metadata.
-The workflow will use the <code class="docutils literal notranslate"><span class="pre">bold_pe_dir</span></code> input to separate out those
+The workflow will use the <code class="docutils literal notranslate"><span class="pre">epi_pe_dir</span></code> input to separate out those
 EPI acquisitions with opposed PE blips and those with matched PE blips
 (the latter could be none, and <code class="docutils literal notranslate"><span class="pre">in_reference_brain</span></code> would then be
 used). The workflow raises a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> when no images with
 opposed PE blips are found.</p></li>
-<li><p><strong>bold_pe_dir</strong> (<em>str</em>) – The baseline PE direction.</p></li>
-<li><p><strong>in_reference</strong> (<em>pathlike</em>) – The baseline reference image (must correspond to <code class="docutils literal notranslate"><span class="pre">bold_pe_dir</span></code>).</p></li>
+<li><p><strong>epi_pe_dir</strong> (<em>str</em>) – The baseline PE direction.</p></li>
+<li><p><strong>in_reference</strong> (<em>pathlike</em>) – The baseline reference image (must correspond to <code class="docutils literal notranslate"><span class="pre">epi_pe_dir</span></code>).</p></li>
 <li><p><strong>in_reference_brain</strong> (<em>pathlike</em>) – The reference image above, but skullstripped.</p></li>
 <li><p><strong>in_mask</strong> (<em>pathlike</em>) – Not used, present only for consistency across fieldmap estimation
 workflows.</p></li>

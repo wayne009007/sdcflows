@@ -233,15 +233,15 @@
 <span class="sd">    fmaps_epi : list of tuple(pathlike, str)</span>
 <span class="sd">        The list of EPI images that will be used in PE-Polar correction, and</span>
 <span class="sd">        their corresponding ``PhaseEncodingDirection`` metadata.</span>
-<span class="sd">        The workflow will use the ``bold_pe_dir`` input to separate out those</span>
+<span class="sd">        The workflow will use the ``epi_pe_dir`` input to separate out those</span>
 <span class="sd">        EPI acquisitions with opposed PE blips and those with matched PE blips</span>
 <span class="sd">        (the latter could be none, and ``in_reference_brain`` would then be</span>
 <span class="sd">        used). The workflow raises a ``ValueError`` when no images with</span>
 <span class="sd">        opposed PE blips are found.</span>
-<span class="sd">    bold_pe_dir : str</span>
+<span class="sd">    epi_pe_dir : str</span>
 <span class="sd">        The baseline PE direction.</span>
 <span class="sd">    in_reference : pathlike</span>
-<span class="sd">        The baseline reference image (must correspond to ``bold_pe_dir``).</span>
+<span class="sd">        The baseline reference image (must correspond to ``epi_pe_dir``).</span>
 <span class="sd">    in_reference_brain : pathlike</span>
 <span class="sd">        The reference image above, but skullstripped.</span>
 <span class="sd">    in_mask : pathlike</span>
@@ -270,7 +270,7 @@
 
     <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
         <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;fmaps_epi&#39;</span><span class="p">,</span> <span class="s1">&#39;in_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;in_reference_brain&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;in_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;bold_pe_dir&#39;</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;inputnode&#39;</span><span class="p">)</span>
+                <span class="s1">&#39;in_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;epi_pe_dir&#39;</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;inputnode&#39;</span><span class="p">)</span>
 
     <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
         <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;out_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;out_reference_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;out_warp&#39;</span><span class="p">,</span> <span class="s1">&#39;out_mask&#39;</span><span class="p">]),</span>
@@ -300,11 +300,11 @@
         <span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">)</span>
 
     <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
-        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">qwarp</span><span class="p">,</span> <span class="p">[((</span><span class="s1">&#39;bold_pe_dir&#39;</span><span class="p">,</span> <span class="n">_qwarp_args</span><span class="p">),</span> <span class="s1">&#39;args&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">qwarp</span><span class="p">,</span> <span class="p">[((</span><span class="s1">&#39;epi_pe_dir&#39;</span><span class="p">,</span> <span class="n">_qwarp_args</span><span class="p">),</span> <span class="s1">&#39;args&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">cphdr_warp</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;in_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;hdr_file&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">prepare_epi_wf</span><span class="p">,</span> <span class="p">[</span>
             <span class="p">(</span><span class="s1">&#39;fmaps_epi&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.maps_pe&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;bold_pe_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.epi_pe&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;epi_pe_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.epi_pe&#39;</span><span class="p">),</span>
             <span class="p">(</span><span class="s1">&#39;in_reference_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.ref_brain&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">prepare_epi_wf</span><span class="p">,</span> <span class="n">qwarp</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;outputnode.opposed_pe&#39;</span><span class="p">,</span> <span class="s1">&#39;base_file&#39;</span><span class="p">),</span>
                                  <span class="p">(</span><span class="s1">&#39;outputnode.matched_pe&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
