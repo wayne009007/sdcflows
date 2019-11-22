@@ -163,7 +163,7 @@
 <div class="viewcode-block" id="plot_registration"><a class="viewcode-back" href="../../../api/sdcflows.viz.utils.html#sdcflows.viz.utils.plot_registration">[docs]</a><span class="k">def</span> <span class="nf">plot_registration</span><span class="p">(</span><span class="n">anat_nii</span><span class="p">,</span> <span class="n">div_id</span><span class="p">,</span> <span class="n">plot_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="n">cuts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">estimate_brightness</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contour</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                      <span class="n">compress</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">):</span>
+                      <span class="n">compress</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overlay_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plot the foreground and background views.</span>
 
@@ -172,6 +172,7 @@
     <span class="kn">from</span> <span class="nn">uuid</span> <span class="k">import</span> <span class="n">uuid4</span>
 
     <span class="kn">from</span> <span class="nn">lxml</span> <span class="k">import</span> <span class="n">etree</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
     <span class="kn">from</span> <span class="nn">nilearn.plotting</span> <span class="k">import</span> <span class="n">plot_anat</span>
     <span class="kn">from</span> <span class="nn">svgutils.transform</span> <span class="k">import</span> <span class="n">SVGFigure</span>
     <span class="kn">from</span> <span class="nn">niworkflows.viz.utils</span> <span class="k">import</span> <span class="n">robust_set_limits</span><span class="p">,</span> <span class="n">extract_svg</span><span class="p">,</span> <span class="n">SVGNS</span>
@@ -198,6 +199,15 @@
 
         <span class="c1"># Generate nilearn figure</span>
         <span class="n">display</span> <span class="o">=</span> <span class="n">plot_anat</span><span class="p">(</span><span class="n">anat_nii</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">overlay</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_overlay_params</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;vmin&#39;</span><span class="p">:</span> <span class="n">overlay</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">()</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+                <span class="s1">&#39;vmax&#39;</span><span class="p">:</span> <span class="n">overlay</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+                <span class="s1">&#39;cmap&#39;</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">gray</span><span class="p">,</span>
+                <span class="s1">&#39;interpolation&#39;</span><span class="p">:</span> <span class="s1">&#39;nearest&#39;</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">_overlay_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">overlay_params</span><span class="p">)</span>
+            <span class="n">display</span><span class="o">.</span><span class="n">add_overlay</span><span class="p">(</span><span class="n">overlay</span><span class="p">,</span> <span class="o">**</span><span class="n">_overlay_params</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">contour</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">display</span><span class="o">.</span><span class="n">add_contours</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">],</span>
                                  <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
@@ -217,7 +227,7 @@
     <span class="k">return</span> <span class="n">out_files</span></div>
 
 
-<div class="viewcode-block" id="coolwarm_transparent"><a class="viewcode-back" href="../../../api/sdcflows.viz.utils.html#sdcflows.viz.utils.coolwarm_transparent">[docs]</a><span class="k">def</span> <span class="nf">coolwarm_transparent</span><span class="p">():</span>
+<div class="viewcode-block" id="coolwarm_transparent"><a class="viewcode-back" href="../../../api/sdcflows.viz.utils.html#sdcflows.viz.utils.coolwarm_transparent">[docs]</a><span class="k">def</span> <span class="nf">coolwarm_transparent</span><span class="p">(</span><span class="n">max_alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">opaque_perc</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">transparent_perc</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Modify the coolwarm color scale to have full transparency around the middle.&quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
     <span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="k">as</span> <span class="nn">pl</span>
@@ -229,10 +239,16 @@
     <span class="c1"># Get the colormap colors</span>
     <span class="n">my_cmap</span> <span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">cmap</span><span class="o">.</span><span class="n">N</span><span class="p">))</span>
 
+    <span class="n">_20perc</span> <span class="o">=</span> <span class="p">(</span><span class="n">cmap</span><span class="o">.</span><span class="n">N</span> <span class="o">*</span> <span class="n">opaque_perc</span><span class="p">)</span> <span class="o">//</span> <span class="mi">100</span>
+    <span class="n">midpoint</span> <span class="o">=</span> <span class="n">cmap</span><span class="o">.</span><span class="n">N</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">_10perc</span> <span class="o">=</span> <span class="p">(</span><span class="n">cmap</span><span class="o">.</span><span class="n">N</span> <span class="o">*</span> <span class="n">transparent_perc</span><span class="p">)</span> <span class="o">//</span> <span class="mi">100</span>
     <span class="c1"># Set alpha</span>
-    <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">cmap</span><span class="o">.</span><span class="n">N</span><span class="p">)</span>
-    <span class="n">alpha</span><span class="p">[</span><span class="mi">128</span><span class="p">:</span><span class="mi">160</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="mi">128</span><span class="p">:</span><span class="mi">160</span><span class="p">]))</span>
-    <span class="n">alpha</span><span class="p">[</span><span class="mi">96</span><span class="p">:</span><span class="mi">128</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="mi">96</span><span class="p">:</span><span class="mi">128</span><span class="p">]))</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">cmap</span><span class="o">.</span><span class="n">N</span><span class="p">)</span> <span class="o">*</span> <span class="n">max_alpha</span>
+    <span class="n">alpha</span><span class="p">[</span><span class="n">midpoint</span> <span class="o">-</span> <span class="n">_10perc</span><span class="p">:</span><span class="n">midpoint</span> <span class="o">+</span> <span class="n">_10perc</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">alpha</span><span class="p">[</span><span class="n">_20perc</span><span class="p">:</span><span class="n">midpoint</span> <span class="o">-</span> <span class="n">_10perc</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+        <span class="n">max_alpha</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="n">_20perc</span><span class="p">:</span><span class="n">midpoint</span> <span class="o">-</span> <span class="n">_10perc</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
+    <span class="n">alpha</span><span class="p">[</span><span class="n">midpoint</span> <span class="o">+</span> <span class="n">_10perc</span><span class="p">:</span><span class="o">-</span><span class="n">_20perc</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+        <span class="mi">0</span><span class="p">,</span> <span class="n">max_alpha</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="n">midpoint</span> <span class="o">+</span> <span class="n">_10perc</span><span class="p">:</span><span class="o">-</span><span class="n">_20perc</span><span class="p">]))</span>
     <span class="n">my_cmap</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">alpha</span>
     <span class="k">return</span> <span class="n">ListedColormap</span><span class="p">(</span><span class="n">my_cmap</span><span class="p">)</span></div>
 </pre></div>
