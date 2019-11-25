@@ -179,8 +179,14 @@
 <span id="sdcflows-workflows-base-module"></span><h1>sdcflows.workflows.base module<a class="headerlink" href="#module-sdcflows.workflows.base" title="Permalink to this headline">¶</a></h1>
 <p>SDC workflows coordination.</p>
 <dl class="function">
+<dt id="sdcflows.workflows.base.fieldmap_wrangler">
+<code class="sig-prename descclassname">sdcflows.workflows.base.</code><code class="sig-name descname">fieldmap_wrangler</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">target_image</em>, <em class="sig-param">use_syn=False</em>, <em class="sig-param">force_syn=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/base.html#fieldmap_wrangler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.base.fieldmap_wrangler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the BIDSLayout for fieldmaps, and arrange them for the orchestration workflow.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="sdcflows.workflows.base.init_sdc_estimate_wf">
-<code class="sig-prename descclassname">sdcflows.workflows.base.</code><code class="sig-name descname">init_sdc_estimate_wf</code><span class="sig-paren">(</span><em class="sig-param">fmaps</em>, <em class="sig-param">epi_meta</em>, <em class="sig-param">omp_nthreads=1</em>, <em class="sig-param">debug=False</em>, <em class="sig-param">ignore=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/base.html#init_sdc_estimate_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.base.init_sdc_estimate_wf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sdcflows.workflows.base.</code><code class="sig-name descname">init_sdc_estimate_wf</code><span class="sig-paren">(</span><em class="sig-param">fmaps</em>, <em class="sig-param">epi_meta</em>, <em class="sig-param">omp_nthreads=1</em>, <em class="sig-param">debug=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/base.html#init_sdc_estimate_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.base.init_sdc_estimate_wf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a <abbr title="susceptibility distortion correction">SDC</abbr> workflow.</p>
 <p>This workflow implements the heuristics to choose an estimation
 methodology for <abbr title="susceptibility distortion correction">SDC</abbr>.
@@ -217,12 +223,13 @@ normalization (only for the fieldmap-less SyN method).</p></li>
 </dd>
 <dt class="field-odd">Outputs</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>epi_file</strong> – An unwarped EPI scan reference</p></li>
+<li><p><strong>epi_corrected</strong> – The EPI scan reference after unwarping.</p></li>
 <li><p><strong>epi_mask</strong> – The corresponding new mask after unwarping</p></li>
 <li><p><strong>epi_brain</strong> – Brain-extracted, unwarped EPI scan reference</p></li>
 <li><p><strong>out_warp</strong> – The deformation field to unwarp the susceptibility distortions</p></li>
 <li><p><strong>syn_ref</strong> – If <code class="docutils literal notranslate"><span class="pre">--force-syn</span></code>, an unwarped EPI scan reference with this
 method (for reporting purposes)</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – Short description of the estimation method that was run.</p></li>
 </ul>
 </dd>
 </dl>

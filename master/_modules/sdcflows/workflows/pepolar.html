@@ -260,9 +260,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="n">workflow</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
-<span class="s2">A deformation field to correct for susceptibility distortions was estimated</span>
-<span class="s2">based on two echo-planar imaging (EPI) references with opposing phase-encoding</span>
-<span class="s2">directions, using `3dQwarp` @afni (AFNI </span><span class="si">{afni_ver}</span><span class="s2">).</span>
+<span class="s2">A B0-nonuniformity map (or *fieldmap*) was estimated based on two (or more)</span>
+<span class="s2">echo-planar imaging (EPI) references with opposing phase-encoding</span>
+<span class="s2">directions, with `3dQwarp` @afni (AFNI </span><span class="si">{afni_ver}</span><span class="s2">).</span>
 <span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">afni_ver</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">%02d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">afni</span><span class="o">.</span><span class="n">Info</span><span class="p">()</span><span class="o">.</span><span class="n">version</span><span class="p">()</span> <span class="ow">or</span> <span class="p">[]]))</span>
 
     <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>

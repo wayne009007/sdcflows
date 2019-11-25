@@ -387,6 +387,63 @@
         <span class="k">return</span> <span class="n">runtime</span></div>
 
 
+<span class="k">class</span> <span class="nc">_FUGUEvsm2ANTSwarpInputSpec</span><span class="p">(</span><span class="n">BaseInterfaceInputSpec</span><span class="p">):</span>
+    <span class="n">in_file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                   <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;input displacements field map&#39;</span><span class="p">)</span>
+    <span class="n">pe_dir</span> <span class="o">=</span> <span class="n">traits</span><span class="o">.</span><span class="n">Enum</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;i-&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">,</span> <span class="s1">&#39;j-&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">,</span>
+                         <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;phase-encoding axis&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_FUGUEvsm2ANTSwarpOutputSpec</span><span class="p">(</span><span class="n">TraitedSpec</span><span class="p">):</span>
+    <span class="n">out_file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;the output warp field&#39;</span><span class="p">)</span>
+    <span class="n">fieldmap</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;field map in mm&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FUGUEvsm2ANTSwarp"><a class="viewcode-back" href="../../../api/sdcflows.interfaces.fmap.html#sdcflows.interfaces.fmap.FUGUEvsm2ANTSwarp">[docs]</a><span class="k">class</span> <span class="nc">FUGUEvsm2ANTSwarp</span><span class="p">(</span><span class="n">SimpleInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert a voxel-shift-map to ants warp.&quot;&quot;&quot;</span>
+
+    <span class="n">_dtype</span> <span class="o">=</span> <span class="s1">&#39;&lt;f4&#39;</span>
+    <span class="n">input_spec</span> <span class="o">=</span> <span class="n">_FUGUEvsm2ANTSwarpInputSpec</span>
+    <span class="n">output_spec</span> <span class="o">=</span> <span class="n">_FUGUEvsm2ANTSwarpOutputSpec</span>
+
+    <span class="k">def</span> <span class="nf">_run_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runtime</span><span class="p">):</span>
+        <span class="n">phaseEncDim</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;i&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">pe_dir</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">phaseEncSign</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">][</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">pe_dir</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">]</span>
+
+        <span class="c1"># Create new header</span>
+        <span class="n">nii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_file</span><span class="p">)</span>
+        <span class="n">hdr</span> <span class="o">=</span> <span class="n">nii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">hdr</span><span class="o">.</span><span class="n">set_data_dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+
+        <span class="c1"># Get data, convert to mm</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">nii</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+        <span class="n">aff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">aff</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">phaseEncDim</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Reverse direction since ITK is LPS</span>
+            <span class="n">aff</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.0</span>
+
+        <span class="n">aff</span> <span class="o">=</span> <span class="n">aff</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">nii</span><span class="o">.</span><span class="n">affine</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">data</span> <span class="o">*=</span> <span class="n">phaseEncSign</span> <span class="o">*</span> <span class="n">nii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get_zooms</span><span class="p">()[</span><span class="n">phaseEncDim</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s1">&#39;fieldmap&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fname_presuffix</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_file</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;_units-mm_fieldmap&#39;</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="n">runtime</span><span class="o">.</span><span class="n">cwd</span><span class="p">)</span>
+        <span class="n">nb</span><span class="o">.</span><span class="n">Nifti1Image</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nii</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="n">hdr</span><span class="p">)</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s1">&#39;fieldmap&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Compose a vector field</span>
+        <span class="n">zeros</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="p">[</span><span class="n">zeros</span><span class="p">,</span> <span class="n">zeros</span><span class="p">]</span>
+        <span class="n">field</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">phaseEncDim</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">hdr</span><span class="o">.</span><span class="n">set_intent</span><span class="p">(</span><span class="s1">&#39;vector&#39;</span><span class="p">,</span> <span class="p">(),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="c1"># Write out</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s1">&#39;out_file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fname_presuffix</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_file</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;_desc-field_sdcwarp&#39;</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="n">runtime</span><span class="o">.</span><span class="n">cwd</span><span class="p">)</span>
+        <span class="n">nb</span><span class="o">.</span><span class="n">Nifti1Image</span><span class="p">(</span><span class="n">field</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:],</span> <span class="n">nii</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="n">hdr</span><span class="p">)</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s1">&#39;out_file&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">runtime</span></div>
+
+
 <span class="k">def</span> <span class="nf">_despike2d</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">thres</span><span class="p">,</span> <span class="n">neigh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Despike axial slices, as done in FSL&#39;s ``epiunwarp``.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">neigh</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

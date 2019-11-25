@@ -190,7 +190,7 @@
 <span class="sd">    magnitude images corresponding to two or more :abbr:`GRE (Gradient Echo sequence)`</span>
 <span class="sd">    acquisitions.</span>
 <span class="sd">    The most delicate bit of this workflow is the phase-unwrapping process: phase maps</span>
-<span class="sd">    are clipped in the range :math:`[0 \dotsb 2 \cdot \pi )`.</span>
+<span class="sd">    are clipped in the range :math:`[0 \dotsb 2\pi )`.</span>
 <span class="sd">    To find the integer number of offsets that make a region continously smooth with</span>
 <span class="sd">    its neighbour, FSL PRELUDE is run [Jenkinson2003]_.</span>
 <span class="sd">    FSL PRELUDE takes wrapped maps in the range 0 to 6.28, `as per the user guide</span>
@@ -240,11 +240,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="n">workflow</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
-<span class="s2">A deformation field to correct for susceptibility distortions was estimated</span>
-<span class="s2">based on a field map that was co-registered to the EPI (echo-planar imaging) reference</span>
-<span class="s2">run, using a custom workflow of *SDCFlows* derived from D. Greve&#39;s `epidewarp.fsl`</span>
-<span class="s2">[script](http://www.nmr.mgh.harvard.edu/~greve/fbirn/b0/epidewarp.fsl) and</span>
-<span class="s2">further improvements of HCP Pipelines [@hcppipelines].</span>
+<span class="s2">A B0-nonuniformity map (or *fieldmap*) was estimated based on a phase-difference map</span>
+<span class="s2">calculated with a dual-echo GRE (gradient-recall echo) sequence, processed with a</span>
+<span class="s2">custom workflow of *SDCFlows* inspired by the</span>
+<span class="s2">[`epidewarp.fsl` script](http://www.nmr.mgh.harvard.edu/~greve/fbirn/b0/epidewarp.fsl)</span>
+<span class="s2">and further improvements in HCP Pipelines [@hcppipelines].</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
     <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;magnitude&#39;</span><span class="p">,</span> <span class="s1">&#39;phasediff&#39;</span><span class="p">]),</span>
