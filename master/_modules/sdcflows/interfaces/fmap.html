@@ -181,6 +181,43 @@
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;nipype.interface&#39;</span><span class="p">)</span>
 
 
+<span class="k">class</span> <span class="nc">_SubtractPhasesInputSpec</span><span class="p">(</span><span class="n">BaseInterfaceInputSpec</span><span class="p">):</span>
+    <span class="n">in_phases</span> <span class="o">=</span> <span class="n">traits</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                            <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;input phase maps&#39;</span><span class="p">)</span>
+    <span class="n">in_meta</span> <span class="o">=</span> <span class="n">traits</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">traits</span><span class="o">.</span><span class="n">Dict</span><span class="p">(),</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                          <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;metadata corresponding to the inputs&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_SubtractPhasesOutputSpec</span><span class="p">(</span><span class="n">TraitedSpec</span><span class="p">):</span>
+    <span class="n">phase_diff</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;phase difference map&#39;</span><span class="p">)</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">traits</span><span class="o">.</span><span class="n">Dict</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;output metadata&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SubtractPhases"><a class="viewcode-back" href="../../../api/sdcflows.interfaces.fmap.html#sdcflows.interfaces.fmap.SubtractPhases">[docs]</a><span class="k">class</span> <span class="nc">SubtractPhases</span><span class="p">(</span><span class="n">SimpleInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate a phase difference map.&quot;&quot;&quot;</span>
+
+    <span class="n">input_spec</span> <span class="o">=</span> <span class="n">_SubtractPhasesInputSpec</span>
+    <span class="n">output_spec</span> <span class="o">=</span> <span class="n">_SubtractPhasesOutputSpec</span>
+
+    <span class="k">def</span> <span class="nf">_run_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runtime</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_phases</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_meta</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Length of input phase-difference maps and metadata files &#39;</span>
+                <span class="s1">&#39;should match.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_phases</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s1">&#39;phase_diff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_phases</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">runtime</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s1">&#39;phase_diff&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">_subtract_phases</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_phases</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_meta</span><span class="p">,</span>
+                             <span class="n">newpath</span><span class="o">=</span><span class="n">runtime</span><span class="o">.</span><span class="n">cwd</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">runtime</span></div>
+
+
 <span class="k">class</span> <span class="nc">_FieldEnhanceInputSpec</span><span class="p">(</span><span class="n">BaseInterfaceInputSpec</span><span class="p">):</span>
     <span class="n">in_file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;input fieldmap&#39;</span><span class="p">)</span>
     <span class="n">in_mask</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;brain mask&#39;</span><span class="p">)</span>
@@ -806,6 +843,39 @@
     <span class="n">out_file</span> <span class="o">=</span> <span class="n">fname_presuffix</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;_rads&#39;</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="n">newpath</span><span class="p">)</span>
     <span class="n">nb</span><span class="o">.</span><span class="n">Nifti1Image</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="n">hdr</span><span class="p">)</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">out_file</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">out_file</span></div>
+
+
+<span class="k">def</span> <span class="nf">_subtract_phases</span><span class="p">(</span><span class="n">in_phases</span><span class="p">,</span> <span class="n">in_meta</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># Discard traits with copy(), so that pop() works.</span>
+    <span class="n">in_meta</span> <span class="o">=</span> <span class="p">(</span><span class="n">in_meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">in_meta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+    <span class="n">echo_times</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">m</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;EchoTime&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">in_meta</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">echo_times</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;One or more missing EchoTime metadata parameter &#39;</span>
+            <span class="s1">&#39;associated to one or more phase map(s).&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">echo_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">echo_times</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">in_phases</span> <span class="o">=</span> <span class="p">(</span><span class="n">in_phases</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">in_phases</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">in_meta</span> <span class="o">=</span> <span class="p">(</span><span class="n">in_meta</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">in_meta</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">echo_times</span> <span class="o">=</span> <span class="p">(</span><span class="n">echo_times</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">echo_times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">in_phases_nii</span> <span class="o">=</span> <span class="p">[</span><span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">ph</span><span class="p">)</span> <span class="k">for</span> <span class="n">ph</span> <span class="ow">in</span> <span class="n">in_phases</span><span class="p">]</span>
+    <span class="n">sub_data</span> <span class="o">=</span> <span class="n">in_phases_nii</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span> <span class="o">-</span> \
+        <span class="n">in_phases_nii</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+
+    <span class="n">new_meta</span> <span class="o">=</span> <span class="n">in_meta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">new_meta</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">in_meta</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">new_meta</span><span class="p">[</span><span class="s1">&#39;EchoTime1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">echo_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">new_meta</span><span class="p">[</span><span class="s1">&#39;EchoTime2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">echo_times</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">hdr</span> <span class="o">=</span> <span class="n">in_phases_nii</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">hdr</span><span class="o">.</span><span class="n">set_data_dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">hdr</span><span class="o">.</span><span class="n">set_xyzt_units</span><span class="p">(</span><span class="s1">&#39;mm&#39;</span><span class="p">)</span>
+    <span class="n">nii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">Nifti1Image</span><span class="p">(</span><span class="n">sub_data</span><span class="p">,</span> <span class="n">in_phases_nii</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="n">hdr</span><span class="p">)</span>
+    <span class="n">out_phdiff</span> <span class="o">=</span> <span class="n">fname_presuffix</span><span class="p">(</span><span class="n">in_phases</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;_phdiff&#39;</span><span class="p">,</span>
+                                 <span class="n">newpath</span><span class="o">=</span><span class="n">newpath</span><span class="p">)</span>
+    <span class="n">nii</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">out_phdiff</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out_phdiff</span><span class="p">,</span> <span class="n">new_meta</span>
 </pre></div>
 
            </div>
