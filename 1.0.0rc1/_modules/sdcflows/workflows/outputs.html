@@ -163,9 +163,9 @@
 <span></span><span class="c1"># emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-</span>
 <span class="c1"># vi: set ft=python sts=4 ts=4 sw=4 et:</span>
 <span class="sd">&quot;&quot;&quot;Writing out outputs.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">nipype.pipeline</span> <span class="k">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">pe</span>
-<span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="k">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span>
-<span class="kn">from</span> <span class="nn">niworkflows.interfaces.bids</span> <span class="k">import</span> <span class="n">DerivativesDataSink</span>
+<span class="kn">from</span> <span class="nn">nipype.pipeline</span> <span class="kn">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">pe</span>
+<span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span>
+<span class="kn">from</span> <span class="nn">niworkflows.interfaces.bids</span> <span class="kn">import</span> <span class="n">DerivativesDataSink</span>
 
 
 <div class="viewcode-block" id="init_sdc_unwarp_report_wf"><a class="viewcode-back" href="../../../api/sdcflows.workflows.outputs.html#sdcflows.workflows.outputs.init_sdc_unwarp_report_wf">[docs]</a><span class="k">def</span> <span class="nf">init_sdc_unwarp_report_wf</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;sdc_unwarp_report_wf&#39;</span><span class="p">,</span> <span class="n">forcedsyn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -203,9 +203,9 @@
 <span class="sd">        Affine transform from T1 space to BOLD space (ITK format)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">niworkflows.interfaces</span> <span class="k">import</span> <span class="n">SimpleBeforeAfter</span>
-    <span class="kn">from</span> <span class="nn">niworkflows.interfaces.fixes</span> <span class="k">import</span> <span class="n">FixHeaderApplyTransforms</span> <span class="k">as</span> <span class="n">ApplyTransforms</span>
-    <span class="kn">from</span> <span class="nn">niworkflows.interfaces.images</span> <span class="k">import</span> <span class="n">extract_wm</span>
+    <span class="kn">from</span> <span class="nn">niworkflows.interfaces</span> <span class="kn">import</span> <span class="n">SimpleBeforeAfter</span>
+    <span class="kn">from</span> <span class="nn">niworkflows.interfaces.fixes</span> <span class="kn">import</span> <span class="n">FixHeaderApplyTransforms</span> <span class="k">as</span> <span class="n">ApplyTransforms</span>
+    <span class="kn">from</span> <span class="nn">niworkflows.interfaces.images</span> <span class="kn">import</span> <span class="n">extract_wm</span>
 
     <span class="n">DEFAULT_MEMORY_MIN_GB</span> <span class="o">=</span> <span class="mf">0.01</span>
 

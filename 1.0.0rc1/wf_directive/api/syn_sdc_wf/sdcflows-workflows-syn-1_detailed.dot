@@ -1,9 +1,9 @@
 digraph structs {
 node [shape=record];
-syn_sdc_wfinputnode [label="{IN}|{ inputnode | utility |  }|{OUT|<outinreference> in_reference|<outinreferencebrain> in_reference_brain|<outstd2anatxfm> std2anat_xfm|<outt1wbrain> t1w_brain|<outtemplate> template}"];
+syn_sdc_wfinputnode [label="{IN}|{ inputnode | utility |  }|{OUT|<outinreference> in_reference|<outinreferencebrain> in_reference_brain|<outstd2anatxfm> std2anat_xfm|<outt1wbrain> t1w_brain}"];
 syn_sdc_wfinvert_t1w [label="{IN|<ininfile> in_file|<inreffile> ref_file}|{ invert_t1w | image |  }|{OUT|<outoutfile> out_file}"];
 syn_sdc_wfref_2_t1 [label="{IN|<infixedimage> fixed_image|<inmovingimage> moving_image}|{ ref_2_t1 | fixes |  }|{OUT|<outforwardtransforms> forward_transforms}"];
-syn_sdc_wftransform_list [label="{IN|<inin1> in1|<inin2> in2|<inin3> in3}|{ transform_list | utility |  }|{OUT|<outout> out}"];
+syn_sdc_wftransform_list [label="{IN|<inin1> in1|<inin2> in2}|{ transform_list | utility |  }|{OUT|<outout> out}"];
 syn_sdc_wfatlas_2_ref [label="{IN|<inreferenceimage> reference_image|<intransforms> transforms}|{ atlas_2_ref | fixes |  }|{OUT|<outoutputimage> output_image}"];
 syn_sdc_wfthreshold_atlas [label="{IN|<ininfile> in_file}|{ threshold_atlas | fsl |  }|{OUT|<outoutfile> out_file}"];
 syn_sdc_wffixed_image_masks [label="{IN|<inin2> in2}|{ fixed_image_masks | utility |  }|{OUT|<outout> out}"];
@@ -23,7 +23,6 @@ syn_sdc_wfinputnode:outinreferencebrain:e -> syn_sdc_wfref_2_t1:inmovingimage:w;
 syn_sdc_wfinputnode:outinreferencebrain:e -> syn_sdc_wfsyn:inmovingimage:w;
 syn_sdc_wfinputnode:outstd2anatxfm:e -> syn_sdc_wftransform_list:inin2:w;
 syn_sdc_wfinputnode:outt1wbrain:e -> syn_sdc_wfinvert_t1w:ininfile:w;
-syn_sdc_wfinputnode:outtemplate:e -> syn_sdc_wftransform_list:inin3:w;
 syn_sdc_wfinvert_t1w:outoutfile:e -> syn_sdc_wfref_2_t1:infixedimage:w;
 syn_sdc_wfinvert_t1w:outoutfile:e -> syn_sdc_wft1_2_ref:ininputimage:w;
 syn_sdc_wfref_2_t1:outforwardtransforms:e -> syn_sdc_wft1_2_ref:intransforms:w;

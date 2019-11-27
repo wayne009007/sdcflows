@@ -153,12 +153,9 @@
   
 
 
-    
-    
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><b>Warning:</b> This document is for an old version of sdcflows.</p>
 <h1>Source code for sdcflows.workflows.syn</h1><div class="highlight"><pre>
 <span></span><span class="c1"># emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-</span>
 <span class="c1"># vi: set ft=python sts=4 ts=4 sw=4 et:</span>
@@ -185,17 +182,17 @@
 
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">pkg_resources</span> <span class="k">as</span> <span class="nn">pkgr</span>
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span>
 
-<span class="kn">from</span> <span class="nn">nipype</span> <span class="k">import</span> <span class="n">logging</span>
-<span class="kn">from</span> <span class="nn">nipype.pipeline</span> <span class="k">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">pe</span>
-<span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="k">import</span> <span class="n">fsl</span><span class="p">,</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span>
-<span class="kn">from</span> <span class="nn">nipype.interfaces.image</span> <span class="k">import</span> <span class="n">Rescale</span>
+<span class="kn">from</span> <span class="nn">nipype</span> <span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">from</span> <span class="nn">nipype.pipeline</span> <span class="kn">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">pe</span>
+<span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="kn">import</span> <span class="n">fsl</span><span class="p">,</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span>
+<span class="kn">from</span> <span class="nn">nipype.interfaces.image</span> <span class="kn">import</span> <span class="n">Rescale</span>
 
-<span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="k">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
-<span class="kn">from</span> <span class="nn">niworkflows.interfaces.fixes</span> <span class="k">import</span> <span class="p">(</span><span class="n">FixHeaderApplyTransforms</span> <span class="k">as</span> <span class="n">ApplyTransforms</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="kn">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
+<span class="kn">from</span> <span class="nn">niworkflows.interfaces.fixes</span> <span class="kn">import</span> <span class="p">(</span><span class="n">FixHeaderApplyTransforms</span> <span class="k">as</span> <span class="n">ApplyTransforms</span><span class="p">,</span>
                                           <span class="n">FixHeaderRegistration</span> <span class="k">as</span> <span class="n">Registration</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">niworkflows.func.util</span> <span class="k">import</span> <span class="n">init_skullstrip_bold_wf</span>
+<span class="kn">from</span> <span class="nn">niworkflows.func.util</span> <span class="kn">import</span> <span class="n">init_skullstrip_bold_wf</span>
 
 <span class="n">DEFAULT_MEMORY_MIN_GB</span> <span class="o">=</span> <span class="mf">0.01</span>
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;nipype.workflow&#39;</span><span class="p">)</span>
@@ -236,8 +233,6 @@
 <span class="sd">        reference image</span>
 <span class="sd">    in_reference_brain</span>
 <span class="sd">        skull-stripped reference image</span>
-<span class="sd">    template : str</span>
-<span class="sd">        Name of template targeted by ``template`` output space</span>
 <span class="sd">    t1w_brain</span>
 <span class="sd">        skull-stripped, bias-corrected structural image</span>
 <span class="sd">    std2anat_xfm</span>
@@ -289,7 +284,7 @@
 <span class="s2">template [@fieldmapless3].</span>
 <span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ants_ver</span><span class="o">=</span><span class="n">Registration</span><span class="p">()</span><span class="o">.</span><span class="n">version</span> <span class="ow">or</span> <span class="s1">&#39;&lt;ver&gt;&#39;</span><span class="p">)</span>
     <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
-        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">([</span><span class="s1">&#39;in_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;in_reference_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;template&#39;</span><span class="p">,</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">([</span><span class="s1">&#39;in_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;in_reference_brain&#39;</span><span class="p">,</span>
                                <span class="s1">&#39;t1w_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;std2anat_xfm&#39;</span><span class="p">]),</span>
         <span class="n">name</span><span class="o">=</span><span class="s1">&#39;inputnode&#39;</span><span class="p">)</span>
     <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
@@ -299,10 +294,10 @@
 
     <span class="c1"># Collect predefined data</span>
     <span class="c1"># Atlas image and registration affine</span>
-    <span class="n">atlas_img</span> <span class="o">=</span> <span class="n">pkgr</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;sdcflows&#39;</span><span class="p">,</span> <span class="s1">&#39;data/fmap_atlas.nii.gz&#39;</span><span class="p">)</span>
+    <span class="n">atlas_img</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;sdcflows&#39;</span><span class="p">,</span> <span class="s1">&#39;data/fmap_atlas.nii.gz&#39;</span><span class="p">)</span>
     <span class="c1"># Registration specifications</span>
-    <span class="n">affine_transform</span> <span class="o">=</span> <span class="n">pkgr</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;sdcflows&#39;</span><span class="p">,</span> <span class="s1">&#39;data/affine.json&#39;</span><span class="p">)</span>
-    <span class="n">syn_transform</span> <span class="o">=</span> <span class="n">pkgr</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;sdcflows&#39;</span><span class="p">,</span> <span class="s1">&#39;data/susceptibility_syn.json&#39;</span><span class="p">)</span>
+    <span class="n">affine_transform</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;sdcflows&#39;</span><span class="p">,</span> <span class="s1">&#39;data/affine.json&#39;</span><span class="p">)</span>
+    <span class="n">syn_transform</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;sdcflows&#39;</span><span class="p">,</span> <span class="s1">&#39;data/susceptibility_syn.json&#39;</span><span class="p">)</span>
 
     <span class="n">invert_t1w</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">Rescale</span><span class="p">(</span><span class="n">invert</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;invert_t1w&#39;</span><span class="p">,</span>
                          <span class="n">mem_gb</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
@@ -315,6 +310,8 @@
     <span class="c1"># 1) BOLD -&gt; T1; 2) MNI -&gt; T1; 3) ATLAS -&gt; MNI</span>
     <span class="n">transform_list</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">Merge</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;transform_list&#39;</span><span class="p">,</span>
                              <span class="n">mem_gb</span><span class="o">=</span><span class="n">DEFAULT_MEMORY_MIN_GB</span><span class="p">)</span>
+    <span class="n">transform_list</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in3</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span>
+        <span class="s1">&#39;sdcflows&#39;</span><span class="p">,</span> <span class="s1">&#39;data/fmap_atlas_2_MNI152NLin2009cAsym_affine.mat&#39;</span><span class="p">)</span>
 
     <span class="c1"># Inverting (1), then applying in reverse order:</span>
     <span class="c1">#</span>
@@ -355,8 +352,7 @@
         <span class="p">(</span><span class="n">ref_2_t1</span><span class="p">,</span> <span class="n">t1_2_ref</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;forward_transforms&#39;</span><span class="p">,</span> <span class="s1">&#39;transforms&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">ref_2_t1</span><span class="p">,</span> <span class="n">transform_list</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;forward_transforms&#39;</span><span class="p">,</span> <span class="s1">&#39;in1&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">transform_list</span><span class="p">,</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;std2anat_xfm&#39;</span><span class="p">,</span> <span class="s1">&#39;in2&#39;</span><span class="p">),</span>
-            <span class="p">((</span><span class="s1">&#39;template&#39;</span><span class="p">,</span> <span class="n">_prior_path</span><span class="p">),</span> <span class="s1">&#39;in3&#39;</span><span class="p">)]),</span>
+            <span class="p">(</span><span class="s1">&#39;std2anat_xfm&#39;</span><span class="p">,</span> <span class="s1">&#39;in2&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">atlas_2_ref</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;in_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;reference_image&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">transform_list</span><span class="p">,</span> <span class="n">atlas_2_ref</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="s1">&#39;transforms&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">atlas_2_ref</span><span class="p">,</span> <span class="n">threshold_atlas</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;output_image&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
@@ -377,13 +373,6 @@
     <span class="p">])</span>
 
     <span class="k">return</span> <span class="n">workflow</span></div>
-
-
-<span class="k">def</span> <span class="nf">_prior_path</span><span class="p">(</span><span class="n">template</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Select an appropriate input xform, based on template.&quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="k">import</span> <span class="n">resource_filename</span>
-    <span class="k">return</span> <span class="n">resource_filename</span><span class="p">(</span>
-        <span class="s1">&#39;sdcflows&#39;</span><span class="p">,</span> <span class="s1">&#39;data/fmap_atlas_2_</span><span class="si">{}</span><span class="s1">_affine.mat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">template</span><span class="p">))</span>
 </pre></div>
 
            </div>
@@ -414,17 +403,17 @@
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: 1.0.0rc1
+        v: master
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
         <dl>
             <dt>Tags</dt>
-            <dd><a href="../../../1.0.0rc1/_modules/sdcflows/workflows/syn.html">1.0.0rc1</a></dd>
+            <dd><a href="../../../1.0.0rc1/index.html">1.0.0rc1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
-            <dd><a href="../../../master/index.html">master</a></dd>
+            <dd><a href="../../../master/_modules/sdcflows/workflows/syn.html">master</a></dd>
         </dl>
     </div>
 </div>

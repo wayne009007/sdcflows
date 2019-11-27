@@ -179,12 +179,12 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="k">import</span> <span class="n">fsl</span><span class="p">,</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span>
-<span class="kn">from</span> <span class="nn">nipype.pipeline</span> <span class="k">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">pe</span>
-<span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="k">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
+<span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="kn">import</span> <span class="n">fsl</span><span class="p">,</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span>
+<span class="kn">from</span> <span class="nn">nipype.pipeline</span> <span class="kn">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">pe</span>
+<span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="kn">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
 
-<span class="kn">from</span> <span class="nn">..interfaces.fmap</span> <span class="k">import</span> <span class="n">Phasediff2Fieldmap</span><span class="p">,</span> <span class="n">PhaseMap2rads</span><span class="p">,</span> <span class="n">SubtractPhases</span>
-<span class="kn">from</span> <span class="nn">.gre</span> <span class="k">import</span> <span class="n">init_fmap_postproc_wf</span><span class="p">,</span> <span class="n">init_magnitude_wf</span>
+<span class="kn">from</span> <span class="nn">..interfaces.fmap</span> <span class="kn">import</span> <span class="n">Phasediff2Fieldmap</span><span class="p">,</span> <span class="n">PhaseMap2rads</span><span class="p">,</span> <span class="n">SubtractPhases</span>
+<span class="kn">from</span> <span class="nn">.gre</span> <span class="kn">import</span> <span class="n">init_fmap_postproc_wf</span><span class="p">,</span> <span class="n">init_magnitude_wf</span>
 
 
 <div class="viewcode-block" id="init_phdiff_wf"><a class="viewcode-back" href="../../../api/sdcflows.workflows.phdiff.html#sdcflows.workflows.phdiff.init_phdiff_wf">[docs]</a><span class="k">def</span> <span class="nf">init_phdiff_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;phdiff_wf&#39;</span><span class="p">):</span>

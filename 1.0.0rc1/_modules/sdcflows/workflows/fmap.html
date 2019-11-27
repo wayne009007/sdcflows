@@ -181,14 +181,14 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">pkg_resources</span> <span class="k">as</span> <span class="nn">pkgr</span>
 
-<span class="kn">from</span> <span class="nn">nipype.pipeline</span> <span class="k">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">pe</span>
-<span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="k">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span><span class="p">,</span> <span class="n">fsl</span>
-<span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="k">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
-<span class="kn">from</span> <span class="nn">niworkflows.interfaces.images</span> <span class="k">import</span> <span class="n">IntraModalMerge</span>
-<span class="kn">from</span> <span class="nn">niworkflows.interfaces.registration</span> <span class="k">import</span> <span class="n">ANTSApplyTransformsRPT</span><span class="p">,</span> <span class="n">ANTSRegistrationRPT</span>
+<span class="kn">from</span> <span class="nn">nipype.pipeline</span> <span class="kn">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">pe</span>
+<span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span><span class="p">,</span> <span class="n">fsl</span>
+<span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="kn">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
+<span class="kn">from</span> <span class="nn">niworkflows.interfaces.images</span> <span class="kn">import</span> <span class="n">IntraModalMerge</span>
+<span class="kn">from</span> <span class="nn">niworkflows.interfaces.registration</span> <span class="kn">import</span> <span class="n">ANTSApplyTransformsRPT</span><span class="p">,</span> <span class="n">ANTSRegistrationRPT</span>
 
-<span class="kn">from</span> <span class="nn">..interfaces.fmap</span> <span class="k">import</span> <span class="n">get_ees</span> <span class="k">as</span> <span class="n">_get_ees</span><span class="p">,</span> <span class="n">FieldToRadS</span><span class="p">,</span> <span class="n">FUGUEvsm2ANTSwarp</span>
-<span class="kn">from</span> <span class="nn">.gre</span> <span class="k">import</span> <span class="n">init_fmap_postproc_wf</span><span class="p">,</span> <span class="n">init_magnitude_wf</span>
+<span class="kn">from</span> <span class="nn">..interfaces.fmap</span> <span class="kn">import</span> <span class="n">get_ees</span> <span class="k">as</span> <span class="n">_get_ees</span><span class="p">,</span> <span class="n">FieldToRadS</span><span class="p">,</span> <span class="n">FUGUEvsm2ANTSwarp</span>
+<span class="kn">from</span> <span class="nn">.gre</span> <span class="kn">import</span> <span class="n">init_fmap_postproc_wf</span><span class="p">,</span> <span class="n">init_magnitude_wf</span>
 
 
 <div class="viewcode-block" id="init_fmap_wf"><a class="viewcode-back" href="../../../api/sdcflows.workflows.fmap.html#sdcflows.workflows.fmap.init_fmap_wf">[docs]</a><span class="k">def</span> <span class="nf">init_fmap_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">fmap_bspline</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fmap_wf&#39;</span><span class="p">):</span>
@@ -397,8 +397,8 @@
     <span class="p">])</span>
 
     <span class="k">if</span> <span class="n">generate_report</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">niworkflows.interfaces.bids</span> <span class="k">import</span> <span class="n">DerivativesDataSink</span>
-        <span class="kn">from</span> <span class="nn">..interfaces.reportlets</span> <span class="k">import</span> <span class="n">FieldmapReportlet</span>
+        <span class="kn">from</span> <span class="nn">niworkflows.interfaces.bids</span> <span class="kn">import</span> <span class="n">DerivativesDataSink</span>
+        <span class="kn">from</span> <span class="nn">..interfaces.reportlets</span> <span class="kn">import</span> <span class="n">FieldmapReportlet</span>
 
         <span class="n">fmap_rpt</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">FieldmapReportlet</span><span class="p">(</span>
             <span class="n">reference_label</span><span class="o">=</span><span class="s1">&#39;EPI Reference&#39;</span><span class="p">,</span>
