@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>What’s new? &mdash; sdcflows 1.0.0rc1 documentation</title>
+  <title>What’s new? &mdash; sdcflows 1.0.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.0.0rc1
+                1.0.0
               </div>
             
           
@@ -174,29 +174,32 @@
 <h1>What’s new?<a class="headerlink" href="#what-s-new" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="november-25-2019">
 <h2>1.0.0 (November 25, 2019)<a class="headerlink" href="#november-25-2019" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><ul class="simple">
-<li><p>CI: Add check to avoid deployment of documentation from forks (#48)</p></li>
-<li><p>CI: Fix CircleCI builds by adding a [refresh workdir] commit message tag (#47)</p></li>
-<li><p>CI: Optimize CircleCI using a local docker registry instead docker save/load (#45)</p></li>
-<li><p>DOC: Fix typo and link to BIDS Specification (#49)</p></li>
-<li><p>DOC: Build API documentation (#43)</p></li>
+<p>A first stable release after detaching these workflows off from <em>fMRIPrep</em>.</p>
+<p>With thanks to Matthew Cieslak and Azeez Adebimpe.</p>
+<ul class="simple">
+<li><p>FIX: Hard-wire <code class="docutils literal notranslate"><span class="pre">MNI152NLin2009cAsym</span></code> as standard space for SDC-SyN (#63)</p></li>
 <li><p>ENH: Base implementation for phase1/2 fieldmaps (#60)</p></li>
 <li><p>ENH: Update <code class="docutils literal notranslate"><span class="pre">spatialimage.get_data()</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">spatialimage.get_fdata()</span></code> (#58)</p></li>
 <li><p>ENH: Refactor fieldmap-unwarping flows, more homogeneous interface (#56)</p></li>
 <li><p>ENH: Transparency on fieldmap plots! (#57)</p></li>
 <li><p>ENH: Stop using siemens2rads from old nipype workflows (#50)</p></li>
+<li><p>ENH: Large refactor of the orchestration workflow (#55)</p></li>
 <li><p>ENH: Refactor the distortion estimation workflow (#53)</p></li>
 <li><p>ENH: Deduplicating magnitude handling and fieldmap postprocessing workflows (#52)</p></li>
 <li><p>ENH: Do not use legacy demean function from old nipype workflows (#51)</p></li>
 <li><p>ENH: Revise and add tests for the PEPOLAR correction (#29)</p></li>
 <li><p>ENH: Improved fieldmap reportlets (#28)</p></li>
 <li><p>ENH: Set-up testing framework (#27)</p></li>
+<li><p>DOC: Update documentation (#61)</p></li>
+<li><p>DOC: Fix typo and link to BIDS Specification (#49)</p></li>
+<li><p>DOC: Build API documentation (#43)</p></li>
+<li><p>CI: Add check to avoid deployment of documentation from forks (#48)</p></li>
+<li><p>CI: Fix CircleCI builds by adding a [refresh workdir] commit message tag (#47)</p></li>
+<li><p>CI: Optimize CircleCI using a local docker registry instead docker save/load (#45)</p></li>
 <li><p>MAINT: Housekeeping - flake8 errors, settings, etc. (#44)</p></li>
 <li><p>MAINT: Rename boldrefs to distortedrefs (#41)</p></li>
 <li><p>MAINT: Use niflow-nipype1-workflows for old nipype.workflows imports (#39)</p></li>
 </ul>
-</div></blockquote>
 </div>
 <div class="section" id="pre-1-0-0-releases">
 <h2>Pre-1.0.0 releases<a class="headerlink" href="#pre-1-0-0-releases" title="Permalink to this headline">¶</a></h2>
@@ -271,6 +274,7 @@
     <div class="rst-other-versions">
         <dl>
             <dt>Tags</dt>
+            <dd><a href="../1.0.0/changes.html">1.0.0</a></dd>
             <dd><a href="../1.0.0rc1/changes.html">1.0.0rc1</a></dd>
         </dl>
         <dl>
