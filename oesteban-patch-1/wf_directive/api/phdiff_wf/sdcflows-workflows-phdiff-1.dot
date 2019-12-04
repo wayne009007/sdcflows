@@ -15,10 +15,9 @@ fmap_postproc_wf;
 magnitude_wf -> "prelude (fsl)";
 magnitude_wf -> fmap_postproc_wf;
 magnitude_wf -> "outputnode (utility)";
-"phmap2rads (fmap)" -> "calc_phdiff (fmap)";
-"calc_phdiff (fmap)" -> "prelude (fsl)";
+"phmap2rads (fmap)" -> "prelude (fsl)";
 "calc_phdiff (fmap)" -> fmap_postproc_wf;
-"prelude (fsl)" -> fmap_postproc_wf;
+"prelude (fsl)" -> "calc_phdiff (fmap)";
 fmap_postproc_wf -> "compfmap (fmap)";
 "compfmap (fmap)" -> "outputnode (utility)";
 }
