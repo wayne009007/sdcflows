@@ -524,7 +524,11 @@
 
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">epi_path</span><span class="p">,</span> <span class="n">epi_pe</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">in_files</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">epi_pe</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">pe_dir</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="n">splitnii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">four_to_three</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">epi_path</span><span class="p">))[:</span><span class="n">max_trs</span><span class="p">]</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">epi_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">splitnii</span> <span class="o">=</span> <span class="p">[</span><span class="n">img</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">splitnii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">four_to_three</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">slicer</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:</span><span class="n">max_trs</span><span class="p">])</span>
 
             <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">nii</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">splitnii</span><span class="p">):</span>
                 <span class="n">out_name</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span>
@@ -582,6 +586,7 @@
         <dl>
             <dt>Branches</dt>
             <dd><a href="pepolar.html">master</a></dd>
+            <dd><a href="../../../../oesteban-patch-1/index.html">oesteban-patch-1</a></dd>
         </dl>
     </div>
 </div>
