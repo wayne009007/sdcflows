@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows.phdiff &mdash; sdcflows 1.0.0 documentation</title>
+  <title>sdcflows.workflows.phdiff &mdash; sdcflows 1.0.1 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.0.0
+                1.0.1
               </div>
             
           
@@ -153,9 +153,12 @@
   
 
 
+    
+    
 
 
 
+    <p class="scv-banner scv-sphinx_rtd_theme"><b>Warning:</b> This document is for an old version of sdcflows.</p>
 <h1>Source code for sdcflows.workflows.phdiff</h1><div class="highlight"><pre>
 <span></span><span class="c1"># emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-</span>
 <span class="c1"># vi: set ft=python sts=4 ts=4 sw=4 et:</span>
@@ -264,7 +267,7 @@
     <span class="n">phmap2rads</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">MapNode</span><span class="p">(</span><span class="n">PhaseMap2rads</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;phmap2rads&#39;</span><span class="p">,</span>
                             <span class="n">iterfield</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;in_file&#39;</span><span class="p">],</span> <span class="n">run_without_submitting</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># FSL PRELUDE will perform phase-unwrapping</span>
-    <span class="n">prelude</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">MapNode</span><span class="p">(</span><span class="n">fsl</span><span class="o">.</span><span class="n">PRELUDE</span><span class="p">(),</span> <span class="n">iterfield</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;phase_file&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;prelude&#39;</span><span class="p">)</span>
+    <span class="n">prelude</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">fsl</span><span class="o">.</span><span class="n">PRELUDE</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;prelude&#39;</span><span class="p">)</span>
 
     <span class="n">calc_phdiff</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">SubtractPhases</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;calc_phdiff&#39;</span><span class="p">,</span>
                           <span class="n">run_without_submitting</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -279,12 +282,11 @@
         <span class="p">(</span><span class="n">magnitude_wf</span><span class="p">,</span> <span class="n">prelude</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;outputnode.fmap_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;magnitude_file&#39;</span><span class="p">),</span>
                                  <span class="p">(</span><span class="s1">&#39;outputnode.fmap_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;mask_file&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">split</span><span class="p">,</span> <span class="n">phmap2rads</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;map_file&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">phmap2rads</span><span class="p">,</span> <span class="n">prelude</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out_file&#39;</span><span class="p">,</span> <span class="s1">&#39;phase_file&#39;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">prelude</span><span class="p">,</span> <span class="n">calc_phdiff</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;unwrapped_phase_file&#39;</span><span class="p">,</span> <span class="s1">&#39;in_phases&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">phmap2rads</span><span class="p">,</span> <span class="n">calc_phdiff</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out_file&#39;</span><span class="p">,</span> <span class="s1">&#39;in_phases&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">split</span><span class="p">,</span> <span class="n">calc_phdiff</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;meta&#39;</span><span class="p">,</span> <span class="s1">&#39;in_meta&#39;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">calc_phdiff</span><span class="p">,</span> <span class="n">fmap_postproc_wf</span><span class="p">,</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;phase_diff&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.fmap&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.metadata&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">calc_phdiff</span><span class="p">,</span> <span class="n">prelude</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;phase_diff&#39;</span><span class="p">,</span> <span class="s1">&#39;phase_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">prelude</span><span class="p">,</span> <span class="n">fmap_postproc_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;unwrapped_phase_file&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.fmap&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">calc_phdiff</span><span class="p">,</span> <span class="n">fmap_postproc_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.metadata&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">magnitude_wf</span><span class="p">,</span> <span class="n">fmap_postproc_wf</span><span class="p">,</span> <span class="p">[</span>
             <span class="p">(</span><span class="s1">&#39;outputnode.fmap_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.fmap_mask&#39;</span><span class="p">),</span>
             <span class="p">(</span><span class="s1">&#39;outputnode.fmap_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.fmap_ref&#39;</span><span class="p">)]),</span>
@@ -330,7 +332,7 @@
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: master
+        v: 1.0.1
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
@@ -338,11 +340,11 @@
             <dt>Tags</dt>
             <dd><a href="../../../1.0.0/index.html">1.0.0</a></dd>
             <dd><a href="../../../1.0.0rc1/index.html">1.0.0rc1</a></dd>
+            <dd><a href="../../../1.0.1/_modules/sdcflows/workflows/phdiff.html">1.0.1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
-            <dd><a href="../../../master/_modules/sdcflows/workflows/phdiff.html">master</a></dd>
-            <dd><a href="../../../oesteban-patch-1/index.html">oesteban-patch-1</a></dd>
+            <dd><a href="../../../master/index.html">master</a></dd>
         </dl>
     </div>
 </div>
