@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows.gre &mdash; sdcflows 1.0.1 documentation</title>
+  <title>sdcflows.workflows.gre &mdash; sdcflows 1.0.2 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.0.1
+                1.0.2
               </div>
             
           
@@ -227,7 +227,7 @@
         <span class="n">name</span><span class="o">=</span><span class="s1">&#39;outputnode&#39;</span><span class="p">)</span>
 
     <span class="c1"># Merge input magnitude images</span>
-    <span class="n">magmrg</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">IntraModalMerge</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;magmrg&#39;</span><span class="p">)</span>
+    <span class="n">magmrg</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">IntraModalMerge</span><span class="p">(</span><span class="n">hmc</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;magmrg&#39;</span><span class="p">)</span>
 
     <span class="c1"># de-gradient the fields (&quot;bias/illumination artifact&quot;)</span>
     <span class="n">n4_correct</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">ants</span><span class="o">.</span><span class="n">N4BiasFieldCorrection</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">copy_header</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
@@ -237,7 +237,7 @@
 
     <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
         <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">magmrg</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;magnitude&#39;</span><span class="p">,</span> <span class="s1">&#39;in_files&#39;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">magmrg</span><span class="p">,</span> <span class="n">n4_correct</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out_file&#39;</span><span class="p">,</span> <span class="s1">&#39;input_image&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">magmrg</span><span class="p">,</span> <span class="n">n4_correct</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out_avg&#39;</span><span class="p">,</span> <span class="s1">&#39;input_image&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">n4_correct</span><span class="p">,</span> <span class="n">bet</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;output_image&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">bet</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;mask_file&#39;</span><span class="p">,</span> <span class="s1">&#39;fmap_mask&#39;</span><span class="p">),</span>
                            <span class="p">(</span><span class="s1">&#39;out_file&#39;</span><span class="p">,</span> <span class="s1">&#39;fmap_ref&#39;</span><span class="p">),</span>
@@ -417,7 +417,7 @@
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: 1.0.1
+        v: 1.0.2
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
@@ -425,7 +425,8 @@
             <dt>Tags</dt>
             <dd><a href="../../../1.0.0/index.html">1.0.0</a></dd>
             <dd><a href="../../../1.0.0rc1/index.html">1.0.0rc1</a></dd>
-            <dd><a href="../../../1.0.1/_modules/sdcflows/workflows/gre.html">1.0.1</a></dd>
+            <dd><a href="../../../1.0.1/index.html">1.0.1</a></dd>
+            <dd><a href="../../../1.0.2/_modules/sdcflows/workflows/gre.html">1.0.2</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>

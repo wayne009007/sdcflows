@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.interfaces.fmap module &mdash; sdcflows 1.0.1 documentation</title>
+  <title>sdcflows.interfaces.fmap module &mdash; sdcflows 1.0.2 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.0.1
+                1.0.2
               </div>
             
           
@@ -343,7 +343,7 @@ echo spacing. The basic one is that an <code class="docutils literal notranslate
 field is set in the JSON sidecar. The following examples
 use an <code class="docutils literal notranslate"><span class="pre">'epi.nii.gz'</span></code> file-stub which has 90 pixels in the
 j-axis encoding direction.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;EffectiveEchoSpacing&#39;</span><span class="p">:</span> <span class="mf">0.00059</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;EffectiveEchoSpacing&#39;</span><span class="p">:</span> <span class="mf">0.00059</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">get_ees</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
 <span class="go">0.00059</span>
@@ -362,7 +362,7 @@ factor of the EPI</p>
 <span class="math notranslate nohighlight">\(y\)</span>, and <span class="math notranslate nohighlight">\(f_\text{acc}\)</span> is the parallel imaging acceleration factor
 (<abbr title="GeneRalized Autocalibrating Partial Parallel Acquisition">GRAPPA</abbr>,
 <abbr title="Autocalibrating Reconstruction for Cartesian imaging">ARC</abbr>, etc.).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;TotalReadoutTime&#39;</span><span class="p">:</span> <span class="mf">0.02596</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;TotalReadoutTime&#39;</span><span class="p">:</span> <span class="mf">0.02596</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="s1">&#39;ParallelReductionFactorInPlane&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">get_ees</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">in_file</span><span class="o">=</span><span class="s1">&#39;epi.nii.gz&#39;</span><span class="p">)</span>
@@ -372,7 +372,7 @@ factor of the EPI</p>
 <p>Some vendors, like Philips, store different parameter names (see
 <a class="reference external" href="http://dbic.dartmouth.edu/pipermail/mrusers/attachments/20141112/eb1d20e6/attachment.pdf">http://dbic.dartmouth.edu/pipermail/mrusers/attachments/20141112/eb1d20e6/attachment.pdf</a>
 ):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;WaterFatShift&#39;</span><span class="p">:</span> <span class="mf">8.129</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;WaterFatShift&#39;</span><span class="p">:</span> <span class="mf">8.129</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="s1">&#39;MagneticFieldStrength&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="s1">&#39;ParallelReductionFactorInPlane&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
@@ -393,7 +393,7 @@ readout time. The basic one is that a <code class="docutils literal notranslate"
 field is set in the JSON sidecar. The following examples
 use an <code class="docutils literal notranslate"><span class="pre">'epi.nii.gz'</span></code> file-stub which has 90 pixels in the
 j-axis encoding direction.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;TotalReadoutTime&#39;</span><span class="p">:</span> <span class="mf">0.02596</span><span class="p">}</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;TotalReadoutTime&#39;</span><span class="p">:</span> <span class="mf">0.02596</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">get_trt</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
 <span class="go">0.02596</span>
 </pre></div>
@@ -407,7 +407,7 @@ and the parallel acceleration factor of the EPI <span class="math notranslate no
 <div><div class="math notranslate nohighlight">
 \[T_\text{ro} = t_\text{ees} \, (N_\text{PE} / f_\text{acc} - 1)\]</div>
 </div></blockquote>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;EffectiveEchoSpacing&#39;</span><span class="p">:</span> <span class="mf">0.00059</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;EffectiveEchoSpacing&#39;</span><span class="p">:</span> <span class="mf">0.00059</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="s1">&#39;ParallelReductionFactorInPlane&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">get_trt</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">in_file</span><span class="o">=</span><span class="s1">&#39;epi.nii.gz&#39;</span><span class="p">)</span>
@@ -415,7 +415,7 @@ and the parallel acceleration factor of the EPI <span class="math notranslate no
 </pre></div>
 </div>
 <p>Some vendors, like Philips, store different parameter names:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;WaterFatShift&#39;</span><span class="p">:</span> <span class="mf">8.129</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;WaterFatShift&#39;</span><span class="p">:</span> <span class="mf">8.129</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="s1">&#39;MagneticFieldStrength&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="s1">&#39;ParallelReductionFactorInPlane&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
@@ -485,7 +485,7 @@ Evaluation, NeuroImage 16(1):217-240, 2002. doi:<a class="reference external" hr
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: 1.0.1
+        v: 1.0.2
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
@@ -494,6 +494,7 @@ Evaluation, NeuroImage 16(1):217-240, 2002. doi:<a class="reference external" hr
             <dd><a href="../1.0.0/api/sdcflows.interfaces.fmap.html">1.0.0</a></dd>
             <dd><a href="../1.0.0rc1/api/sdcflows.interfaces.fmap.html">1.0.0rc1</a></dd>
             <dd><a href="../1.0.1/api/sdcflows.interfaces.fmap.html">1.0.1</a></dd>
+            <dd><a href="../1.0.2/api/sdcflows.interfaces.fmap.html">1.0.2</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
