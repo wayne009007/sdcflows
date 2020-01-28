@@ -392,6 +392,8 @@
                 <span class="p">(</span><span class="s1">&#39;epi_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.in_reference_brain&#39;</span><span class="p">),</span>
                 <span class="p">(</span><span class="s1">&#39;t1w_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.t1w_brain&#39;</span><span class="p">),</span>
                 <span class="p">(</span><span class="s1">&#39;std2anat_xfm&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.std2anat_xfm&#39;</span><span class="p">)]),</span>
+            <span class="p">(</span><span class="n">syn_sdc_wf</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[</span>
+                <span class="p">(</span><span class="s1">&#39;outputnode.out_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;syn_ref&#39;</span><span class="p">)]),</span>
         <span class="p">])</span>
 
         <span class="c1"># XXX Eliminate branch when forcing isn&#39;t an option</span>
@@ -400,10 +402,6 @@
             <span class="n">sdc_unwarp_wf</span> <span class="o">=</span> <span class="n">syn_sdc_wf</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># --force-syn was called when other fieldmap was present</span>
             <span class="n">sdc_unwarp_wf</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
-                <span class="p">(</span><span class="n">syn_sdc_wf</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[</span>
-                    <span class="p">(</span><span class="s1">&#39;outputnode.out_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;syn_ref&#39;</span><span class="p">)]),</span>
-            <span class="p">])</span>
 
     <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
         <span class="p">(</span><span class="n">sdc_unwarp_wf</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[</span>
@@ -446,8 +444,12 @@
                            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fmap</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;phase&#39;</span><span class="p">)],</span>
             <span class="p">})</span>
 
-    <span class="k">if</span> <span class="n">force_syn</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">fieldmaps</span> <span class="ow">and</span> <span class="n">use_syn</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">):</span>
-        <span class="n">fieldmaps</span><span class="p">[</span><span class="s1">&#39;syn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">force_syn</span>
+    <span class="k">if</span> <span class="n">fieldmaps</span> <span class="ow">and</span> <span class="n">force_syn</span><span class="p">:</span>
+        <span class="c1"># syn: True -&gt; Run SyN in addition to fieldmap-based SDC</span>
+        <span class="n">fieldmaps</span><span class="p">[</span><span class="s1">&#39;syn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">fieldmaps</span> <span class="ow">and</span> <span class="p">(</span><span class="n">force_syn</span> <span class="ow">or</span> <span class="n">use_syn</span><span class="p">):</span>
+        <span class="c1"># syn: False -&gt; Run SyN as only SDC</span>
+        <span class="n">fieldmaps</span><span class="p">[</span><span class="s1">&#39;syn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="n">fieldmaps</span></div>
 </pre></div>
 
