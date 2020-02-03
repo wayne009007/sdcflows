@@ -1,0 +1,615 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdcflows.workflows.pepolar &mdash; sdcflows 1.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/banner.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdcflows
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Library API (application program interface)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes.html">What’s new?</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdcflows</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdcflows.workflows.pepolar</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+
+
+    
+    
+
+
+
+    <p class="scv-banner scv-sphinx_rtd_theme"><b>Warning:</b> This document is for the development version of sdcflows.</p>
+<h1>Source code for sdcflows.workflows.pepolar</h1><div class="highlight"><pre>
+<span></span><span class="c1"># emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-</span>
+<span class="c1"># vi: set ft=python sts=4 ts=4 sw=4 et:</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Datasets with multiple phase encoded directions.</span>
+
+<span class="sd">.. _sdc_pepolar :</span>
+
+<span class="sd">:abbr:`PEPOLAR (Phase Encoding POLARity)` techniques</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="sd">This corresponds to `this section of the BIDS specification</span>
+<span class="sd">&lt;https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/01-magnetic-resonance-imaging-data.html#case-4-multiple-phase-encoded-directions-pepolar&gt;`__.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pkg_resources</span> <span class="k">as</span> <span class="nn">pkgr</span>
+
+<span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="kn">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
+<span class="kn">from</span> <span class="nn">niworkflows.interfaces</span> <span class="kn">import</span> <span class="n">CopyHeader</span>
+<span class="kn">from</span> <span class="nn">niworkflows.interfaces.freesurfer</span> <span class="kn">import</span> <span class="n">StructuralReference</span>
+<span class="kn">from</span> <span class="nn">niworkflows.interfaces.registration</span> <span class="kn">import</span> <span class="n">ANTSApplyTransformsRPT</span>
+<span class="kn">from</span> <span class="nn">niworkflows.func.util</span> <span class="kn">import</span> <span class="n">init_enhance_and_skullstrip_bold_wf</span>
+
+<span class="kn">from</span> <span class="nn">nipype.pipeline</span> <span class="kn">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">pe</span>
+<span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="kn">import</span> <span class="n">afni</span><span class="p">,</span> <span class="n">ants</span><span class="p">,</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span>
+
+
+<div class="viewcode-block" id="init_pepolar_unwarp_wf"><a class="viewcode-back" href="../../../api/sdcflows.workflows.pepolar.html#sdcflows.workflows.pepolar.init_pepolar_unwarp_wf">[docs]</a><span class="k">def</span> <span class="nf">init_pepolar_unwarp_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">matched_pe</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                           <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pepolar_unwarp_wf&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create the PE-Polar field estimation workflow.</span>
+
+<span class="sd">    This workflow takes in a set of EPI files with opposite phase encoding</span>
+<span class="sd">    direction than the target file and calculates a displacements field</span>
+<span class="sd">    (in other words, an ANTs-compatible warp file).</span>
+
+<span class="sd">    This procedure works if there is only one ``_epi`` file is present</span>
+<span class="sd">    (as long as it has the opposite phase encoding direction to the target</span>
+<span class="sd">    file). The target file will be used to estimate the field distortion.</span>
+<span class="sd">    However, if there is another ``_epi`` file present with a matching</span>
+<span class="sd">    phase encoding direction to the target it will be used instead.</span>
+
+<span class="sd">    Currently, different phase encoding directions in the target file and the</span>
+<span class="sd">    ``_epi`` file(s) (for example, ``i`` and ``j``) is not supported.</span>
+
+<span class="sd">    The warp field correcting for the distortions is estimated using AFNI&#39;s</span>
+<span class="sd">    ``3dQwarp``, with displacement estimation limited to the target file phase</span>
+<span class="sd">    encoding direction.</span>
+
+<span class="sd">    It also calculates a new mask for the input dataset that takes into</span>
+<span class="sd">    account the distortions.</span>
+
+<span class="sd">    Workflow Graph</span>
+<span class="sd">        .. workflow ::</span>
+<span class="sd">            :graph2use: orig</span>
+<span class="sd">            :simple_form: yes</span>
+
+<span class="sd">            from sdcflows.workflows.pepolar import init_pepolar_unwarp_wf</span>
+<span class="sd">            wf = init_pepolar_unwarp_wf()</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    matched_pe : bool</span>
+<span class="sd">        Whether the input ``fmaps_epi`` will contain images with matched</span>
+<span class="sd">        PE blips or not. Please use :func:`sdcflows.workflows.pepolar.check_pes`</span>
+<span class="sd">        to determine whether they exist or not.</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name for this workflow</span>
+<span class="sd">    omp_nthreads : int</span>
+<span class="sd">        Parallelize internal tasks across the number of CPUs given by this option.</span>
+
+<span class="sd">    Inputs</span>
+<span class="sd">    ------</span>
+<span class="sd">    fmaps_epi : list of tuple(pathlike, str)</span>
+<span class="sd">        The list of EPI images that will be used in PE-Polar correction, and</span>
+<span class="sd">        their corresponding ``PhaseEncodingDirection`` metadata.</span>
+<span class="sd">        The workflow will use the ``epi_pe_dir`` input to separate out those</span>
+<span class="sd">        EPI acquisitions with opposed PE blips and those with matched PE blips</span>
+<span class="sd">        (the latter could be none, and ``in_reference_brain`` would then be</span>
+<span class="sd">        used). The workflow raises a ``ValueError`` when no images with</span>
+<span class="sd">        opposed PE blips are found.</span>
+<span class="sd">    epi_pe_dir : str</span>
+<span class="sd">        The baseline PE direction.</span>
+<span class="sd">    in_reference : pathlike</span>
+<span class="sd">        The baseline reference image (must correspond to ``epi_pe_dir``).</span>
+<span class="sd">    in_reference_brain : pathlike</span>
+<span class="sd">        The reference image above, but skullstripped.</span>
+<span class="sd">    in_mask : pathlike</span>
+<span class="sd">        Not used, present only for consistency across fieldmap estimation</span>
+<span class="sd">        workflows.</span>
+
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    out_reference : pathlike</span>
+<span class="sd">        The ``in_reference`` after unwarping</span>
+<span class="sd">    out_reference_brain : pathlike</span>
+<span class="sd">        The ``in_reference`` after unwarping and skullstripping</span>
+<span class="sd">    out_warp : pathlike</span>
+<span class="sd">        The corresponding :abbr:`DFM (displacements field map)` compatible with</span>
+<span class="sd">        ANTs.</span>
+<span class="sd">    out_mask : pathlike</span>
+<span class="sd">        Mask of the unwarped input file</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">A B0-nonuniformity map (or *fieldmap*) was estimated based on two (or more)</span>
+<span class="s2">echo-planar imaging (EPI) references with opposing phase-encoding</span>
+<span class="s2">directions, with `3dQwarp` @afni (AFNI </span><span class="si">{afni_ver}</span><span class="s2">).</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">afni_ver</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">%02d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">afni</span><span class="o">.</span><span class="n">Info</span><span class="p">()</span><span class="o">.</span><span class="n">version</span><span class="p">()</span> <span class="ow">or</span> <span class="p">[]]))</span>
+
+    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;fmaps_epi&#39;</span><span class="p">,</span> <span class="s1">&#39;in_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;in_reference_brain&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;in_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;epi_pe_dir&#39;</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;inputnode&#39;</span><span class="p">)</span>
+
+    <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;out_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;out_reference_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;out_warp&#39;</span><span class="p">,</span> <span class="s1">&#39;out_mask&#39;</span><span class="p">]),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;outputnode&#39;</span><span class="p">)</span>
+
+    <span class="n">prepare_epi_wf</span> <span class="o">=</span> <span class="n">init_prepare_epi_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">,</span>
+                                         <span class="n">matched_pe</span><span class="o">=</span><span class="n">matched_pe</span><span class="p">,</span>
+                                         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;prepare_epi_wf&quot;</span><span class="p">)</span>
+
+    <span class="n">qwarp</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">afni</span><span class="o">.</span><span class="n">QwarpPlusMinus</span><span class="p">(</span>
+        <span class="n">pblur</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span> <span class="n">blur</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">noweight</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">minpatch</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">nopadWARP</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">environ</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;OMP_NUM_THREADS&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">omp_nthreads</span><span class="p">}),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;qwarp&#39;</span><span class="p">,</span> <span class="n">n_procs</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">)</span>
+
+    <span class="n">to_ants</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">_fix_hdr</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;to_ants&#39;</span><span class="p">,</span>
+                      <span class="n">mem_gb</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+    <span class="n">cphdr_warp</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">CopyHeader</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;cphdr_warp&#39;</span><span class="p">,</span> <span class="n">mem_gb</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+    <span class="n">unwarp_reference</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">ANTSApplyTransformsRPT</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                                                      <span class="n">generate_report</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                      <span class="nb">float</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                      <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;LanczosWindowedSinc&#39;</span><span class="p">),</span>
+                               <span class="n">name</span><span class="o">=</span><span class="s1">&#39;unwarp_reference&#39;</span><span class="p">)</span>
+
+    <span class="n">enhance_and_skullstrip_bold_wf</span> <span class="o">=</span> <span class="n">init_enhance_and_skullstrip_bold_wf</span><span class="p">(</span>
+        <span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">)</span>
+
+    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">qwarp</span><span class="p">,</span> <span class="p">[((</span><span class="s1">&#39;epi_pe_dir&#39;</span><span class="p">,</span> <span class="n">_qwarp_args</span><span class="p">),</span> <span class="s1">&#39;args&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">cphdr_warp</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;in_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;hdr_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">prepare_epi_wf</span><span class="p">,</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;fmaps_epi&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.maps_pe&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;epi_pe_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.epi_pe&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;in_reference_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.ref_brain&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">prepare_epi_wf</span><span class="p">,</span> <span class="n">qwarp</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;outputnode.opposed_pe&#39;</span><span class="p">,</span> <span class="s1">&#39;base_file&#39;</span><span class="p">),</span>
+                                 <span class="p">(</span><span class="s1">&#39;outputnode.matched_pe&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">qwarp</span><span class="p">,</span> <span class="n">cphdr_warp</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;source_warp&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">cphdr_warp</span><span class="p">,</span> <span class="n">to_ants</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out_file&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">to_ants</span><span class="p">,</span> <span class="n">unwarp_reference</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="s1">&#39;transforms&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">unwarp_reference</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;in_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;reference_image&#39;</span><span class="p">),</span>
+                                       <span class="p">(</span><span class="s1">&#39;in_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;input_image&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">unwarp_reference</span><span class="p">,</span> <span class="n">enhance_and_skullstrip_bold_wf</span><span class="p">,</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;output_image&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.in_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">unwarp_reference</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;output_image&#39;</span><span class="p">,</span> <span class="s1">&#39;out_reference&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">enhance_and_skullstrip_bold_wf</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;outputnode.mask_file&#39;</span><span class="p">,</span> <span class="s1">&#39;out_mask&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;outputnode.skull_stripped_file&#39;</span><span class="p">,</span> <span class="s1">&#39;out_reference_brain&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">to_ants</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="s1">&#39;out_warp&#39;</span><span class="p">)]),</span>
+    <span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">workflow</span></div>
+
+
+<div class="viewcode-block" id="init_prepare_epi_wf"><a class="viewcode-back" href="../../../api/sdcflows.workflows.pepolar.html#sdcflows.workflows.pepolar.init_prepare_epi_wf">[docs]</a><span class="k">def</span> <span class="nf">init_prepare_epi_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">matched_pe</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;prepare_epi_wf&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare opposed-PE EPI images for PE-POLAR SDC.</span>
+
+<span class="sd">    This workflow takes in a set of EPI files and returns two 3D volumes with</span>
+<span class="sd">    matching and opposed PE directions, ready to be used in field distortion</span>
+<span class="sd">    estimation.</span>
+
+<span class="sd">    The procedure involves: estimating a robust template using FreeSurfer&#39;s</span>
+<span class="sd">    ``mri_robust_template``, bias field correction using ANTs ``N4BiasFieldCorrection``</span>
+<span class="sd">    and AFNI ``3dUnifize``, skullstripping using FSL BET and AFNI ``3dAutomask``,</span>
+<span class="sd">    and rigid coregistration to the reference using ANTs.</span>
+
+<span class="sd">    Workflow Graph</span>
+<span class="sd">        .. workflow ::</span>
+<span class="sd">            :graph2use: orig</span>
+<span class="sd">            :simple_form: yes</span>
+
+<span class="sd">            from sdcflows.workflows.pepolar import init_prepare_epi_wf</span>
+<span class="sd">            wf = init_prepare_epi_wf(omp_nthreads=8)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    matched_pe : bool</span>
+<span class="sd">        Whether the input ``fmaps_epi`` will contain images with matched</span>
+<span class="sd">        PE blips or not. Please use :func:`sdcflows.workflows.pepolar.check_pes`</span>
+<span class="sd">        to determine whether they exist or not.</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name for this workflow</span>
+<span class="sd">    omp_nthreads : int</span>
+<span class="sd">        Parallelize internal tasks across the number of CPUs given by this option.</span>
+
+<span class="sd">    Inputs</span>
+<span class="sd">    ------</span>
+<span class="sd">    epi_pe : str</span>
+<span class="sd">        Phase-encoding direction of the EPI image to be corrected.</span>
+<span class="sd">    maps_pe : list of tuple(pathlike, str)</span>
+<span class="sd">        list of 3D or 4D NIfTI images</span>
+<span class="sd">    ref_brain</span>
+<span class="sd">        coregistration reference (skullstripped and bias field corrected)</span>
+
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    opposed_pe : pathlike</span>
+<span class="sd">        single 3D NIfTI file</span>
+<span class="sd">    matched_pe : pathlike</span>
+<span class="sd">        single 3D NIfTI file</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;epi_pe&#39;</span><span class="p">,</span> <span class="s1">&#39;maps_pe&#39;</span><span class="p">,</span> <span class="s1">&#39;ref_brain&#39;</span><span class="p">]),</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;inputnode&#39;</span><span class="p">)</span>
+
+    <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;opposed_pe&#39;</span><span class="p">,</span> <span class="s1">&#39;matched_pe&#39;</span><span class="p">]),</span>
+                         <span class="n">name</span><span class="o">=</span><span class="s1">&#39;outputnode&#39;</span><span class="p">)</span>
+
+    <span class="n">ants_settings</span> <span class="o">=</span> <span class="n">pkgr</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;sdcflows&#39;</span><span class="p">,</span>
+                                           <span class="s1">&#39;data/translation_rigid.json&#39;</span><span class="p">)</span>
+
+    <span class="n">split</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">_split_epi_lists</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;split&#39;</span><span class="p">)</span>
+
+    <span class="n">merge_op</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">StructuralReference</span><span class="p">(</span><span class="n">auto_detect_sensitivity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">initial_timepoint</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                            <span class="n">fixed_timepoint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Align to first image</span>
+                            <span class="n">intensity_scaling</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="c1"># 7-DOF (rigid + intensity)</span>
+                            <span class="n">no_iteration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">subsample_threshold</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                            <span class="n">out_file</span><span class="o">=</span><span class="s1">&#39;template.nii.gz&#39;</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;merge_op&#39;</span><span class="p">)</span>
+
+    <span class="n">ref_op_wf</span> <span class="o">=</span> <span class="n">init_enhance_and_skullstrip_bold_wf</span><span class="p">(</span>
+        <span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ref_op_wf&#39;</span><span class="p">)</span>
+
+    <span class="n">op2ref_reg</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">ants</span><span class="o">.</span><span class="n">Registration</span><span class="p">(</span>
+        <span class="n">from_file</span><span class="o">=</span><span class="n">ants_settings</span><span class="p">,</span> <span class="n">output_warped_image</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;op2ref_reg&#39;</span><span class="p">,</span> <span class="n">n_procs</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">)</span>
+
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;maps_pe&#39;</span><span class="p">,</span> <span class="s1">&#39;in_files&#39;</span><span class="p">),</span>
+                            <span class="p">(</span><span class="s1">&#39;epi_pe&#39;</span><span class="p">,</span> <span class="s1">&#39;pe_dir&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">split</span><span class="p">,</span> <span class="n">merge_op</span><span class="p">,</span> <span class="p">[((</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">_front</span><span class="p">),</span> <span class="s1">&#39;in_files&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">merge_op</span><span class="p">,</span> <span class="n">ref_op_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out_file&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.in_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">ref_op_wf</span><span class="p">,</span> <span class="n">op2ref_reg</span><span class="p">,</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;outputnode.skull_stripped_file&#39;</span><span class="p">,</span> <span class="s1">&#39;moving_image&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">op2ref_reg</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;ref_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;fixed_image&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">op2ref_reg</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;warped_image&#39;</span><span class="p">,</span> <span class="s1">&#39;opposed_pe&#39;</span><span class="p">)]),</span>
+    <span class="p">])</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">matched_pe</span><span class="p">:</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+            <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;ref_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;matched_pe&#39;</span><span class="p">)]),</span>
+        <span class="p">])</span>
+        <span class="k">return</span> <span class="n">workflow</span>
+
+    <span class="n">merge_ma</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">StructuralReference</span><span class="p">(</span><span class="n">auto_detect_sensitivity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">initial_timepoint</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                            <span class="n">fixed_timepoint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Align to first image</span>
+                            <span class="n">intensity_scaling</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="c1"># 7-DOF (rigid + intensity)</span>
+                            <span class="n">no_iteration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">subsample_threshold</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                            <span class="n">out_file</span><span class="o">=</span><span class="s1">&#39;template.nii.gz&#39;</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;merge_ma&#39;</span><span class="p">)</span>
+
+    <span class="n">ref_ma_wf</span> <span class="o">=</span> <span class="n">init_enhance_and_skullstrip_bold_wf</span><span class="p">(</span>
+        <span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ref_ma_wf&#39;</span><span class="p">)</span>
+
+    <span class="n">ma2ref_reg</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">ants</span><span class="o">.</span><span class="n">Registration</span><span class="p">(</span>
+        <span class="n">from_file</span><span class="o">=</span><span class="n">ants_settings</span><span class="p">,</span> <span class="n">output_warped_image</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ma2ref_reg&#39;</span><span class="p">,</span> <span class="n">n_procs</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">)</span>
+
+    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+        <span class="p">(</span><span class="n">split</span><span class="p">,</span> <span class="n">merge_ma</span><span class="p">,</span> <span class="p">[((</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">_last</span><span class="p">),</span> <span class="s1">&#39;in_files&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">merge_ma</span><span class="p">,</span> <span class="n">ref_ma_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out_file&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.in_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">ref_ma_wf</span><span class="p">,</span> <span class="n">ma2ref_reg</span><span class="p">,</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;outputnode.skull_stripped_file&#39;</span><span class="p">,</span> <span class="s1">&#39;moving_image&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">ma2ref_reg</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;ref_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;fixed_image&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">ma2ref_reg</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;warped_image&#39;</span><span class="p">,</span> <span class="s1">&#39;matched_pe&#39;</span><span class="p">)]),</span>
+    <span class="p">])</span>
+    <span class="k">return</span> <span class="n">workflow</span></div>
+
+
+<span class="k">def</span> <span class="nf">_front</span><span class="p">(</span><span class="n">inlist</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inlist</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">inlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">inlist</span>
+
+
+<span class="k">def</span> <span class="nf">_last</span><span class="p">(</span><span class="n">inlist</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inlist</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">inlist</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">inlist</span>
+
+
+<span class="k">def</span> <span class="nf">_fix_hdr</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">nibabel</span> <span class="k">as</span> <span class="nn">nb</span>
+    <span class="kn">from</span> <span class="nn">nipype.utils.filemanip</span> <span class="kn">import</span> <span class="n">fname_presuffix</span>
+
+    <span class="n">nii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
+    <span class="n">hdr</span> <span class="o">=</span> <span class="n">nii</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">hdr</span><span class="o">.</span><span class="n">set_data_dtype</span><span class="p">(</span><span class="s1">&#39;&lt;f4&#39;</span><span class="p">)</span>
+    <span class="n">hdr</span><span class="o">.</span><span class="n">set_intent</span><span class="p">(</span><span class="s1">&#39;vector&#39;</span><span class="p">,</span> <span class="p">(),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">out_file</span> <span class="o">=</span> <span class="n">fname_presuffix</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="s2">&quot;_warpfield&quot;</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="n">newpath</span><span class="p">)</span>
+    <span class="n">nb</span><span class="o">.</span><span class="n">Nifti1Image</span><span class="p">(</span><span class="n">nii</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">),</span> <span class="n">nii</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="n">hdr</span><span class="p">)</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span>
+        <span class="n">out_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out_file</span>
+
+
+<div class="viewcode-block" id="check_pes"><a class="viewcode-back" href="../../../api/sdcflows.workflows.pepolar.html#sdcflows.workflows.pepolar.check_pes">[docs]</a><span class="k">def</span> <span class="nf">check_pes</span><span class="p">(</span><span class="n">epi_fmaps</span><span class="p">,</span> <span class="n">pe_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check whether there are images with matched PE.&quot;&quot;&quot;</span>
+    <span class="n">opposed_pe</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">matched_pe</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">fmap_pe</span> <span class="ow">in</span> <span class="n">epi_fmaps</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fmap_pe</span> <span class="o">==</span> <span class="n">pe_dir</span><span class="p">:</span>
+            <span class="n">matched_pe</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">fmap_pe</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">pe_dir</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">opposed_pe</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">opposed_pe</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">None of the discovered fieldmaps has the right phase encoding direction. </span><span class="se">\</span>
+<span class="s2">This is possibly a problem with metadata. If not, rerun with </span><span class="se">\</span>
+<span class="s2">``--ignore fieldmaps`` to skip the distortion correction step.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">matched_pe</span></div>
+
+
+<span class="k">def</span> <span class="nf">_qwarp_args</span><span class="p">(</span><span class="n">pe_dir</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;i&#39;</span><span class="p">:</span> <span class="s1">&#39;-noYdis -noZdis&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">:</span> <span class="s1">&#39;-noXdis -noZdis&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="s1">&#39;-noXdis -noYdis&#39;</span><span class="p">}[</span><span class="n">pe_dir</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+
+<span class="k">def</span> <span class="nf">_split_epi_lists</span><span class="p">(</span><span class="n">in_files</span><span class="p">,</span> <span class="n">pe_dir</span><span class="p">,</span> <span class="n">max_trs</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Split input EPIs and generate an output list of PEs.</span>
+
+<span class="sd">    Inputs</span>
+<span class="sd">    ------</span>
+<span class="sd">    in_files : list of ``BIDSFile``s</span>
+<span class="sd">        The EPI images that will be pooled into field estimation.</span>
+<span class="sd">    pe_dir : str</span>
+<span class="sd">        The phase-encoding direction of the IntendedFor EPI scan.</span>
+<span class="sd">    max_trs : int</span>
+<span class="sd">        Index of frame after which all volumes will be discarded</span>
+<span class="sd">        from the input EPI images.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span> <span class="k">as</span> <span class="n">op</span>
+    <span class="kn">import</span> <span class="nn">nibabel</span> <span class="k">as</span> <span class="nn">nb</span>
+
+    <span class="n">matched_pe</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">opposed_pe</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">epi_path</span><span class="p">,</span> <span class="n">epi_pe</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">in_files</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">epi_pe</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">pe_dir</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">epi_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">splitnii</span> <span class="o">=</span> <span class="p">[</span><span class="n">img</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">splitnii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">four_to_three</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">slicer</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:</span><span class="n">max_trs</span><span class="p">])</span>
+
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">nii</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">splitnii</span><span class="p">):</span>
+                <span class="n">out_name</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span>
+                    <span class="s1">&#39;dir-</span><span class="si">%s</span><span class="s1">_tstep-</span><span class="si">%03d</span><span class="s1">_pe-</span><span class="si">%03d</span><span class="s1">.nii.gz&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epi_pe</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
+                <span class="n">nii</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">out_name</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">epi_pe</span> <span class="o">==</span> <span class="n">pe_dir</span><span class="p">:</span>
+                    <span class="n">matched_pe</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out_name</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">opposed_pe</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out_name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">matched_pe</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">opposed_pe</span><span class="p">,</span> <span class="n">matched_pe</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">opposed_pe</span><span class="p">]</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Copyright 2019, Center for Reproducible Neuroscience, Stanford University
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: rel/1.1.0
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../../../../1.0.0/index.html">1.0.0</a></dd>
+            <dd><a href="../../../../1.0.0rc1/index.html">1.0.0rc1</a></dd>
+            <dd><a href="../../../../1.0.1/index.html">1.0.1</a></dd>
+            <dd><a href="../../../../1.0.2/index.html">1.0.2</a></dd>
+            <dd><a href="../../../../1.0.3/index.html">1.0.3</a></dd>
+            <dd><a href="../../../../1.0.4/index.html">1.0.4</a></dd>
+            <dd><a href="../../../../1.1.0/index.html">1.1.0</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="../../../../master/index.html">master</a></dd>
+            <dd><a href="pepolar.html">rel/1.1.0</a></dd>
+        </dl>
+    </div>
+</div>
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
