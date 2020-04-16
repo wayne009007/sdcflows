@@ -1,0 +1,528 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdcflows.interfaces.fmap module &mdash; sdcflows 1.2.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/banner.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="sdcflows.interfaces.reportlets module" href="sdcflows.interfaces.reportlets.html" />
+    <link rel="prev" title="sdcflows.interfaces package" href="sdcflows.interfaces.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> sdcflows
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.2.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Library API (application program interface)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="sdcflows.interfaces.html">sdcflows.interfaces package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="sdcflows.interfaces.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sdcflows.interfaces.fmap module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sdcflows.interfaces.reportlets.html">sdcflows.interfaces.reportlets module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sdcflows.viz.html">sdcflows.viz package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdcflows.workflows.html">sdcflows.workflows package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changes.html">What’s new?</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sdcflows</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">Library API (application program interface)</a> &raquo;</li>
+        
+          <li><a href="sdcflows.interfaces.html">sdcflows.interfaces package</a> &raquo;</li>
+        
+      <li>sdcflows.interfaces.fmap module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/sdcflows.interfaces.fmap.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+
+
+    
+    
+
+
+
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../master/api/sdcflows.interfaces.fmap.html"><b>Warning:</b> This document is for an old version of sdcflows. The main version is master.</a></p>
+<div class="section" id="module-sdcflows.interfaces.fmap">
+<span id="sdcflows-interfaces-fmap-module"></span><h1>sdcflows.interfaces.fmap module<a class="headerlink" href="#module-sdcflows.interfaces.fmap" title="Permalink to this headline">¶</a></h1>
+<p>Interfaces to deal with the various types of fieldmap sources.</p>
+<blockquote>
+<div></div></blockquote>
+<dl class="class">
+<dt id="sdcflows.interfaces.fmap.FUGUEvsm2ANTSwarp">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">FUGUEvsm2ANTSwarp</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#FUGUEvsm2ANTSwarp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.FUGUEvsm2ANTSwarp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
+<p>Convert a voxel-shift-map to ants warp.</p>
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.FUGUEvsm2ANTSwarp.input_spec">
+<code class="sig-name descname">input_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.FUGUEvsm2ANTSwarp.input_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_FUGUEvsm2ANTSwarpInputSpec</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.FUGUEvsm2ANTSwarp.output_spec">
+<code class="sig-name descname">output_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.FUGUEvsm2ANTSwarp.output_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_FUGUEvsm2ANTSwarpOutputSpec</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sdcflows.interfaces.fmap.FieldEnhance">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">FieldEnhance</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#FieldEnhance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.FieldEnhance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
+<p>Massage the input fieldmap (masking, despiking, etc.).</p>
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.FieldEnhance.input_spec">
+<code class="sig-name descname">input_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.FieldEnhance.input_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_FieldEnhanceInputSpec</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.FieldEnhance.output_spec">
+<code class="sig-name descname">output_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.FieldEnhance.output_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_FieldEnhanceOutputSpec</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sdcflows.interfaces.fmap.FieldToHz">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">FieldToHz</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#FieldToHz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.FieldToHz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
+<p>Convert from arbitrary units to Hz.</p>
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.FieldToHz.input_spec">
+<code class="sig-name descname">input_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.FieldToHz.input_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_FieldToHzInputSpec</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.FieldToHz.output_spec">
+<code class="sig-name descname">output_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.FieldToHz.output_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_FieldToHzOutputSpec</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sdcflows.interfaces.fmap.FieldToRadS">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">FieldToRadS</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#FieldToRadS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.FieldToRadS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
+<p>Convert from arbitrary units to rad/s.</p>
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.FieldToRadS.input_spec">
+<code class="sig-name descname">input_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.FieldToRadS.input_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_FieldToRadSInputSpec</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.FieldToRadS.output_spec">
+<code class="sig-name descname">output_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.FieldToRadS.output_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_FieldToRadSOutputSpec</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sdcflows.interfaces.fmap.PhaseMap2rads">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">PhaseMap2rads</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#PhaseMap2rads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.PhaseMap2rads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
+<p>Convert a phase map in a.u. to radians.</p>
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.PhaseMap2rads.input_spec">
+<code class="sig-name descname">input_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.PhaseMap2rads.input_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_PhaseMap2radsInputSpec</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.PhaseMap2rads.output_spec">
+<code class="sig-name descname">output_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.PhaseMap2rads.output_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_PhaseMap2radsOutputSpec</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sdcflows.interfaces.fmap.Phasediff2Fieldmap">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">Phasediff2Fieldmap</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#Phasediff2Fieldmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.Phasediff2Fieldmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
+<p>Convert a phase difference map into a fieldmap in Hz.</p>
+<dl class="simple">
+<dt>This interface is equivalent to running the following steps:</dt><dd><ol class="arabic simple">
+<li><p>Convert from rad to rad/s
+(<code class="docutils literal notranslate"><span class="pre">niflow.nipype1.workflows.dmri.fsl.utils.rads2radsec</span></code>)</p></li>
+<li><p>FUGUE execution: fsl.FUGUE(save_fmap=True)</p></li>
+<li><p>Conversion from rad/s to Hz (divide by 2pi, <code class="docutils literal notranslate"><span class="pre">rsec2hz</span></code>).</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.Phasediff2Fieldmap.input_spec">
+<code class="sig-name descname">input_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.Phasediff2Fieldmap.input_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_Phasediff2FieldmapInputSpec</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.Phasediff2Fieldmap.output_spec">
+<code class="sig-name descname">output_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.Phasediff2Fieldmap.output_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_Phasediff2FieldmapOutputSpec</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sdcflows.interfaces.fmap.SubtractPhases">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">SubtractPhases</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#SubtractPhases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.SubtractPhases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
+<p>Calculate a phase difference map.</p>
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.SubtractPhases.input_spec">
+<code class="sig-name descname">input_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.SubtractPhases.input_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_SubtractPhasesInputSpec</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sdcflows.interfaces.fmap.SubtractPhases.output_spec">
+<code class="sig-name descname">output_spec</code><a class="headerlink" href="#sdcflows.interfaces.fmap.SubtractPhases.output_spec" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_SubtractPhasesOutputSpec</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="sdcflows.interfaces.fmap.au2rads">
+<code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">au2rads</code><span class="sig-paren">(</span><em class="sig-param">in_file</em>, <em class="sig-param">newpath=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#au2rads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.au2rads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the input phase difference map in arbitrary units (a.u.) to rads.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sdcflows.interfaces.fmap.get_ees">
+<code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">get_ees</code><span class="sig-paren">(</span><em class="sig-param">in_meta</em>, <em class="sig-param">in_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#get_ees"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.get_ees" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the <em>effective echo spacing</em> <span class="math notranslate nohighlight">\(t_\text{ees}\)</span> from BIDS.</p>
+<p>Calculate the <em>effective echo spacing</em> <span class="math notranslate nohighlight">\(t_\text{ees}\)</span>
+for an input <abbr title="echo-planar imaging">EPI</abbr> scan.</p>
+<p>There are several procedures to calculate the effective
+echo spacing. The basic one is that an <code class="docutils literal notranslate"><span class="pre">EffectiveEchoSpacing</span></code>
+field is set in the JSON sidecar. The following examples
+use an <code class="docutils literal notranslate"><span class="pre">'epi.nii.gz'</span></code> file-stub which has 90 pixels in the
+j-axis encoding direction.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;EffectiveEchoSpacing&#39;</span><span class="p">:</span> <span class="mf">0.00059</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_ees</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
+<span class="go">0.00059</span>
+</pre></div>
+</div>
+<p>If the <em>total readout time</em> <span class="math notranslate nohighlight">\(T_\text{ro}\)</span> (<code class="docutils literal notranslate"><span class="pre">TotalReadoutTime</span></code>
+BIDS field) is provided, then the effective echo spacing can be
+calculated reading the number of voxels <span class="math notranslate nohighlight">\(N_\text{PE}\)</span> along the
+readout direction and the parallel acceleration
+factor of the EPI</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[=  T_\text{ro} \,  (N_\text{PE} / f_\text{acc} - 1)^{-1}\]</div>
+</div></blockquote>
+<p>where <span class="math notranslate nohighlight">\(N_y\)</span> is the number of pixels along the phase-encoding direction
+<span class="math notranslate nohighlight">\(y\)</span>, and <span class="math notranslate nohighlight">\(f_\text{acc}\)</span> is the parallel imaging acceleration factor
+(<abbr title="GeneRalized Autocalibrating Partial Parallel Acquisition">GRAPPA</abbr>,
+<abbr title="Autocalibrating Reconstruction for Cartesian imaging">ARC</abbr>, etc.).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;TotalReadoutTime&#39;</span><span class="p">:</span> <span class="mf">0.02596</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;ParallelReductionFactorInPlane&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_ees</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">in_file</span><span class="o">=</span><span class="s1">&#39;epi.nii.gz&#39;</span><span class="p">)</span>
+<span class="go">0.00059</span>
+</pre></div>
+</div>
+<p>Some vendors, like Philips, store different parameter names (see
+<a class="reference external" href="http://dbic.dartmouth.edu/pipermail/mrusers/attachments/20141112/eb1d20e6/attachment.pdf">http://dbic.dartmouth.edu/pipermail/mrusers/attachments/20141112/eb1d20e6/attachment.pdf</a>
+):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;WaterFatShift&#39;</span><span class="p">:</span> <span class="mf">8.129</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;MagneticFieldStrength&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;ParallelReductionFactorInPlane&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_ees</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">in_file</span><span class="o">=</span><span class="s1">&#39;epi.nii.gz&#39;</span><span class="p">)</span>
+<span class="go">0.00041602630141921826</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sdcflows.interfaces.fmap.get_trt">
+<code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">get_trt</code><span class="sig-paren">(</span><em class="sig-param">in_meta</em>, <em class="sig-param">in_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#get_trt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.get_trt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract the <em>total readout time</em> <span class="math notranslate nohighlight">\(t_\text{RO}\)</span> from BIDS.</p>
+<p>Calculate the <em>total readout time</em> for an input
+<abbr title="echo-planar imaging">EPI</abbr> scan.</p>
+<p>There are several procedures to calculate the total
+readout time. The basic one is that a <code class="docutils literal notranslate"><span class="pre">TotalReadoutTime</span></code>
+field is set in the JSON sidecar. The following examples
+use an <code class="docutils literal notranslate"><span class="pre">'epi.nii.gz'</span></code> file-stub which has 90 pixels in the
+j-axis encoding direction.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;TotalReadoutTime&#39;</span><span class="p">:</span> <span class="mf">0.02596</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_trt</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
+<span class="go">0.02596</span>
+</pre></div>
+</div>
+<p>If the <em>effective echo spacing</em> <span class="math notranslate nohighlight">\(t_\text{ees}\)</span>
+(<code class="docutils literal notranslate"><span class="pre">EffectiveEchoSpacing</span></code> BIDS field) is provided, then the
+total readout time can be calculated reading the number
+of voxels along the readout direction <span class="math notranslate nohighlight">\(T_\text{ro}\)</span>
+and the parallel acceleration factor of the EPI <span class="math notranslate nohighlight">\(f_\text{acc}\)</span>.</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[T_\text{ro} = t_\text{ees} \, (N_\text{PE} / f_\text{acc} - 1)\]</div>
+</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;EffectiveEchoSpacing&#39;</span><span class="p">:</span> <span class="mf">0.00059</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;ParallelReductionFactorInPlane&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_trt</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">in_file</span><span class="o">=</span><span class="s1">&#39;epi.nii.gz&#39;</span><span class="p">)</span>
+<span class="go">0.02596</span>
+</pre></div>
+</div>
+<p>Some vendors, like Philips, store different parameter names:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;WaterFatShift&#39;</span><span class="p">:</span> <span class="mf">8.129</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;MagneticFieldStrength&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;ParallelReductionFactorInPlane&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_trt</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">in_file</span><span class="o">=</span><span class="s1">&#39;epi.nii.gz&#39;</span><span class="p">)</span>
+<span class="go">0.018721183563864822</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sdcflows.interfaces.fmap.phdiff2fmap">
+<code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">phdiff2fmap</code><span class="sig-paren">(</span><em class="sig-param">in_file</em>, <em class="sig-param">delta_te</em>, <em class="sig-param">newpath=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#phdiff2fmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.phdiff2fmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the input phase-difference map into a fieldmap in Hz.</p>
+<p>Uses eq. (1) of <a class="reference internal" href="#hutton2002" id="id1"><span>[Hutton2002]</span></a>:</p>
+<div class="math notranslate nohighlight">
+\[\Delta B_0 (\text{T}^{-1}) = \frac{\Delta \Theta}{2\pi\gamma \Delta\text{TE}}\]</div>
+<p>In this case, we do not take into account the gyromagnetic ratio of the
+proton (<span class="math notranslate nohighlight">\(\gamma\)</span>), since it will be applied inside TOPUP:</p>
+<div class="math notranslate nohighlight">
+\[\Delta B_0 (\text{Hz}) = \frac{\Delta \Theta}{2\pi \Delta\text{TE}}\]</div>
+<p class="rubric">References</p>
+<dl class="citation">
+<dt class="label" id="hutton2002"><span class="brackets"><a class="fn-backref" href="#id1">Hutton2002</a></span></dt>
+<dd><p>Hutton et al., Image Distortion Correction in fMRI: A Quantitative
+Evaluation, NeuroImage 16(1):217-240, 2002. doi:<a class="reference external" href="https://doi.org/10.1006/nimg.2001.1054">10.1006/nimg.2001.1054</a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="sdcflows.interfaces.reportlets.html" class="btn btn-neutral float-right" title="sdcflows.interfaces.reportlets module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="sdcflows.interfaces.html" class="btn btn-neutral float-left" title="sdcflows.interfaces package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, The NiPreps developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: 1.0.6
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../../1.0.0/api/sdcflows.interfaces.fmap.html">1.0.0</a></dd>
+            <dd><a href="../../1.0.0rc1/api/sdcflows.interfaces.fmap.html">1.0.0rc1</a></dd>
+            <dd><a href="../../1.0.1/api/sdcflows.interfaces.fmap.html">1.0.1</a></dd>
+            <dd><a href="../../1.0.2/api/sdcflows.interfaces.fmap.html">1.0.2</a></dd>
+            <dd><a href="../../1.0.3/api/sdcflows.interfaces.fmap.html">1.0.3</a></dd>
+            <dd><a href="../../1.0.4/api/sdcflows.interfaces.fmap.html">1.0.4</a></dd>
+            <dd><a href="../../1.0.5/api/sdcflows.interfaces.fmap.html">1.0.5</a></dd>
+            <dd><a href="sdcflows.interfaces.fmap.html">1.0.6</a></dd>
+            <dd><a href="../../1.1.0/api/sdcflows.interfaces.fmap.html">1.1.0</a></dd>
+            <dd><a href="../../1.2.0/api/sdcflows.interfaces.fmap.html">1.2.0</a></dd>
+            <dd><a href="../../1.2.1/api/sdcflows.interfaces.fmap.html">1.2.1</a></dd>
+            <dd><a href="../../1.2.2/api/sdcflows.interfaces.fmap.html">1.2.2</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="../../maint_1.0.x/api/sdcflows.interfaces.fmap.html">maint/1.0.x</a></dd>
+            <dd><a href="../../master/api/sdcflows.interfaces.fmap.html">master</a></dd>
+        </dl>
+    </div>
+</div>
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

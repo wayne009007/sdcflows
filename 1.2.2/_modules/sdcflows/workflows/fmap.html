@@ -1,0 +1,500 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdcflows.workflows.fmap &mdash; sdcflows 1.2.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/banner.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdcflows
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.2.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Library API (application program interface)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes.html">What’s new?</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdcflows</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdcflows.workflows.fmap</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+
+
+    
+    
+
+
+
+    <p class="scv-banner scv-sphinx_rtd_theme"><b>Warning:</b> This document is for an old version of sdcflows.</p>
+<h1>Source code for sdcflows.workflows.fmap</h1><div class="highlight"><pre>
+<span></span><span class="c1"># emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-</span>
+<span class="c1"># vi: set ft=python sts=4 ts=4 sw=4 et:</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Fieldmap-based estimation of susceptibility distortions.</span>
+
+<span class="sd">.. _sdc_direct_b0 :</span>
+
+<span class="sd">Direct B0 mapping sequences</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="sd">When the fieldmap is directly measured with a prescribed sequence (such as</span>
+<span class="sd">:abbr:`SE (spiral echo)`), we only need to calculate the corresponding</span>
+<span class="sd">displacements field that accounts for the distortions.</span>
+<span class="sd">This procedure is described with more detail `here</span>
+<span class="sd">&lt;https://cni.stanford.edu/wiki/GE_Processing#Fieldmaps&gt;`__.</span>
+
+<span class="sd">This corresponds to `this section of the BIDS specification</span>
+<span class="sd">&lt;https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/01-magnetic-resonance-imaging-data.html#a-real-fieldmap-image&gt;`__.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span> <span class="k">as</span> <span class="nn">pkgr</span>
+
+<span class="kn">from</span> <span class="nn">nipype.pipeline</span> <span class="kn">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">pe</span>
+<span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span><span class="p">,</span> <span class="n">fsl</span>
+<span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="kn">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
+<span class="kn">from</span> <span class="nn">niworkflows.interfaces.images</span> <span class="kn">import</span> <span class="n">IntraModalMerge</span>
+<span class="kn">from</span> <span class="nn">niworkflows.interfaces.registration</span> <span class="kn">import</span> <span class="n">ANTSApplyTransformsRPT</span><span class="p">,</span> <span class="n">ANTSRegistrationRPT</span>
+
+<span class="kn">from</span> <span class="nn">..interfaces.fmap</span> <span class="kn">import</span> <span class="n">get_ees</span> <span class="k">as</span> <span class="n">_get_ees</span><span class="p">,</span> <span class="n">FieldToRadS</span><span class="p">,</span> <span class="n">FUGUEvsm2ANTSwarp</span>
+<span class="kn">from</span> <span class="nn">.gre</span> <span class="kn">import</span> <span class="n">init_fmap_postproc_wf</span><span class="p">,</span> <span class="n">init_magnitude_wf</span>
+
+
+<div class="viewcode-block" id="init_fmap_wf"><a class="viewcode-back" href="../../../api/sdcflows.workflows.fmap.html#sdcflows.workflows.fmap.init_fmap_wf">[docs]</a><span class="k">def</span> <span class="nf">init_fmap_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">fmap_bspline</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fmap_wf&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimate the fieldmap based on a field-mapping MRI acquisition.</span>
+
+<span class="sd">    When we have a sequence that directly measures the fieldmap,</span>
+<span class="sd">    we just need to mask it (using the corresponding magnitude image)</span>
+<span class="sd">    to remove the noise in the surrounding air region, and ensure that</span>
+<span class="sd">    units are Hz.</span>
+
+<span class="sd">    Workflow Graph</span>
+<span class="sd">        .. workflow ::</span>
+<span class="sd">            :graph2use: orig</span>
+<span class="sd">            :simple_form: yes</span>
+
+<span class="sd">            from sdcflows.workflows.fmap import init_fmap_wf</span>
+<span class="sd">            wf = init_fmap_wf(omp_nthreads=6, fmap_bspline=False)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    omp_nthreads : int</span>
+<span class="sd">        Maximum number of threads an individual process may use.</span>
+<span class="sd">    fmap_bspline : bool</span>
+<span class="sd">        Whether the fieldmap estimate will be smoothed using BSpline basis.</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Unique name of this workflow.</span>
+
+<span class="sd">    Inputs</span>
+<span class="sd">    ------</span>
+<span class="sd">    magnitude : str</span>
+<span class="sd">        Path to the corresponding magnitude image for anatomical reference.</span>
+<span class="sd">    fieldmap : str</span>
+<span class="sd">        Path to the fieldmap acquisition (``*_fieldmap.nii[.gz]`` of BIDS).</span>
+
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    fmap : str</span>
+<span class="sd">        Path to the estimated fieldmap.</span>
+<span class="sd">    fmap_ref : str</span>
+<span class="sd">        Path to a preprocessed magnitude image reference.</span>
+<span class="sd">    fmap_mask : str</span>
+<span class="sd">        Path to a binary brain mask corresponding to the ``fmap`` and ``fmap_ref``</span>
+<span class="sd">        pair.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">A B0-nonuniformity map (or *fieldmap*) was directly measured with an MRI scheme</span>
+<span class="s2">designed with that purpose (typically, a spiral pulse sequence).</span>
+<span class="s2">&quot;&quot;&quot;</span>
+    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;magnitude&#39;</span><span class="p">,</span> <span class="s1">&#39;fieldmap&#39;</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;inputnode&#39;</span><span class="p">)</span>
+    <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;fmap&#39;</span><span class="p">,</span> <span class="s1">&#39;fmap_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;fmap_mask&#39;</span><span class="p">]),</span>
+                         <span class="n">name</span><span class="o">=</span><span class="s1">&#39;outputnode&#39;</span><span class="p">)</span>
+
+    <span class="n">magnitude_wf</span> <span class="o">=</span> <span class="n">init_magnitude_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">)</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">magnitude_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;magnitude&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.magnitude&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">magnitude_wf</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;outputnode.fmap_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;fmap_mask&#39;</span><span class="p">),</span>
+                                    <span class="p">(</span><span class="s1">&#39;outputnode.fmap_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;fmap_ref&#39;</span><span class="p">)]),</span>
+    <span class="p">])</span>
+
+    <span class="c1"># Merge input fieldmap images</span>
+    <span class="n">fmapmrg</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">IntraModalMerge</span><span class="p">(</span><span class="n">zero_based_avg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hmc</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                      <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fmapmrg&#39;</span><span class="p">)</span>
+    <span class="n">applymsk</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">fsl</span><span class="o">.</span><span class="n">ApplyMask</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;applymsk&#39;</span><span class="p">)</span>
+    <span class="n">fmap_postproc_wf</span> <span class="o">=</span> <span class="n">init_fmap_postproc_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">,</span>
+                                             <span class="n">fmap_bspline</span><span class="o">=</span><span class="n">fmap_bspline</span><span class="p">)</span>
+
+    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">fmapmrg</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;fieldmap&#39;</span><span class="p">,</span> <span class="s1">&#39;in_files&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">fmapmrg</span><span class="p">,</span> <span class="n">applymsk</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out_avg&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">magnitude_wf</span><span class="p">,</span> <span class="n">applymsk</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;outputnode.fmap_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;mask_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">applymsk</span><span class="p">,</span> <span class="n">fmap_postproc_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out_file&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.fmap&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">magnitude_wf</span><span class="p">,</span> <span class="n">fmap_postproc_wf</span><span class="p">,</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;outputnode.fmap_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.fmap_mask&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s1">&#39;outputnode.fmap_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;inputnode.fmap_ref&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">fmap_postproc_wf</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;outputnode.out_fmap&#39;</span><span class="p">,</span> <span class="s1">&#39;fmap&#39;</span><span class="p">)]),</span>
+    <span class="p">])</span>
+    <span class="k">return</span> <span class="n">workflow</span></div>
+
+
+<div class="viewcode-block" id="init_fmap2field_wf"><a class="viewcode-back" href="../../../api/sdcflows.workflows.fmap.html#sdcflows.workflows.fmap.init_fmap2field_wf">[docs]</a><span class="k">def</span> <span class="nf">init_fmap2field_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">debug</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fmap2field_wf&#39;</span><span class="p">,</span>
+                       <span class="n">generate_report</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert the estimated fieldmap in Hz into a displacements field.</span>
+
+<span class="sd">    This workflow takes in a fieldmap and calculates the corresponding</span>
+<span class="sd">    displacements field (in other words, an ANTs-compatible warp file).</span>
+
+<span class="sd">    Workflow Graph</span>
+<span class="sd">        .. workflow ::</span>
+<span class="sd">            :graph2use: orig</span>
+<span class="sd">            :simple_form: yes</span>
+
+<span class="sd">            from sdcflows.workflows.fmap import init_fmap2field_wf</span>
+<span class="sd">            wf = init_fmap2field_wf(omp_nthreads=8,</span>
+<span class="sd">                                    debug=False)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    omp_nthreads : int</span>
+<span class="sd">        Maximum number of threads an individual process may use.</span>
+<span class="sd">    debug : bool</span>
+<span class="sd">        Run fast configurations of registrations.</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Unique name of this workflow.</span>
+
+<span class="sd">    Inputs</span>
+<span class="sd">    ------</span>
+<span class="sd">    in_reference</span>
+<span class="sd">        the reference image</span>
+<span class="sd">    in_reference_brain</span>
+<span class="sd">        the reference image (skull-stripped)</span>
+<span class="sd">    metadata</span>
+<span class="sd">        metadata associated to the ``in_reference`` EPI input</span>
+<span class="sd">    fmap</span>
+<span class="sd">        the fieldmap in Hz</span>
+<span class="sd">    fmap_ref</span>
+<span class="sd">        the reference (anatomical) image corresponding to ``fmap``</span>
+<span class="sd">    fmap_mask</span>
+<span class="sd">        a brain mask corresponding to ``fmap``</span>
+
+
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    out_reference</span>
+<span class="sd">        the ``in_reference`` after unwarping</span>
+<span class="sd">    out_reference_brain</span>
+<span class="sd">        the ``in_reference`` after unwarping and skullstripping</span>
+<span class="sd">    out_warp</span>
+<span class="sd">        the corresponding :abbr:`DFM (displacements field map)` compatible with</span>
+<span class="sd">        ANTs</span>
+<span class="sd">    out_jacobian</span>
+<span class="sd">        the jacobian of the field (for drop-out alleviation)</span>
+<span class="sd">    out_mask</span>
+<span class="sd">        mask of the unwarped input file</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">The *fieldmap* was then co-registered to the target EPI (echo-planar imaging)</span>
+<span class="s2">reference run and converted to a displacements field map (amenable to registration</span>
+<span class="s2">tools such as ANTs) with FSL&#39;s `fugue` and other *SDCflows* tools.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;in_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;in_reference_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;metadata&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;fmap_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;fmap_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;fmap&#39;</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;inputnode&#39;</span><span class="p">)</span>
+    <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
+        <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;out_warp&#39;</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;outputnode&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Register the reference of the fieldmap to the reference</span>
+    <span class="c1"># of the target image (the one that shall be corrected)</span>
+    <span class="n">ants_settings</span> <span class="o">=</span> <span class="n">pkgr</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;sdcflows&#39;</span><span class="p">,</span> <span class="s1">&#39;data/fmap-any_registration.json&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="n">ants_settings</span> <span class="o">=</span> <span class="n">pkgr</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span>
+            <span class="s1">&#39;sdcflows&#39;</span><span class="p">,</span> <span class="s1">&#39;data/fmap-any_registration_testing.json&#39;</span><span class="p">)</span>
+
+    <span class="n">fmap2ref_reg</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">ANTSRegistrationRPT</span><span class="p">(</span><span class="n">generate_report</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">from_file</span><span class="o">=</span><span class="n">ants_settings</span><span class="p">,</span>
+                            <span class="n">output_inverse_warped_image</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">output_warped_image</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fmap2ref_reg&#39;</span><span class="p">,</span> <span class="n">n_procs</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">)</span>
+
+    <span class="c1"># Map the VSM into the EPI space</span>
+    <span class="n">fmap2ref_apply</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">ANTSApplyTransformsRPT</span><span class="p">(</span>
+        <span class="n">generate_report</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;BSpline&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fmap2ref_apply&#39;</span><span class="p">)</span>
+
+    <span class="n">fmap_mask2ref_apply</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">ANTSApplyTransformsRPT</span><span class="p">(</span>
+        <span class="n">generate_report</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;MultiLabel&#39;</span><span class="p">,</span>
+        <span class="nb">float</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fmap_mask2ref_apply&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Fieldmap to rads and then to voxels (VSM - voxel shift map)</span>
+    <span class="n">torads</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">FieldToRadS</span><span class="p">(</span><span class="n">fmap_range</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;torads&#39;</span><span class="p">)</span>
+
+    <span class="n">get_ees</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">_get_ees</span><span class="p">,</span> <span class="n">output_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ees&#39;</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;get_ees&#39;</span><span class="p">)</span>
+
+    <span class="n">gen_vsm</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">fsl</span><span class="o">.</span><span class="n">FUGUE</span><span class="p">(</span><span class="n">save_unmasked_shift</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;gen_vsm&#39;</span><span class="p">)</span>
+    <span class="c1"># Convert the VSM into a DFM (displacements field map)</span>
+    <span class="c1"># or: FUGUE shift to ANTS warping.</span>
+    <span class="n">vsm2dfm</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">FUGUEvsm2ANTSwarp</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;vsm2dfm&#39;</span><span class="p">)</span>
+
+    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">fmap2ref_reg</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;fmap_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;moving_image&#39;</span><span class="p">),</span>
+                                   <span class="p">(</span><span class="s1">&#39;in_reference_brain&#39;</span><span class="p">,</span> <span class="s1">&#39;fixed_image&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">fmap2ref_apply</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;fmap&#39;</span><span class="p">,</span> <span class="s1">&#39;input_image&#39;</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="s1">&#39;in_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;reference_image&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">fmap_mask2ref_apply</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;in_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;reference_image&#39;</span><span class="p">),</span>
+                                          <span class="p">(</span><span class="s1">&#39;fmap_mask&#39;</span><span class="p">,</span> <span class="s1">&#39;input_image&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">get_ees</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;in_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">),</span>
+                              <span class="p">(</span><span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;in_meta&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">gen_vsm</span><span class="p">,</span> <span class="p">[((</span><span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="n">_get_pedir_fugue</span><span class="p">),</span> <span class="s1">&#39;unwarp_direction&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">vsm2dfm</span><span class="p">,</span> <span class="p">[((</span><span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="n">_get_pedir_bids</span><span class="p">),</span> <span class="s1">&#39;pe_dir&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">fmap2ref_reg</span><span class="p">,</span> <span class="n">fmap2ref_apply</span><span class="p">,</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;composite_transform&#39;</span><span class="p">,</span> <span class="s1">&#39;transforms&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">fmap2ref_reg</span><span class="p">,</span> <span class="n">fmap_mask2ref_apply</span><span class="p">,</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;composite_transform&#39;</span><span class="p">,</span> <span class="s1">&#39;transforms&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">fmap2ref_apply</span><span class="p">,</span> <span class="n">torads</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;output_image&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">fmap_mask2ref_apply</span><span class="p">,</span> <span class="n">gen_vsm</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;output_image&#39;</span><span class="p">,</span> <span class="s1">&#39;mask_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">gen_vsm</span><span class="p">,</span> <span class="n">vsm2dfm</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;shift_out_file&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">get_ees</span><span class="p">,</span> <span class="n">gen_vsm</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;ees&#39;</span><span class="p">,</span> <span class="s1">&#39;dwell_time&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">torads</span><span class="p">,</span> <span class="n">gen_vsm</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out_file&#39;</span><span class="p">,</span> <span class="s1">&#39;fmap_in_file&#39;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">vsm2dfm</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out_file&#39;</span><span class="p">,</span> <span class="s1">&#39;out_warp&#39;</span><span class="p">)]),</span>
+    <span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">generate_report</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">niworkflows.interfaces.bids</span> <span class="kn">import</span> <span class="n">DerivativesDataSink</span>
+        <span class="kn">from</span> <span class="nn">..interfaces.reportlets</span> <span class="kn">import</span> <span class="n">FieldmapReportlet</span>
+
+        <span class="n">fmap_rpt</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">FieldmapReportlet</span><span class="p">(</span>
+            <span class="n">reference_label</span><span class="o">=</span><span class="s1">&#39;EPI Reference&#39;</span><span class="p">,</span>
+            <span class="n">moving_label</span><span class="o">=</span><span class="s1">&#39;Magnitude&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fmap_rpt&#39;</span><span class="p">)</span>
+        <span class="n">ds_report_sdc</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+            <span class="n">DerivativesDataSink</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;fieldmap&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">),</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ds_report_fmap&#39;</span><span class="p">,</span> <span class="n">mem_gb</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">run_without_submitting</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+
+        <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+            <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">fmap_rpt</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;in_reference&#39;</span><span class="p">,</span> <span class="s1">&#39;reference&#39;</span><span class="p">)]),</span>
+            <span class="p">(</span><span class="n">fmap2ref_reg</span><span class="p">,</span> <span class="n">fmap_rpt</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;warped_image&#39;</span><span class="p">,</span> <span class="s1">&#39;moving&#39;</span><span class="p">)]),</span>
+            <span class="p">(</span><span class="n">fmap_mask2ref_apply</span><span class="p">,</span> <span class="n">fmap_rpt</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;output_image&#39;</span><span class="p">,</span> <span class="s1">&#39;mask&#39;</span><span class="p">)]),</span>
+            <span class="p">(</span><span class="n">vsm2dfm</span><span class="p">,</span> <span class="n">fmap_rpt</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;fieldmap&#39;</span><span class="p">,</span> <span class="s1">&#39;fieldmap&#39;</span><span class="p">)]),</span>
+            <span class="p">(</span><span class="n">fmap_rpt</span><span class="p">,</span> <span class="n">ds_report_sdc</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;out_report&#39;</span><span class="p">,</span> <span class="s1">&#39;in_file&#39;</span><span class="p">)]),</span>
+        <span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">workflow</span></div>
+
+
+<span class="c1"># Helper functions</span>
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="k">def</span> <span class="nf">_get_pedir_bids</span><span class="p">(</span><span class="n">in_dict</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">in_dict</span><span class="p">[</span><span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_get_pedir_fugue</span><span class="p">(</span><span class="n">in_dict</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">in_dict</span><span class="p">[</span><span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;j&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, The NiPreps developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: 1.2.2
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../../../../1.0.0/index.html">1.0.0</a></dd>
+            <dd><a href="../../../../1.0.0rc1/index.html">1.0.0rc1</a></dd>
+            <dd><a href="../../../../1.0.1/index.html">1.0.1</a></dd>
+            <dd><a href="../../../../1.0.2/index.html">1.0.2</a></dd>
+            <dd><a href="../../../../1.0.3/index.html">1.0.3</a></dd>
+            <dd><a href="../../../../1.0.4/index.html">1.0.4</a></dd>
+            <dd><a href="../../../../1.0.5/index.html">1.0.5</a></dd>
+            <dd><a href="../../../../1.0.6/index.html">1.0.6</a></dd>
+            <dd><a href="../../../../1.1.0/index.html">1.1.0</a></dd>
+            <dd><a href="../../../../1.2.0/index.html">1.2.0</a></dd>
+            <dd><a href="../../../../1.2.1/index.html">1.2.1</a></dd>
+            <dd><a href="fmap.html">1.2.2</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="../../../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
+            <dd><a href="../../../../master/index.html">master</a></dd>
+        </dl>
+    </div>
+</div>
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
