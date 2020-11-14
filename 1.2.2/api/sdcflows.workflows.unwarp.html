@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows.unwarp module &mdash; sdcflows 1.3.4.dev4 documentation</title>
+  <title>sdcflows.workflows.unwarp module &mdash; sdcflows 1.3.4.dev16 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.3.4.dev4
+                1.3.4.dev16
               </div>
             
           
@@ -207,25 +207,25 @@ have been accounted for.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>omp_nthreads</strong> (<em>int</em>) – Maximum number of threads an individual process may use.</p></li>
-<li><p><strong>debug</strong> (<em>bool</em>) – Run fast configurations of registrations.</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – Unique name of this workflow.</p></li>
+<li><p><strong>omp_nthreads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – Maximum number of threads an individual process may use.</p></li>
+<li><p><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Run fast configurations of registrations.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Unique name of this workflow.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Inputs</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>in_warp</strong> (<em>os.pathlike</em>) – The <abbr title="displacements field map">DFM</abbr> that corrects for
+<li><p><strong>in_warp</strong> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) – The <abbr title="displacements field map">DFM</abbr> that corrects for
 susceptibility-derived distortions estimated elsewhere.</p></li>
-<li><p><strong>in_reference</strong> (<em>os.pathlike</em>) – the reference image to be unwarped.</p></li>
-<li><p><strong>in_reference_mask</strong> (<em>os.pathlike</em>) – the reference image mask to be unwarped</p></li>
+<li><p><strong>in_reference</strong> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) – the reference image to be unwarped.</p></li>
+<li><p><strong>in_reference_mask</strong> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) – the reference image mask to be unwarped</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Outputs</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>out_reference</strong> (<em>str</em>) – the <code class="docutils literal notranslate"><span class="pre">in_reference</span></code> after unwarping</p></li>
-<li><p><strong>out_reference_brain</strong> (<em>str</em>) – the <code class="docutils literal notranslate"><span class="pre">in_reference</span></code> after unwarping and skullstripping</p></li>
-<li><p><strong>out_warp</strong> (<em>str</em>) – the <code class="docutils literal notranslate"><span class="pre">in_warp</span></code> field is forwarded for compatibility</p></li>
-<li><p><strong>out_mask</strong> (<em>str</em>) – mask of the unwarped input file</p></li>
+<li><p><strong>out_reference</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – the <code class="docutils literal notranslate"><span class="pre">in_reference</span></code> after unwarping</p></li>
+<li><p><strong>out_reference_brain</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – the <code class="docutils literal notranslate"><span class="pre">in_reference</span></code> after unwarping and skullstripping</p></li>
+<li><p><strong>out_warp</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – the <code class="docutils literal notranslate"><span class="pre">in_warp</span></code> field is forwarded for compatibility</p></li>
+<li><p><strong>out_mask</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – mask of the unwarped input file</p></li>
 </ul>
 </dd>
 </dl>

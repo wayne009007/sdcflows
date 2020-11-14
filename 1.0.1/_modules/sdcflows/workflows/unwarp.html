@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows.unwarp &mdash; sdcflows 1.3.4.dev4 documentation</title>
+  <title>sdcflows.workflows.unwarp &mdash; sdcflows 1.3.4.dev16 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.3.4.dev4
+                1.3.4.dev16
               </div>
             
           
@@ -193,32 +193,32 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    omp_nthreads : int</span>
+<span class="sd">    omp_nthreads : :obj:`int`</span>
 <span class="sd">        Maximum number of threads an individual process may use.</span>
-<span class="sd">    debug : bool</span>
+<span class="sd">    debug : :obj:`bool`</span>
 <span class="sd">        Run fast configurations of registrations.</span>
-<span class="sd">    name : str</span>
+<span class="sd">    name : :obj:`str`</span>
 <span class="sd">        Unique name of this workflow.</span>
 
 <span class="sd">    Inputs</span>
 <span class="sd">    ------</span>
-<span class="sd">    in_warp : os.pathlike</span>
+<span class="sd">    in_warp : :obj:`os.PathLike`</span>
 <span class="sd">        The :abbr:`DFM (displacements field map)` that corrects for</span>
 <span class="sd">        susceptibility-derived distortions estimated elsewhere.</span>
-<span class="sd">    in_reference : os.pathlike</span>
+<span class="sd">    in_reference : :obj:`os.PathLike`</span>
 <span class="sd">        the reference image to be unwarped.</span>
-<span class="sd">    in_reference_mask : os.pathlike</span>
+<span class="sd">    in_reference_mask : :obj:`os.PathLike`</span>
 <span class="sd">        the reference image mask to be unwarped</span>
 
 <span class="sd">    Outputs</span>
 <span class="sd">    -------</span>
-<span class="sd">    out_reference : str</span>
+<span class="sd">    out_reference : :obj:`str`</span>
 <span class="sd">        the ``in_reference`` after unwarping</span>
-<span class="sd">    out_reference_brain : str</span>
+<span class="sd">    out_reference_brain : :obj:`str`</span>
 <span class="sd">        the ``in_reference`` after unwarping and skullstripping</span>
-<span class="sd">    out_warp : str</span>
+<span class="sd">    out_warp : :obj:`str`</span>
 <span class="sd">        the ``in_warp`` field is forwarded for compatibility</span>
-<span class="sd">    out_mask : str</span>
+<span class="sd">    out_mask : :obj:`str`</span>
 <span class="sd">        mask of the unwarped input file</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows package &mdash; sdcflows 1.3.4.dev4 documentation</title>
+  <title>sdcflows.workflows package &mdash; sdcflows 1.3.4.dev16 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.3.4.dev4
+                1.3.4.dev16
               </div>
             
           
@@ -92,17 +92,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">Library API (application program interface)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="sdcflows.interfaces.html">sdcflows.interfaces package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdcflows.models.html">sdcflows.models package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sdcflows.viz.html">sdcflows.viz package</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">sdcflows.workflows package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#automatic-selection-of-the-appropriate-susceptibility-distortion-correction-sdc-method">Automatic selection of the appropriate susceptibility-distortion correction (SDC) method</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="sdcflows.workflows.base.html">sdcflows.workflows.base module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sdcflows.workflows.fmap.html">sdcflows.workflows.fmap module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sdcflows.workflows.gre.html">sdcflows.workflows.gre module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sdcflows.workflows.outputs.html">sdcflows.workflows.outputs module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sdcflows.workflows.pepolar.html">sdcflows.workflows.pepolar module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sdcflows.workflows.phdiff.html">sdcflows.workflows.phdiff module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sdcflows.workflows.syn.html">sdcflows.workflows.syn module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sdcflows.workflows.unwarp.html">sdcflows.workflows.unwarp module</a></li>
 </ul>
 </li>
@@ -194,10 +190,10 @@
 the following priority will be used:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p><a class="reference internal" href="sdcflows.workflows.pepolar.html#sdc-pepolar"><span class="std std-ref">PEPOLAR techniques</span></a> (or <strong>blip-up/blip-down</strong>)</p></li>
-<li><p><a class="reference internal" href="sdcflows.workflows.fmap.html#sdc-direct-b0"><span class="std std-ref">Direct B0 mapping sequences</span></a></p></li>
-<li><p><a class="reference internal" href="sdcflows.workflows.phdiff.html#sdc-phasediff"><span class="std std-ref">Phase-difference B0 estimation</span></a></p></li>
-<li><p><a class="reference internal" href="sdcflows.workflows.syn.html#sdc-fieldmapless"><span class="std std-ref">Fieldmap-less estimation (experimental)</span></a></p></li>
+<li><p><a class="reference internal" href="sdcflows.models.pepolar.html#sdc-pepolar"><span class="std std-ref">PEPOLAR techniques</span></a> (or <strong>blip-up/blip-down</strong>)</p></li>
+<li><p><a class="reference internal" href="sdcflows.models.fieldmap.html#sdc-direct-b0"><span class="std std-ref">Direct B0 mapping sequences</span></a></p></li>
+<li><p><a class="reference internal" href="sdcflows.models.fieldmap.html#sdc-phasediff"><span class="std std-ref">Phase-difference B0 estimation</span></a></p></li>
+<li><p><a class="reference internal" href="sdcflows.models.syn.html#sdc-fieldmapless"><span class="std std-ref">Fieldmap-less estimation (experimental)</span></a></p></li>
 </ol>
 </div></blockquote>
 <p>Table of behavior (fieldmap use-cases):</p>
@@ -258,27 +254,7 @@ the following priority will be used:</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="sdcflows.workflows.base.html">sdcflows.workflows.base module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sdcflows.workflows.fmap.html">sdcflows.workflows.fmap module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="sdcflows.workflows.fmap.html#direct-b0-mapping-sequences">Direct B0 mapping sequences</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="sdcflows.workflows.gre.html">sdcflows.workflows.gre module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="sdcflows.workflows.gre.html#workflows-for-processing-gre-fieldmaps">Workflows for processing <abbr title="gradient recalled echo">GRE</abbr> fieldmaps</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="sdcflows.workflows.outputs.html">sdcflows.workflows.outputs module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sdcflows.workflows.pepolar.html">sdcflows.workflows.pepolar module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="sdcflows.workflows.pepolar.html#pepolar-techniques"><abbr title="Phase Encoding POLARity">PEPOLAR</abbr> techniques</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="sdcflows.workflows.phdiff.html">sdcflows.workflows.phdiff module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="sdcflows.workflows.phdiff.html#phase-difference-b0-estimation">Phase-difference B0 estimation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="sdcflows.workflows.syn.html">sdcflows.workflows.syn module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="sdcflows.workflows.syn.html#fieldmap-less-estimation-experimental">Fieldmap-less estimation (experimental)</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="sdcflows.workflows.unwarp.html">sdcflows.workflows.unwarp module</a></li>
 </ul>
 </div>

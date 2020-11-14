@@ -12,10 +12,5 @@ Submodules
 .. toctree::
 
    sdcflows.workflows.base
-   sdcflows.workflows.fmap
-   sdcflows.workflows.gre
    sdcflows.workflows.outputs
-   sdcflows.workflows.pepolar
-   sdcflows.workflows.phdiff
-   sdcflows.workflows.syn
    sdcflows.workflows.unwarp

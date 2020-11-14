@@ -1,0 +1,732 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdcflows.models.fieldmap &mdash; sdcflows 1.3.4.dev16 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/banner.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> sdcflows
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.3.4.dev16
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Library API (application program interface)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes.html">What’s new?</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdcflows</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdcflows.models.fieldmap</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+
+
+
+
+
+<h1>Source code for sdcflows.models.fieldmap</h1><div class="highlight"><pre>
+<span></span><span class="c1"># emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-</span>
+<span class="c1"># vi: set ft=python sts=4 ts=4 sw=4 et:</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Processing phase-difference and *directly measured* B0 maps.</span>
+
+<span class="sd">.. _sdc_phasediff :</span>
+
+<span class="sd">Phase-difference B0 estimation</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="sd">The inhomogeneity of the :math:`B_0` field inside the scanner at each voxel is</span>
+<span class="sd">proportional to the phase drift (at that voxel) between two subsequent</span>
+<span class="sd">:abbr:`GRE (gradient-recalled echo)` acquisitions.</span>
+
+<span class="sd">This corresponds to `this section of the BIDS specification</span>
+<span class="sd">&lt;https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/01-magnetic-resonance-imaging-data.html#two-phase-images-and-two-magnitude-images&gt;`__.</span>
+<span class="sd">Some scanners produce one ``phasediff`` map, where the drift between the two echos has</span>
+<span class="sd">already been calulated (see `the corresponding section of BIDS</span>
+<span class="sd">&lt;https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/01-magnetic-resonance-imaging-data.html#case-1-phase-difference-map-and-at-least-one-magnitude-image&gt;`__).</span>
+
+<span class="sd">.. _sdc_direct_b0 :</span>
+
+<span class="sd">Direct B0 mapping sequences</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="sd">The inhomogeneity of the :math:`B_0` field can directly be mapped with a</span>
+<span class="sd">some MR schemes (such as :abbr:`SE (spiral echo)`).</span>
+<span class="sd">These *fieldmaps* are described with more detail `here</span>
+<span class="sd">&lt;https://cni.stanford.edu/wiki/GE_Processing#Fieldmaps&gt;`__.</span>
+
+<span class="sd">This corresponds to `this section of the BIDS specification</span>
+<span class="sd">&lt;https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/01-magnetic-resonance-imaging-data.html#case-3-direct-field-mapping&gt;`__.</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">nipype.pipeline</span> <span class="kn">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">pe</span>
+<span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span>
+<span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="kn">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
+
+
+<div class="viewcode-block" id="init_fmap_wf"><a class="viewcode-back" href="../../../api/sdcflows.models.fieldmap.html#sdcflows.models.fieldmap.init_fmap_wf">[docs]</a><span class="k">def</span> <span class="nf">init_fmap_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;phasediff&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fmap_wf&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimate the fieldmap based on a field-mapping MRI acquisition.</span>
+
+<span class="sd">    Estimates the fieldmap using either one phase-difference map or</span>
+<span class="sd">    image and one or more</span>
+<span class="sd">    magnitude images corresponding to two or more :abbr:`GRE (Gradient Echo sequence)`</span>
+<span class="sd">    acquisitions.</span>
+
+<span class="sd">    When we have a sequence that directly measures the fieldmap,</span>
+<span class="sd">    we just need to mask it (using the corresponding magnitude image)</span>
+<span class="sd">    to remove the noise in the surrounding air region, and ensure that</span>
+<span class="sd">    units are Hz.</span>
+
+<span class="sd">    Workflow Graph</span>
+<span class="sd">        .. workflow ::</span>
+<span class="sd">            :graph2use: orig</span>
+<span class="sd">            :simple_form: yes</span>
+
+<span class="sd">            from sdcflows.models.fieldmap import init_fmap_wf</span>
+<span class="sd">            wf = init_fmap_wf(omp_nthreads=6)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    omp_nthreads : :obj:`int`</span>
+<span class="sd">        Maximum number of threads an individual process may use.</span>
+<span class="sd">    name : :obj:`str`</span>
+<span class="sd">        Unique name of this workflow.</span>
+
+<span class="sd">    Inputs</span>
+<span class="sd">    ------</span>
+<span class="sd">    magnitude : :obj:`str`</span>
+<span class="sd">        Path to the corresponding magnitude image for anatomical reference.</span>
+<span class="sd">    fieldmap : :obj:`str`</span>
+<span class="sd">        Path to the fieldmap acquisition (``*_fieldmap.nii[.gz]`` of BIDS).</span>
+
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    fmap : :obj:`str`</span>
+<span class="sd">        Path to the estimated fieldmap.</span>
+<span class="sd">    fmap_ref : :obj:`str`</span>
+<span class="sd">        Path to a preprocessed magnitude image reference.</span>
+<span class="sd">    fmap_mask : :obj:`str`</span>
+<span class="sd">        Path to a binary brain mask corresponding to the ``fmap`` and ``fmap_ref``</span>
+<span class="sd">        pair.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">,</span> <span class="s2">&quot;fieldmap&quot;</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inputnode&quot;</span>
+    <span class="p">)</span>
+    <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fmap&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_mask&quot;</span><span class="p">]),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;outputnode&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">magnitude_wf</span> <span class="o">=</span> <span class="n">init_magnitude_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">)</span>
+    <span class="n">fmap_postproc_wf</span> <span class="o">=</span> <span class="n">init_fmap_postproc_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">)</span>
+
+    <span class="c1"># fmt: off</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">magnitude_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;magnitude&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.magnitude&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">magnitude_wf</span><span class="p">,</span> <span class="n">fmap_postproc_wf</span><span class="p">,</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;outputnode.fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.fmap_mask&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;outputnode.fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.fmap_ref&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">magnitude_wf</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;outputnode.fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_mask&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;outputnode.fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">),</span>
+        <span class="p">]),</span>
+        <span class="p">(</span><span class="n">fmap_postproc_wf</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;outputnode.out_fmap&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap&quot;</span><span class="p">)]),</span>
+    <span class="p">])</span>
+    <span class="c1"># fmt: on</span>
+
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;phasediff&quot;</span><span class="p">:</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">A *B&lt;sub&gt;0&lt;/sub&gt;* nonuniformity map (or *fieldmap*) was estimated from the</span>
+<span class="s2">phase-drift map(s) measure with two consecutive GRE (gradient-recall echo)</span>
+<span class="s2">acquisitions.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+        <span class="n">phdiff_wf</span> <span class="o">=</span> <span class="n">init_phdiff_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="p">)</span>
+
+        <span class="c1"># fmt: off</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+            <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">phdiff_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;fieldmap&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.phase&quot;</span><span class="p">)]),</span>
+            <span class="p">(</span><span class="n">magnitude_wf</span><span class="p">,</span> <span class="n">phdiff_wf</span><span class="p">,</span> <span class="p">[</span>
+                <span class="p">(</span><span class="s2">&quot;outputnode.fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.magnitude&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;outputnode.fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.mask&quot;</span><span class="p">),</span>
+            <span class="p">]),</span>
+            <span class="p">(</span><span class="n">phdiff_wf</span><span class="p">,</span> <span class="n">fmap_postproc_wf</span><span class="p">,</span> <span class="p">[</span>
+                <span class="p">(</span><span class="s2">&quot;outputnode.fieldmap&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.fmap&quot;</span><span class="p">),</span>
+            <span class="p">]),</span>
+        <span class="p">])</span>
+        <span class="c1"># fmt: on</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">niworkflows.interfaces.nibabel</span> <span class="kn">import</span> <span class="n">ApplyMask</span>
+        <span class="kn">from</span> <span class="nn">niworkflows.interfaces.images</span> <span class="kn">import</span> <span class="n">IntraModalMerge</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">A *B&lt;sub&gt;0&lt;/sub&gt;* nonuniformity map (or *fieldmap*) was directly measured with</span>
+<span class="s2">an MRI scheme designed with that purpose (e.g., a spiral pulse sequence).</span>
+<span class="s2">&quot;&quot;&quot;</span>
+        <span class="c1"># Merge input fieldmap images</span>
+        <span class="n">fmapmrg</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">IntraModalMerge</span><span class="p">(</span><span class="n">zero_based_avg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hmc</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fmapmrg&quot;</span><span class="p">)</span>
+        <span class="n">applymsk</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">ApplyMask</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;applymsk&quot;</span><span class="p">)</span>
+        <span class="c1"># fmt: off</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+            <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">fmapmrg</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;fieldmap&quot;</span><span class="p">,</span> <span class="s2">&quot;in_files&quot;</span><span class="p">)]),</span>
+            <span class="p">(</span><span class="n">fmapmrg</span><span class="p">,</span> <span class="n">applymsk</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_avg&quot;</span><span class="p">,</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
+            <span class="p">(</span><span class="n">magnitude_wf</span><span class="p">,</span> <span class="n">applymsk</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;outputnode.fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;in_mask&quot;</span><span class="p">)]),</span>
+            <span class="p">(</span><span class="n">applymsk</span><span class="p">,</span> <span class="n">fmap_postproc_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.fmap&quot;</span><span class="p">)]),</span>
+        <span class="p">])</span>
+        <span class="c1"># fmt: on</span>
+
+    <span class="k">return</span> <span class="n">workflow</span></div>
+
+
+<div class="viewcode-block" id="init_magnitude_wf"><a class="viewcode-back" href="../../../api/sdcflows.models.fieldmap.html#sdcflows.models.fieldmap.init_magnitude_wf">[docs]</a><span class="k">def</span> <span class="nf">init_magnitude_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;magnitude_wf&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare the magnitude part of :abbr:`GRE (gradient-recalled echo)` fieldmaps.</span>
+
+<span class="sd">    Average (if not done already) the magnitude part of the</span>
+<span class="sd">    :abbr:`GRE (gradient recalled echo)` images, run N4 to</span>
+<span class="sd">    correct for B1 field nonuniformity, and skull-strip the</span>
+<span class="sd">    preprocessed magnitude.</span>
+
+<span class="sd">    Workflow Graph</span>
+<span class="sd">        .. workflow ::</span>
+<span class="sd">            :graph2use: orig</span>
+<span class="sd">            :simple_form: yes</span>
+
+<span class="sd">            from sdcflows.models.fieldmap import init_magnitude_wf</span>
+<span class="sd">            wf = init_magnitude_wf(omp_nthreads=6)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    omp_nthreads : :obj:`int`</span>
+<span class="sd">        Maximum number of threads an individual process may use</span>
+<span class="sd">    name : :obj:`str`</span>
+<span class="sd">        Name of workflow (default: ``prepare_magnitude_w``)</span>
+
+<span class="sd">    Inputs</span>
+<span class="sd">    ------</span>
+<span class="sd">    magnitude : :obj:`os.PathLike`</span>
+<span class="sd">        Path to the corresponding magnitude path(s).</span>
+
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    fmap_ref : :obj:`os.PathLike`</span>
+<span class="sd">        Path to the fieldmap reference calculated in this workflow.</span>
+<span class="sd">    fmap_mask : :obj:`os.PathLike`</span>
+<span class="sd">        Path to a binary brain mask corresponding to the reference above.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">nipype.interfaces.ants</span> <span class="kn">import</span> <span class="n">N4BiasFieldCorrection</span>
+    <span class="kn">from</span> <span class="nn">niworkflows.interfaces.masks</span> <span class="kn">import</span> <span class="n">BETRPT</span>
+    <span class="kn">from</span> <span class="nn">niworkflows.interfaces.images</span> <span class="kn">import</span> <span class="n">IntraModalMerge</span>
+
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inputnode&quot;</span><span class="p">)</span>
+    <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;mask_report&quot;</span><span class="p">]),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;outputnode&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Merge input magnitude images</span>
+    <span class="c1"># Do not reorient to RAS to preserve the validity of PhaseEncodingDirection</span>
+    <span class="n">magmrg</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">IntraModalMerge</span><span class="p">(</span><span class="n">hmc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">to_ras</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;magmrg&quot;</span><span class="p">)</span>
+
+    <span class="c1"># de-gradient the fields (&quot;bias/illumination artifact&quot;)</span>
+    <span class="n">n4_correct</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">N4BiasFieldCorrection</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">copy_header</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;n4_correct&quot;</span><span class="p">,</span>
+        <span class="n">n_procs</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">bet</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">BETRPT</span><span class="p">(</span><span class="n">generate_report</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frac</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;bet&quot;</span><span class="p">)</span>
+
+    <span class="c1"># fmt: off</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">magmrg</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;magnitude&quot;</span><span class="p">,</span> <span class="s2">&quot;in_files&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">magmrg</span><span class="p">,</span> <span class="n">n4_correct</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_avg&quot;</span><span class="p">,</span> <span class="s2">&quot;input_image&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">n4_correct</span><span class="p">,</span> <span class="n">bet</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;output_image&quot;</span><span class="p">,</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">bet</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;mask_file&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_mask&quot;</span><span class="p">),</span>
+                           <span class="p">(</span><span class="s2">&quot;out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">),</span>
+                           <span class="p">(</span><span class="s2">&quot;out_report&quot;</span><span class="p">,</span> <span class="s2">&quot;mask_report&quot;</span><span class="p">)]),</span>
+    <span class="p">])</span>
+    <span class="c1"># fmt: on</span>
+    <span class="k">return</span> <span class="n">workflow</span></div>
+
+
+<div class="viewcode-block" id="init_fmap_postproc_wf"><a class="viewcode-back" href="../../../api/sdcflows.models.fieldmap.html#sdcflows.models.fieldmap.init_fmap_postproc_wf">[docs]</a><span class="k">def</span> <span class="nf">init_fmap_postproc_wf</span><span class="p">(</span>
+    <span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">median_kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fmap_postproc_wf&quot;</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Postprocess a :math:`B_0` map estimated elsewhere.</span>
+
+<span class="sd">    This workflow denoises (mostly via smoothing) a :math:`B_0` fieldmap.</span>
+
+<span class="sd">    Workflow Graph</span>
+<span class="sd">        .. workflow ::</span>
+<span class="sd">            :graph2use: orig</span>
+<span class="sd">            :simple_form: yes</span>
+
+<span class="sd">            from sdcflows.models.fieldmap import init_fmap_postproc_wf</span>
+<span class="sd">            wf = init_fmap_postproc_wf(omp_nthreads=6)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    omp_nthreads : :obj:`int`</span>
+<span class="sd">        Maximum number of threads an individual process may use</span>
+<span class="sd">    median_kernel_size : :obj:`int`</span>
+<span class="sd">        Size of the kernel when smoothing is done with a median filter.</span>
+<span class="sd">    name : :obj:`str`</span>
+<span class="sd">        Name of workflow (default: ``fmap_postproc_wf``)</span>
+
+<span class="sd">    Inputs</span>
+<span class="sd">    ------</span>
+<span class="sd">    fmap : :obj:`os.PathLike`</span>
+<span class="sd">        Fully preprocessed :math:`B_0` field nonuniformity map (aka *fieldmap*).</span>
+<span class="sd">    fmap_ref : :obj:`os.PathLike`</span>
+<span class="sd">        A preprocessed magnitude/reference image for the fieldmap.</span>
+<span class="sd">    fmap_mask : :obj:`os.PathLike`</span>
+<span class="sd">        A brain binary mask corresponding to this fieldmap.</span>
+
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    out_fmap : :obj:`os.PathLike`</span>
+<span class="sd">        Postprocessed fieldmap.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">nipype.interfaces.fsl</span> <span class="kn">import</span> <span class="n">SpatialFilter</span>
+    <span class="kn">from</span> <span class="nn">niflow.nipype1.workflows.dmri.fsl.utils</span> <span class="kn">import</span> <span class="n">cleanup_edge_pipeline</span>
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap&quot;</span><span class="p">,</span> <span class="s2">&quot;metadata&quot;</span><span class="p">]),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inputnode&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;out_fmap&quot;</span><span class="p">,</span> <span class="s2">&quot;metadata&quot;</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;outputnode&quot;</span>
+    <span class="p">)</span>
+    <span class="n">recenter</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">_recenter</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;recenter&quot;</span><span class="p">,</span>
+        <span class="n">run_without_submitting</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">denoise</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">SpatialFilter</span><span class="p">(</span>
+            <span class="n">operation</span><span class="o">=</span><span class="s2">&quot;median&quot;</span><span class="p">,</span>
+            <span class="n">kernel_shape</span><span class="o">=</span><span class="s2">&quot;sphere&quot;</span><span class="p">,</span>
+            <span class="n">kernel_size</span><span class="o">=</span><span class="n">median_kernel_size</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;denoise&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">demean</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">_demean</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;demean&quot;</span><span class="p">)</span>
+    <span class="n">cleanup_wf</span> <span class="o">=</span> <span class="n">cleanup_edge_pipeline</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cleanup_wf&quot;</span><span class="p">)</span>
+
+    <span class="c1"># fmt: off</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">cleanup_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.in_mask&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">recenter</span><span class="p">,</span> <span class="p">[((</span><span class="s2">&quot;fmap&quot;</span><span class="p">,</span> <span class="n">_pop</span><span class="p">),</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">recenter</span><span class="p">,</span> <span class="n">denoise</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out&quot;</span><span class="p">,</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">denoise</span><span class="p">,</span> <span class="n">demean</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">demean</span><span class="p">,</span> <span class="n">cleanup_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.in_file&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">cleanup_wf</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;outputnode.out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;out_fmap&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[((</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="n">_pop</span><span class="p">),</span> <span class="s2">&quot;metadata&quot;</span><span class="p">)]),</span>
+    <span class="p">])</span>
+    <span class="c1"># fmt: on</span>
+    <span class="k">return</span> <span class="n">workflow</span></div>
+
+
+<div class="viewcode-block" id="init_phdiff_wf"><a class="viewcode-back" href="../../../api/sdcflows.models.fieldmap.html#sdcflows.models.fieldmap.init_phdiff_wf">[docs]</a><span class="k">def</span> <span class="nf">init_phdiff_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;phdiff_wf&quot;</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a :math:`B_0` field from consecutive-phases and phase-difference maps.</span>
+
+<span class="sd">    This workflow preprocess phase-difference maps (or generates the phase-difference</span>
+<span class="sd">    map should two ``phase1``/``phase2`` be provided at the input), and generates</span>
+<span class="sd">    an image equivalent to BIDS&#39;s ``fieldmap`` that can be processed with the</span>
+<span class="sd">    general fieldmap workflow.</span>
+
+<span class="sd">    Besides phase2 - phase1 subtraction, the core of this particular workflow relies</span>
+<span class="sd">    in the phase-unwrapping with FSL PRELUDE [Jenkinson2003]_.</span>
+<span class="sd">    Because phase (and phase-difference) maps are clipped in the range</span>
+<span class="sd">    :math:`[0 \dotsb 2\pi )`, it is necessary to find the integer number of offsets</span>
+<span class="sd">    that make a region continuously smooth with its neighbors (*phase-unwrapping*).</span>
+<span class="sd">    FSL PRELUDE takes wrapped maps in the range 0 to 6.28, `as per the user guide</span>
+<span class="sd">    &lt;https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FUGUE/Guide#Step_2_-_Getting_.28wrapped.29_phase_in_radians&gt;`__.</span>
+
+<span class="sd">    For the phase-difference maps, recentering back to :math:`[-\pi \dotsb \pi )`</span>
+<span class="sd">    is necessary.</span>
+<span class="sd">    After some massaging and with the scaling of the echo separation factor</span>
+<span class="sd">    :math:`\Delta \text{TE}`, the phase-difference maps are converted into</span>
+<span class="sd">    an actual :math:`B_0` map in Hz units.</span>
+<span class="sd">    This implementation derives `originally from Nipype</span>
+<span class="sd">    &lt;https://github.com/nipy/nipype/blob/0.12.1/nipype/workflows/dmri/fsl/artifacts.py#L514&gt;`__.</span>
+
+<span class="sd">    Workflow Graph</span>
+<span class="sd">        .. workflow ::</span>
+<span class="sd">            :graph2use: orig</span>
+<span class="sd">            :simple_form: yes</span>
+
+<span class="sd">            from sdcflows.models.fieldmap import init_phdiff_wf</span>
+<span class="sd">            wf = init_phdiff_wf(omp_nthreads=1)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    omp_nthreads : :obj:`int`</span>
+<span class="sd">        Maximum number of threads an individual process may use</span>
+
+<span class="sd">    Inputs</span>
+<span class="sd">    ------</span>
+<span class="sd">    magnitude : :obj:`os.PathLike`</span>
+<span class="sd">        A reference magnitude image preprocessed elsewhere.</span>
+<span class="sd">    phase : :obj:`list` of :obj:`tuple` of (:obj:`os.PathLike`, :obj:`dict`)</span>
+<span class="sd">        List containing one GRE phase-difference map with its corresponding metadata</span>
+<span class="sd">        (requires ``EchoTime1`` and ``EchoTime2``), or the phase maps for the two</span>
+<span class="sd">        subsequent echoes, with their metadata (requires ``EchoTime``).</span>
+<span class="sd">    mask : :obj:`os.PathLike`</span>
+<span class="sd">        A brain mask calculated from the magnitude image.</span>
+
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    fieldmap : :obj:`os.PathLike`</span>
+<span class="sd">        The estimated fieldmap in Hz.  # TODO: write metadata &quot;Units&quot;</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [Jenkinson2003] Jenkinson, M. (2003) Fast, automated, N-dimensional phase-unwrapping</span>
+<span class="sd">        algorithm. MRM 49(1):193-197. doi:`10.1002/mrm.10354 &lt;10.1002/mrm.10354&gt;`__.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">nipype.interfaces.fsl</span> <span class="kn">import</span> <span class="n">PRELUDE</span>
+    <span class="kn">from</span> <span class="nn">..interfaces.fmap</span> <span class="kn">import</span> <span class="n">Phasediff2Fieldmap</span><span class="p">,</span> <span class="n">PhaseMap2rads</span><span class="p">,</span> <span class="n">SubtractPhases</span>
+
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">The corresponding phase-map(s) were phase-unwrapped with `prelude` (FSL </span><span class="si">{</span><span class="n">PRELUDE</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">).</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">,</span> <span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;mask&quot;</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inputnode&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fieldmap&quot;</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;outputnode&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_split</span><span class="p">(</span><span class="n">phase</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">phase</span>
+
+    <span class="n">split</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">MapNode</span><span class="p">(</span>  <span class="c1"># We cannot use an inline connection function with MapNode</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">_split</span><span class="p">,</span> <span class="n">output_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;map_file&quot;</span><span class="p">,</span> <span class="s2">&quot;meta&quot;</span><span class="p">]),</span>
+        <span class="n">iterfield</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;phase&quot;</span><span class="p">],</span>
+        <span class="n">run_without_submitting</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;split&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># phase diff -&gt; radians</span>
+    <span class="n">phmap2rads</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">MapNode</span><span class="p">(</span>
+        <span class="n">PhaseMap2rads</span><span class="p">(),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;phmap2rads&quot;</span><span class="p">,</span>
+        <span class="n">iterfield</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;in_file&quot;</span><span class="p">],</span>
+        <span class="n">run_without_submitting</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># FSL PRELUDE will perform phase-unwrapping</span>
+    <span class="n">prelude</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">PRELUDE</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;prelude&quot;</span><span class="p">)</span>
+
+    <span class="n">calc_phdiff</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">SubtractPhases</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;calc_phdiff&quot;</span><span class="p">,</span> <span class="n">run_without_submitting</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">compfmap</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">Phasediff2Fieldmap</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;compfmap&quot;</span><span class="p">)</span>
+
+    <span class="c1"># fmt: off</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;phase&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">prelude</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;magnitude&quot;</span><span class="p">,</span> <span class="s2">&quot;magnitude_file&quot;</span><span class="p">),</span>
+                              <span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">,</span> <span class="s2">&quot;mask_file&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">split</span><span class="p">,</span> <span class="n">phmap2rads</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;map_file&quot;</span><span class="p">,</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">phmap2rads</span><span class="p">,</span> <span class="n">calc_phdiff</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;in_phases&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">split</span><span class="p">,</span> <span class="n">calc_phdiff</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;meta&quot;</span><span class="p">,</span> <span class="s2">&quot;in_meta&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">calc_phdiff</span><span class="p">,</span> <span class="n">prelude</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;phase_diff&quot;</span><span class="p">,</span> <span class="s2">&quot;phase_file&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">prelude</span><span class="p">,</span> <span class="n">compfmap</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;unwrapped_phase_file&quot;</span><span class="p">,</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">calc_phdiff</span><span class="p">,</span> <span class="n">compfmap</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="s2">&quot;metadata&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">compfmap</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;fieldmap&quot;</span><span class="p">)]),</span>
+    <span class="p">])</span>
+    <span class="c1"># fmt: on</span>
+    <span class="k">return</span> <span class="n">workflow</span></div>
+
+
+<span class="k">def</span> <span class="nf">_recenter</span><span class="p">(</span><span class="n">in_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Recenter the phase-map distribution to the -pi..pi range.&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">getcwd</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="kn">import</span> <span class="nn">nibabel</span> <span class="k">as</span> <span class="nn">nb</span>
+    <span class="kn">from</span> <span class="nn">nipype.utils.filemanip</span> <span class="kn">import</span> <span class="n">fname_presuffix</span>
+
+    <span class="n">nii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">nii</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+    <span class="n">msk</span> <span class="o">=</span> <span class="n">data</span> <span class="o">!=</span> <span class="mi">0</span>
+    <span class="n">msk</span><span class="p">[</span><span class="n">data</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">data</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">msk</span><span class="p">])</span>
+
+    <span class="n">out_file</span> <span class="o">=</span> <span class="n">fname_presuffix</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;_recentered&quot;</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="n">getcwd</span><span class="p">())</span>
+    <span class="n">nb</span><span class="o">.</span><span class="n">Nifti1Image</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nii</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="n">nii</span><span class="o">.</span><span class="n">header</span><span class="p">)</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">out_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out_file</span>
+
+
+<span class="k">def</span> <span class="nf">_demean</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">in_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">usemode</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Subtract the median (since it is robuster than the mean) from a map.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    usemode : :obj:`bool`</span>
+<span class="sd">        Use the mode instead of the median (should be even more robust</span>
+<span class="sd">        against outliers).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">getcwd</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="kn">import</span> <span class="nn">nibabel</span> <span class="k">as</span> <span class="nn">nb</span>
+    <span class="kn">from</span> <span class="nn">nipype.utils.filemanip</span> <span class="kn">import</span> <span class="n">fname_presuffix</span>
+
+    <span class="n">nii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">nii</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+
+    <span class="n">msk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">in_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">msk</span><span class="p">[</span><span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">in_mask</span><span class="p">)</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-4</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">usemode</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">mode</span>
+
+        <span class="n">data</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span> <span class="o">-=</span> <span class="n">mode</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">msk</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">msk</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">out_file</span> <span class="o">=</span> <span class="n">fname_presuffix</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;_demean&quot;</span><span class="p">,</span> <span class="n">newpath</span><span class="o">=</span><span class="n">getcwd</span><span class="p">())</span>
+    <span class="n">nb</span><span class="o">.</span><span class="n">Nifti1Image</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nii</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="n">nii</span><span class="o">.</span><span class="n">header</span><span class="p">)</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">out_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out_file</span>
+
+
+<span class="k">def</span> <span class="nf">_pop</span><span class="p">(</span><span class="n">inlist</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inlist</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">inlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">inlist</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, The NiPreps developers
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: master
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../../../1.0.0/index.html">1.0.0</a></dd>
+            <dd><a href="../../../1.0.0rc1/index.html">1.0.0rc1</a></dd>
+            <dd><a href="../../../1.0.1/index.html">1.0.1</a></dd>
+            <dd><a href="../../../1.0.2/index.html">1.0.2</a></dd>
+            <dd><a href="../../../1.0.3/index.html">1.0.3</a></dd>
+            <dd><a href="../../../1.0.4/index.html">1.0.4</a></dd>
+            <dd><a href="../../../1.0.5/index.html">1.0.5</a></dd>
+            <dd><a href="../../../1.0.6/index.html">1.0.6</a></dd>
+            <dd><a href="../../../1.1.0/index.html">1.1.0</a></dd>
+            <dd><a href="../../../1.2.0/index.html">1.2.0</a></dd>
+            <dd><a href="../../../1.2.1/index.html">1.2.1</a></dd>
+            <dd><a href="../../../1.2.2/index.html">1.2.2</a></dd>
+            <dd><a href="../../../1.2.3/index.html">1.2.3</a></dd>
+            <dd><a href="../../../1.3.0/index.html">1.3.0</a></dd>
+            <dd><a href="../../../1.3.1/index.html">1.3.1</a></dd>
+            <dd><a href="../../../1.3.2/index.html">1.3.2</a></dd>
+            <dd><a href="../../../1.3.3/index.html">1.3.3</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="../../../feat_new-api/index.html">feat/new-api</a></dd>
+            <dd><a href="../../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
+            <dd><a href="../../../maint_1.2.x/index.html">maint/1.2.x</a></dd>
+            <dd><a href="../../../maint_1.3.x/index.html">maint/1.3.x</a></dd>
+            <dd><a href="../../../master/_modules/sdcflows/models/fieldmap.html">master</a></dd>
+        </dl>
+    </div>
+</div>
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
