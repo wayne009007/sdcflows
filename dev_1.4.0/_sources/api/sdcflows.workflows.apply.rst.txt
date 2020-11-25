@@ -1,0 +1,14 @@
+sdcflows.workflows.apply package
+================================
+
+.. automodule:: sdcflows.workflows.apply
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   sdcflows.workflows.apply.registration
