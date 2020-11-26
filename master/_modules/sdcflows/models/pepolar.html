@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.models.pepolar &mdash; sdcflows 1.3.4.dev50 documentation</title>
+  <title>sdcflows.models.pepolar &mdash; sdcflows 1.3.4.dev53 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.3.4.dev50
+                1.3.4.dev53
               </div>
             
           
@@ -373,14 +373,14 @@
     <span class="n">qwarp</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
         <span class="n">afni</span><span class="o">.</span><span class="n">QwarpPlusMinus</span><span class="p">(</span>
             <span class="n">blur</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-            <span class="n">environ</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;OMP_NUM_THREADS&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">omp_nthreads</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">},</span>
+            <span class="n">environ</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;OMP_NUM_THREADS&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">},</span>
             <span class="n">minpatch</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
             <span class="n">nopadWARP</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">noweight</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">pblur</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span>
         <span class="p">),</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;qwarp&quot;</span><span class="p">,</span>
-        <span class="n">n_procs</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">,</span>
+        <span class="n">n_procs</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
     <span class="p">)</span>
 
     <span class="n">to_ants</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">_fix_hdr</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;to_ants&quot;</span><span class="p">,</span> <span class="n">mem_gb</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
