@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.interfaces.utils module &mdash; sdcflows 1.3.4.dev53 documentation</title>
+  <title>sdcflows.interfaces.utils module &mdash; sdcflows 1.4.0rc0 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.3.4.dev53
+                1.4.0rc0
               </div>
             
           
@@ -190,25 +190,45 @@
 <div class="section" id="module-sdcflows.interfaces.utils">
 <span id="sdcflows-interfaces-utils-module"></span><h1>sdcflows.interfaces.utils module<a class="headerlink" href="#module-sdcflows.interfaces.utils" title="Permalink to this headline">¶</a></h1>
 <p>Utilities.</p>
-<blockquote>
-<div></div></blockquote>
+<dl class="class">
+<dt id="sdcflows.interfaces.utils.ConvertWarp">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.utils.</code><code class="sig-name descname">ConvertWarp</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/utils.html#ConvertWarp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.utils.ConvertWarp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
+<p>Convert a displacements field from <code class="docutils literal notranslate"><span class="pre">3dQwarp</span></code> to ANTS-compatible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mandatory Inputs</dt>
+<dd class="field-odd"><p><strong>in_file</strong> (<em>a pathlike object or string representing an existing file</em>) – Output of 3dQwarp.</p>
+</dd>
+<dt class="field-even">Outputs</dt>
+<dd class="field-even"><p><strong>out_file</strong> (<em>a pathlike object or string representing an existing file</em>) – The warp converted into ANTs.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="class">
 <dt id="sdcflows.interfaces.utils.Flatten">
 <em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.utils.</code><code class="sig-name descname">Flatten</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/utils.html#Flatten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.utils.Flatten" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
 <p>Flatten a list of 3D and 4D files (and metadata).</p>
-<dl class="attribute">
-<dt id="sdcflows.interfaces.utils.Flatten.input_spec">
-<code class="sig-name descname">input_spec</code><a class="headerlink" href="#sdcflows.interfaces.utils.Flatten.input_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_FlattenInputSpec</span></code></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="sdcflows.interfaces.utils.Flatten.output_spec">
-<code class="sig-name descname">output_spec</code><a class="headerlink" href="#sdcflows.interfaces.utils.Flatten.output_spec" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_FlattenOutputSpec</span></code></p>
-</dd></dl>
-
+<dl class="field-list simple">
+<dt class="field-odd">Mandatory Inputs</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_data</strong> (<em>a list of items which are a pathlike object or string representing an existing file</em>) – List of input data.</p></li>
+<li><p><strong>in_meta</strong> (<em>a list of items which are a dictionary with keys which are a value of class ‘str’ and with values which are any value</em>) – List of metadata.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Optional Inputs</dt>
+<dd class="field-even"><p><strong>max_trs</strong> (<em>an integer</em>) – Only pick first TRs.
+(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">50</span></code>)</p>
+</dd>
+<dt class="field-odd">Outputs</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out_data</strong> (<em>a list of items which are a pathlike object or string representing an existing file</em>)</p></li>
+<li><p><strong>out_list</strong> (<em>a list of items which are a tuple of the form: (a pathlike object or string representing an existing file, a dictionary with keys which are a value of class ‘str’ and with values which are any value)</em>) – List of output files.</p></li>
+<li><p><strong>out_meta</strong> (<em>a list of items which are a dictionary with keys which are a value of class ‘str’ and with values which are any value</em>)</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -282,6 +302,7 @@
             <dd><a href="../../1.3.1/index.html">1.3.1</a></dd>
             <dd><a href="../../1.3.2/index.html">1.3.2</a></dd>
             <dd><a href="../../1.3.3/index.html">1.3.3</a></dd>
+            <dd><a href="../../1.4.0rc0/api/sdcflows.interfaces.utils.html">1.4.0rc0</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
