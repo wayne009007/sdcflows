@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.interfaces.reportlets &mdash; sdcflows 1.4.0rc0 documentation</title>
+  <title>sdcflows.interfaces.reportlets &mdash; sdcflows 1.3.4.dev55 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.4.0rc0
+                1.3.4.dev55
               </div>
             
           
@@ -156,12 +156,9 @@
   
 
 
-    
-    
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><b>Warning:</b> This document is for an old version of sdcflows.</p>
 <h1>Source code for sdcflows.interfaces.reportlets</h1><div class="highlight"><pre>
 <span></span><span class="c1"># emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-</span>
 <span class="c1"># vi: set ft=python sts=4 ts=4 sw=4 et:</span>
@@ -192,7 +189,7 @@
                                  <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;a label name for the reference mosaic&#39;</span><span class="p">)</span>
     <span class="n">moving_label</span> <span class="o">=</span> <span class="n">traits</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="s1">&#39;Fieldmap (Hz)&#39;</span><span class="p">,</span> <span class="n">usedefault</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                               <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;a label name for the reference mosaic&#39;</span><span class="p">)</span>
-    <span class="n">apply_mask</span> <span class="o">=</span> <span class="n">traits</span><span class="o">.</span><span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">usedefault</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;zero values outside mask&quot;</span><span class="p">)</span>
+    <span class="c1"># pe_dir = traits.Enum(*tuple(&quot;ijk&quot;), desc=&quot;PE direction&quot;)</span>
 
 
 <div class="viewcode-block" id="FieldmapReportlet"><a class="viewcode-back" href="../../../api/sdcflows.interfaces.reportlets.html#sdcflows.interfaces.reportlets.FieldmapReportlet">[docs]</a><span class="k">class</span> <span class="nc">FieldmapReportlet</span><span class="p">(</span><span class="n">reporting</span><span class="o">.</span><span class="n">ReportCapableInterface</span><span class="p">):</span>
@@ -242,9 +239,6 @@
         <span class="n">fmapdata</span> <span class="o">=</span> <span class="n">fmapnii</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">()</span>
         <span class="n">vmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">fmapdata</span><span class="p">[</span><span class="n">maskdata</span><span class="p">],</span> <span class="mf">99.8</span><span class="p">)),</span>
                    <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">fmapdata</span><span class="p">[</span><span class="n">maskdata</span><span class="p">],</span> <span class="mf">0.2</span><span class="p">)))</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">apply_mask</span><span class="p">:</span>
-            <span class="n">fmapdata</span><span class="p">[</span><span class="o">~</span><span class="n">maskdata</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">fmapnii</span> <span class="o">=</span> <span class="n">fmapnii</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">fmapdata</span><span class="p">,</span> <span class="n">fmapnii</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="n">fmapnii</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
 
         <span class="n">fmap_overlay</span> <span class="o">=</span> <span class="p">[{</span>
             <span class="s1">&#39;overlay&#39;</span><span class="p">:</span> <span class="n">fmapnii</span><span class="p">,</span>
@@ -314,7 +308,7 @@
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: 1.4.0rc0
+        v: master
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
@@ -337,7 +331,7 @@
             <dd><a href="../../../1.3.1/index.html">1.3.1</a></dd>
             <dd><a href="../../../1.3.2/index.html">1.3.2</a></dd>
             <dd><a href="../../../1.3.3/index.html">1.3.3</a></dd>
-            <dd><a href="../../../1.4.0rc0/_modules/sdcflows/interfaces/reportlets.html">1.4.0rc0</a></dd>
+            <dd><a href="../../../1.4.0rc0/index.html">1.4.0rc0</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
@@ -346,7 +340,7 @@
             <dd><a href="../../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../../../maint_1.2.x/index.html">maint/1.2.x</a></dd>
             <dd><a href="../../../maint_1.3.x/index.html">maint/1.3.x</a></dd>
-            <dd><a href="../../../master/index.html">master</a></dd>
+            <dd><a href="../../../master/_modules/sdcflows/interfaces/reportlets.html">master</a></dd>
         </dl>
     </div>
 </div>

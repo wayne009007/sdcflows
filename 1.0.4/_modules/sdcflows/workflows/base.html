@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows.base &mdash; sdcflows 1.4.0rc0 documentation</title>
+  <title>sdcflows.workflows.base &mdash; sdcflows 1.3.4.dev55 documentation</title>
   
 
   
@@ -31,6 +31,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                1.4.0rc0
+                1.3.4.dev55
               </div>
             
           
@@ -164,104 +165,228 @@
 <h1>Source code for sdcflows.workflows.base</h1><div class="highlight"><pre>
 <span></span><span class="c1"># emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-</span>
 <span class="c1"># vi: set ft=python sts=4 ts=4 sw=4 et:</span>
-<span class="sd">&quot;&quot;&quot;Estimate fieldmaps for :abbr:`SDC (susceptibility distortion correction)`.&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;SDC workflows coordination.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">nipype.pipeline</span> <span class="kn">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">pe</span>
+<span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span>
 <span class="kn">from</span> <span class="nn">nipype</span> <span class="kn">import</span> <span class="n">logging</span>
 
-<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;nipype.workflow&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="kn">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
+
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;nipype.workflow&quot;</span><span class="p">)</span>
+<span class="n">FMAP_PRIORITY</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;epi&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;fieldmap&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;phasediff&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">&quot;syn&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="p">}</span>
+
 <span class="n">DEFAULT_MEMORY_MIN_GB</span> <span class="o">=</span> <span class="mf">0.01</span>
 
 
-<div class="viewcode-block" id="init_fmap_preproc_wf"><a class="viewcode-back" href="../../../api/sdcflows.workflows.base.html#sdcflows.workflows.base.init_fmap_preproc_wf">[docs]</a><span class="k">def</span> <span class="nf">init_fmap_preproc_wf</span><span class="p">(</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">layout</span><span class="p">,</span>
-    <span class="n">omp_nthreads</span><span class="p">,</span>
-    <span class="n">output_dir</span><span class="p">,</span>
-    <span class="n">subject</span><span class="p">,</span>
-    <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fmap_preproc_wf&#39;</span><span class="p">,</span>
-<span class="p">):</span>
+<div class="viewcode-block" id="init_sdc_estimate_wf"><a class="viewcode-back" href="../../../api/sdcflows.workflows.base.html#sdcflows.workflows.base.init_sdc_estimate_wf">[docs]</a><span class="k">def</span> <span class="nf">init_sdc_estimate_wf</span><span class="p">(</span><span class="n">bids_fmaps</span><span class="p">,</span> <span class="n">omp_nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Stage the fieldmap data preprocessing steps of *SDCFlows*.</span>
+<span class="sd">    Build a :abbr:`SDC (susceptibility distortion correction)` workflow.</span>
+
+<span class="sd">    This workflow implements the heuristics to choose an estimation</span>
+<span class="sd">    methodology for :abbr:`SDC (susceptibility distortion correction)`.</span>
+<span class="sd">    When no field map information is present within the BIDS inputs,</span>
+<span class="sd">    the EXPERIMENTAL &quot;fieldmap-less SyN&quot; can be performed, using</span>
+<span class="sd">    the ``--use-syn`` argument. When ``--force-syn`` is specified,</span>
+<span class="sd">    then the &quot;fieldmap-less SyN&quot; is always executed and reported</span>
+<span class="sd">    despite of other fieldmaps available with higher priority.</span>
+<span class="sd">    In the latter case (some sort of fieldmap(s) is available and</span>
+<span class="sd">    ``--force-syn`` is requested), then the :abbr:`SDC (susceptibility</span>
+<span class="sd">    distortion correction)` method applied is that with the</span>
+<span class="sd">    highest priority.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    layout : :obj:`bids.layout.BIDSLayout`</span>
-<span class="sd">        An initialized PyBIDS layout.</span>
-<span class="sd">    omp_nthreads : :obj:`int`</span>
+<span class="sd">    bids_fmaps : list of pybids dicts</span>
+<span class="sd">        A list of dictionaries with the available fieldmaps</span>
+<span class="sd">        (and their metadata using the key ``&#39;metadata&#39;`` for the</span>
+<span class="sd">        case of :abbr:`PEPOLAR (Phase-Encoding POLARity)` fieldmaps).</span>
+<span class="sd">    omp_nthreads : int</span>
 <span class="sd">        Maximum number of threads an individual process may use</span>
-<span class="sd">    output_dir : :obj:`str`</span>
-<span class="sd">        Directory in which to save derivatives</span>
-<span class="sd">    subject : :obj:`str`</span>
-<span class="sd">        Participant label for this single-subject workflow.</span>
-<span class="sd">    debug : :obj:`bool`</span>
+<span class="sd">    debug : bool</span>
 <span class="sd">        Enable debugging outputs</span>
-<span class="sd">    name : :obj:`str`, optional</span>
-<span class="sd">        Workflow name (default: ``&quot;fmap_preproc_wf&quot;``)</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; init_fmap_preproc_wf(</span>
-<span class="sd">    ...     layout=layouts[&#39;ds001600&#39;],</span>
-<span class="sd">    ...     omp_nthreads=1,</span>
-<span class="sd">    ...     output_dir=&quot;/tmp&quot;,</span>
-<span class="sd">    ...     subject=&quot;1&quot;,</span>
-<span class="sd">    ... )  # doctest: +ELLIPSIS</span>
-<span class="sd">    [FieldmapEstimation(sources=&lt;4 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;4 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;3 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;, bids_id=&#39;...&#39;)]</span>
+<span class="sd">    Inputs</span>
+<span class="sd">    ------</span>
+<span class="sd">    epi_file</span>
+<span class="sd">        A reference image calculated at a previous stage</span>
+<span class="sd">    epi_brain</span>
+<span class="sd">        Same as above, but brain-masked</span>
+<span class="sd">    epi_mask</span>
+<span class="sd">        Brain mask for the run</span>
+<span class="sd">    t1w_brain</span>
+<span class="sd">        T1w image, brain-masked, for the fieldmap-less SyN method</span>
+<span class="sd">    std2anat_xfm</span>
+<span class="sd">        Standard-to-T1w transform generated during spatial</span>
+<span class="sd">        normalization (only for the fieldmap-less SyN method).</span>
 
-<span class="sd">    &gt;&gt;&gt; init_fmap_preproc_wf(</span>
-<span class="sd">    ...     layout=layouts[&#39;testdata&#39;],</span>
-<span class="sd">    ...     omp_nthreads=1,</span>
-<span class="sd">    ...     output_dir=&quot;/tmp&quot;,</span>
-<span class="sd">    ...     subject=&quot;HCP101006&quot;,</span>
-<span class="sd">    ... )  # doctest: +ELLIPSIS</span>
-<span class="sd">    [FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;, bids_id=&#39;...&#39;)]</span>
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    epi_corrected</span>
+<span class="sd">        The EPI scan reference after unwarping.</span>
+<span class="sd">    epi_mask</span>
+<span class="sd">        The corresponding new mask after unwarping</span>
+<span class="sd">    epi_brain</span>
+<span class="sd">        Brain-extracted, unwarped EPI scan reference</span>
+<span class="sd">    out_warp</span>
+<span class="sd">        The deformation field to unwarp the susceptibility distortions</span>
+<span class="sd">    method : str</span>
+<span class="sd">        Short description of the estimation method that was run.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">..fieldmaps</span> <span class="kn">import</span> <span class="n">FieldmapEstimation</span><span class="p">,</span> <span class="n">FieldmapFile</span>
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sdc_estimate_wf&quot;</span> <span class="k">if</span> <span class="n">bids_fmaps</span> <span class="k">else</span> <span class="s2">&quot;sdc_bypass_wf&quot;</span><span class="p">)</span>
+    <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fieldmap&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">]),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;outputnode&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="n">base_entities</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="n">subject</span><span class="p">,</span>
-        <span class="s2">&quot;extension&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;.nii&quot;</span><span class="p">,</span> <span class="s2">&quot;.nii.gz&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;space&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Ensure derivatives are not captured</span>
-    <span class="p">}</span>
+    <span class="c1"># No fieldmaps - forward inputs to outputs</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">bids_fmaps</span><span class="p">:</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">__postdesc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">Susceptibility distortion correction (SDC) was omitted.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+        <span class="n">outputnode</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span>
+        <span class="n">outputnode</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">fieldmap</span> <span class="o">=</span> <span class="s2">&quot;identity&quot;</span>
+        <span class="c1"># fmt: off</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">([</span><span class="n">outputnode</span><span class="p">])</span>
+        <span class="c1"># fmt: on</span>
+        <span class="k">return</span> <span class="n">workflow</span>
 
-    <span class="n">estimators</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">__postdesc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">Based on the estimated susceptibility distortion, a corrected</span>
+<span class="s2">EPI (echo-planar imaging) reference was calculated for a more</span>
+<span class="s2">accurate co-registration with the anatomical reference.</span>
+<span class="s2">&quot;&quot;&quot;</span>
 
-    <span class="c1"># Set up B0 fieldmap strategies:</span>
-    <span class="k">for</span> <span class="n">fmap</span> <span class="ow">in</span> <span class="n">layout</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-        <span class="n">suffix</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fieldmap&quot;</span><span class="p">,</span> <span class="s2">&quot;phasediff&quot;</span><span class="p">,</span> <span class="s2">&quot;phase1&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">base_entities</span>
-    <span class="p">):</span>
-        <span class="n">e</span> <span class="o">=</span> <span class="n">FieldmapEstimation</span><span class="p">(</span>
-            <span class="n">FieldmapFile</span><span class="p">(</span><span class="n">fmap</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">fmap</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">())</span>
-        <span class="p">)</span>
-        <span class="n">estimators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
+            <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;epi_file&quot;</span><span class="p">,</span> <span class="s2">&quot;epi_brain&quot;</span><span class="p">,</span> <span class="s2">&quot;epi_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;t1w_brain&quot;</span><span class="p">,</span> <span class="s2">&quot;std2anat_xfm&quot;</span><span class="p">]</span>
+        <span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inputnode&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># PEPOLAR path</span>
+    <span class="k">if</span> <span class="s2">&quot;epi&quot;</span> <span class="ow">in</span> <span class="n">bids_fmaps</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">..models.pepolar</span> <span class="kn">import</span> <span class="n">init_3dQwarp_wf</span>
 
-    <span class="c1"># A bunch of heuristics to select EPI fieldmaps</span>
-    <span class="n">sessions</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">get_sessions</span><span class="p">()</span> <span class="ow">or</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">sessions</span><span class="p">:</span>
-        <span class="n">dirs</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">get_directions</span><span class="p">(</span>
-            <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;epi&quot;</span><span class="p">,</span>
-            <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">base_entities</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dirs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">e</span> <span class="o">=</span> <span class="n">FieldmapEstimation</span><span class="p">([</span>
-                <span class="n">FieldmapFile</span><span class="p">(</span><span class="n">fmap</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">fmap</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">())</span>
-                <span class="k">for</span> <span class="n">fmap</span> <span class="ow">in</span> <span class="n">layout</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;epi&quot;</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
-                                       <span class="n">direction</span><span class="o">=</span><span class="n">dirs</span><span class="p">,</span> <span class="o">**</span><span class="n">base_entities</span><span class="p">)</span>
-            <span class="p">])</span>
-            <span class="n">estimators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">outputnode</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;PEB/PEPOLAR (phase-encoding based / PE-POLARity)&quot;</span>
 
-    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">estimators</span><span class="p">:</span>
-        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2">:: &lt;</span><span class="si">{</span><span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">sources</span><span class="p">)</span><span class="si">}</span><span class="s2">&gt;.&quot;</span>
-        <span class="p">)</span>
+        <span class="n">in_data</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">bids_fmaps</span><span class="p">[</span><span class="s2">&quot;epi&quot;</span><span class="p">])</span>
+        <span class="n">estimate_wf</span> <span class="o">=</span> <span class="n">init_3dQwarp_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">)</span>
+        <span class="n">estimate_wf</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">inputnode</span><span class="o">.</span><span class="n">in_data</span> <span class="o">=</span> <span class="n">in_data</span>
+        <span class="n">estimate_wf</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">inputnode</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span>
 
-    <span class="k">return</span> <span class="n">estimators</span></div>
+    <span class="c1"># FIELDMAP path</span>
+    <span class="k">elif</span> <span class="s2">&quot;fieldmap&quot;</span> <span class="ow">in</span> <span class="n">bids_fmaps</span> <span class="ow">or</span> <span class="s2">&quot;phasediff&quot;</span> <span class="ow">in</span> <span class="n">bids_fmaps</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">..models.fieldmap</span> <span class="kn">import</span> <span class="n">init_fmap_wf</span>
+
+        <span class="k">if</span> <span class="s2">&quot;fieldmap&quot;</span> <span class="ow">in</span> <span class="n">bids_fmaps</span><span class="p">:</span>
+            <span class="n">fmap</span> <span class="o">=</span> <span class="n">bids_fmaps</span><span class="p">[</span><span class="s2">&quot;fieldmap&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">outputnode</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;FMB (fieldmap-based) - directly measured B0 map&quot;</span>
+            <span class="n">estimate_wf</span> <span class="o">=</span> <span class="n">init_fmap_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;fieldmap&quot;</span><span class="p">)</span>
+            <span class="n">estimate_wf</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">inputnode</span><span class="o">.</span><span class="n">fieldmap</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;fieldmap&quot;</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fmap</span> <span class="o">=</span> <span class="n">bids_fmaps</span><span class="p">[</span><span class="s2">&quot;phasediff&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">outputnode</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;FMB (fieldmap-based) - phase-difference map&quot;</span>
+            <span class="n">estimate_wf</span> <span class="o">=</span> <span class="n">init_fmap_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">)</span>
+            <span class="n">estimate_wf</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">inputnode</span><span class="o">.</span><span class="n">fieldmap</span> <span class="o">=</span> <span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;phases&quot;</span><span class="p">]</span>
+
+        <span class="c1"># set magnitude files (common for the three flavors)</span>
+        <span class="n">estimate_wf</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">inputnode</span><span class="o">.</span><span class="n">magnitude</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]]</span>
+
+    <span class="c1"># FIELDMAP-less path</span>
+    <span class="k">elif</span> <span class="s2">&quot;syn&quot;</span> <span class="ow">in</span> <span class="n">bids_fmaps</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">..models.syn</span> <span class="kn">import</span> <span class="n">init_syn_sdc_wf</span>
+
+        <span class="n">outputnode</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;FLB (&quot;fieldmap-less&quot;, SyN-based)&#39;</span>
+
+        <span class="n">estimate_wf</span> <span class="o">=</span> <span class="n">init_syn_sdc_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">)</span>
+
+        <span class="c1"># fmt: off</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+            <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">estimate_wf</span><span class="p">,</span> <span class="p">[</span>
+                <span class="p">(</span><span class="s2">&quot;epi_file&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.in_reference&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;epi_brain&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.in_reference_brain&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;t1w_brain&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.t1w_brain&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;std2anat_xfm&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.std2anat_xfm&quot;</span><span class="p">)]),</span>
+        <span class="p">])</span>
+        <span class="c1"># fmt: on</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported field mapping strategy.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># fmt: off</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+        <span class="p">(</span><span class="n">estimate_wf</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;outputnode.fmap&quot;</span><span class="p">,</span> <span class="s2">&quot;fieldmap&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;outputnode.fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;reference&quot;</span><span class="p">)]),</span>
+    <span class="p">])</span>
+    <span class="c1"># fmt: on</span>
+    <span class="k">return</span> <span class="n">workflow</span></div>
+
+
+<div class="viewcode-block" id="fieldmap_wrangler"><a class="viewcode-back" href="../../../api/sdcflows.workflows.base.html#sdcflows.workflows.base.fieldmap_wrangler">[docs]</a><span class="k">def</span> <span class="nf">fieldmap_wrangler</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">target_image</span><span class="p">,</span> <span class="n">use_syn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_syn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Query the BIDSLayout for fieldmaps, and arrange them for the orchestration workflow.&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+    <span class="n">fmap_bids</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">get_fieldmap</span><span class="p">(</span><span class="n">target_image</span><span class="p">,</span> <span class="n">return_list</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fieldmaps</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">fmap</span> <span class="ow">in</span> <span class="n">fmap_bids</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;suffix&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;epi&quot;</span><span class="p">:</span>
+            <span class="n">fieldmaps</span><span class="p">[</span><span class="s2">&quot;epi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;epi&quot;</span><span class="p">],</span> <span class="n">layout</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;epi&quot;</span><span class="p">])))</span>
+
+        <span class="k">if</span> <span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;suffix&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;fieldmap&quot;</span><span class="p">:</span>
+            <span class="n">fieldmaps</span><span class="p">[</span><span class="s2">&quot;fieldmap&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;magnitude&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">(</span><span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">],</span> <span class="n">layout</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">]))</span>
+                    <span class="p">],</span>
+                    <span class="s2">&quot;fieldmap&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">(</span><span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;fieldmap&quot;</span><span class="p">],</span> <span class="n">layout</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;fieldmap&quot;</span><span class="p">]))</span>
+                    <span class="p">],</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;suffix&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;phasediff&quot;</span><span class="p">:</span>
+            <span class="n">fieldmaps</span><span class="p">[</span><span class="s2">&quot;phasediff&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;magnitude&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">(</span><span class="n">fmap</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">layout</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">fmap</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+                        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fmap</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                        <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;magnitude&quot;</span><span class="p">)</span>
+                    <span class="p">],</span>
+                    <span class="s2">&quot;phases&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">(</span><span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;phasediff&quot;</span><span class="p">],</span> <span class="n">layout</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;phasediff&quot;</span><span class="p">]))</span>
+                    <span class="p">],</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">fmap</span><span class="p">[</span><span class="s2">&quot;suffix&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;phase&quot;</span><span class="p">:</span>
+            <span class="n">fieldmaps</span><span class="p">[</span><span class="s2">&quot;phasediff&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;magnitude&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">(</span><span class="n">fmap</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">layout</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">fmap</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+                        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fmap</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                        <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;magnitude&quot;</span><span class="p">)</span>
+                    <span class="p">],</span>
+                    <span class="s2">&quot;phases&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">(</span><span class="n">fmap</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">layout</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">fmap</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+                        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fmap</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                        <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span>
+                    <span class="p">],</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">fieldmaps</span> <span class="ow">and</span> <span class="n">force_syn</span><span class="p">:</span>
+        <span class="c1"># syn: True -&gt; Run SyN in addition to fieldmap-based SDC</span>
+        <span class="n">fieldmaps</span><span class="p">[</span><span class="s2">&quot;syn&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">fieldmaps</span> <span class="ow">and</span> <span class="p">(</span><span class="n">force_syn</span> <span class="ow">or</span> <span class="n">use_syn</span><span class="p">):</span>
+        <span class="c1"># syn: False -&gt; Run SyN as only SDC</span>
+        <span class="n">fieldmaps</span><span class="p">[</span><span class="s2">&quot;syn&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">fieldmaps</span></div>
 </pre></div>
 
            </div>
