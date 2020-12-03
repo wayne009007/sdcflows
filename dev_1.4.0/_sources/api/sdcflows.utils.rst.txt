@@ -11,6 +11,7 @@ Submodules
 
 .. toctree::
 
+   sdcflows.utils.bimap
    sdcflows.utils.epimanip
    sdcflows.utils.misc
    sdcflows.utils.phasemanip
