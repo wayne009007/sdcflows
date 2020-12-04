@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.utils.phasemanip module &mdash; sdcflows 1.3.4.dev61 documentation</title>
+  <title>sdcflows.utils.phasemanip module &mdash; sdcflows 2.0.0rc1 documentation</title>
   
 
   
@@ -38,7 +38,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="sdcflows.viz package" href="sdcflows.viz.html" />
+    <link rel="next" title="sdcflows.utils.wrangler module" href="sdcflows.utils.wrangler.html" />
     <link rel="prev" title="sdcflows.utils.misc module" href="sdcflows.utils.misc.html" /> 
 </head>
 
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.3.4.dev61
+                2.0.0rc1
               </div>
             
           
@@ -99,6 +99,7 @@
 <li class="toctree-l4"><a class="reference internal" href="sdcflows.utils.epimanip.html">sdcflows.utils.epimanip module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sdcflows.utils.misc.html">sdcflows.utils.misc module</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">sdcflows.utils.phasemanip module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sdcflows.utils.wrangler.html">sdcflows.utils.wrangler module</a></li>
 </ul>
 </li>
 </ul>
@@ -186,8 +187,64 @@
 
 
     <p class="scv-banner scv-sphinx_rtd_theme"><b>Warning:</b> This document is for the development version of sdcflows.</p>
-<div class="section" id="sdcflows-utils-phasemanip-module">
-<h1>sdcflows.utils.phasemanip module<a class="headerlink" href="#sdcflows-utils-phasemanip-module" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-sdcflows.utils.phasemanip">
+<span id="sdcflows-utils-phasemanip-module"></span><h1>sdcflows.utils.phasemanip module<a class="headerlink" href="#module-sdcflows.utils.phasemanip" title="Permalink to this headline">¶</a></h1>
+<p>Utilities to manipulate phase and phase difference maps.</p>
+<dl class="function">
+<dt id="sdcflows.utils.phasemanip.au2rads">
+<code class="sig-prename descclassname">sdcflows.utils.phasemanip.</code><code class="sig-name descname">au2rads</code><span class="sig-paren">(</span><em class="sig-param">in_file</em>, <em class="sig-param">newpath=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/utils/phasemanip.html#au2rads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.utils.phasemanip.au2rads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the input phase map in arbitrary units (a.u.) to rads.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sdcflows.utils.phasemanip.delta_te">
+<code class="sig-prename descclassname">sdcflows.utils.phasemanip.</code><code class="sig-name descname">delta_te</code><span class="sig-paren">(</span><em class="sig-param">in_values</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/utils/phasemanip.html#delta_te"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.utils.phasemanip.delta_te" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read <span class="math notranslate nohighlight">\(\Delta_\text{TE}\)</span> from BIDS metadata dict.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">delta_te</span><span class="p">({</span><span class="s2">&quot;EchoTime1&quot;</span><span class="p">:</span> <span class="mf">0.00522</span><span class="p">,</span> <span class="s2">&quot;EchoTime2&quot;</span><span class="p">:</span> <span class="mf">0.00768</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="go">&#39;0.00246&#39;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">delta_te</span><span class="p">({</span><span class="s1">&#39;EchoTimeDifference&#39;</span><span class="p">:</span> <span class="mf">0.00246</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="go">&#39;0.00246&#39;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">delta_te</span><span class="p">({</span><span class="s2">&quot;EchoTime1&quot;</span><span class="p">:</span> <span class="s2">&quot;a&quot;</span><span class="p">})</span>  
+<span class="gt">Traceback (most recent call last):</span>
+<span class="gr">ValueError</span>:
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">delta_te</span><span class="p">({</span><span class="s2">&quot;EchoTime2&quot;</span><span class="p">:</span> <span class="s2">&quot;a&quot;</span><span class="p">})</span>  
+<span class="gt">Traceback (most recent call last):</span>
+<span class="gr">ValueError</span>:
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">delta_te</span><span class="p">({})</span>  
+<span class="gt">Traceback (most recent call last):</span>
+<span class="gr">ValueError</span>:
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">delta_te</span><span class="p">({</span><span class="s2">&quot;EchoTimeDifference&quot;</span><span class="p">:</span> <span class="s2">&quot;a&quot;</span><span class="p">})</span>  
+<span class="gt">Traceback (most recent call last):</span>
+<span class="gr">ValueError</span>:
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="sdcflows.utils.phasemanip.phdiff2fmap">
+<code class="sig-prename descclassname">sdcflows.utils.phasemanip.</code><code class="sig-name descname">phdiff2fmap</code><span class="sig-paren">(</span><em class="sig-param">in_file</em>, <em class="sig-param">delta_te</em>, <em class="sig-param">newpath=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/utils/phasemanip.html#phdiff2fmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.utils.phasemanip.phdiff2fmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the input phase-difference map into a <em>fieldmap</em> in Hz.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sdcflows.utils.phasemanip.subtract_phases">
+<code class="sig-prename descclassname">sdcflows.utils.phasemanip.</code><code class="sig-name descname">subtract_phases</code><span class="sig-paren">(</span><em class="sig-param">in_phases</em>, <em class="sig-param">in_meta</em>, <em class="sig-param">newpath=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/utils/phasemanip.html#subtract_phases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.utils.phasemanip.subtract_phases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the phase-difference map, given two input phase maps.</p>
+</dd></dl>
+
 </div>
 
 
@@ -198,7 +255,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="sdcflows.viz.html" class="btn btn-neutral float-right" title="sdcflows.viz package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="sdcflows.utils.wrangler.html" class="btn btn-neutral float-right" title="sdcflows.utils.wrangler module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="sdcflows.utils.misc.html" class="btn btn-neutral float-left" title="sdcflows.utils.misc module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -260,6 +317,7 @@
             <dd><a href="../../1.3.2/index.html">1.3.2</a></dd>
             <dd><a href="../../1.3.3/index.html">1.3.3</a></dd>
             <dd><a href="../../1.4.0rc0/api/sdcflows.utils.phasemanip.html">1.4.0rc0</a></dd>
+            <dd><a href="../../2.0.0rc1/api/sdcflows.utils.phasemanip.html">2.0.0rc1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>

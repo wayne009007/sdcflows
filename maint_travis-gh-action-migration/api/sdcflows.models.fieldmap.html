@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.models.fieldmap module &mdash; sdcflows 1.3.4.dev61 documentation</title>
+  <title>sdcflows.models.fieldmap module &mdash; sdcflows 2.0.0rc1 documentation</title>
   
 
   
@@ -31,7 +31,6 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -63,7 +62,7 @@
             
             
               <div class="version">
-                1.3.4.dev61
+                2.0.0rc1
               </div>
             
           
@@ -185,188 +184,8 @@
 
 
     <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../master/api/sdcflows.models.fieldmap.html"><b>Warning:</b> This document is for the development version of sdcflows. The main version is master.</a></p>
-<div class="section" id="module-sdcflows.models.fieldmap">
-<span id="sdcflows-models-fieldmap-module"></span><h1>sdcflows.models.fieldmap module<a class="headerlink" href="#module-sdcflows.models.fieldmap" title="Permalink to this headline">¶</a></h1>
-<p>Processing phase-difference and <em>directly measured</em> B0 maps.</p>
-<div class="section" id="phase-difference-b0-estimation">
-<span id="sdc-phasediff"></span><h2>Phase-difference B0 estimation<a class="headerlink" href="#phase-difference-b0-estimation" title="Permalink to this headline">¶</a></h2>
-<p>The inhomogeneity of the <span class="math notranslate nohighlight">\(B_0\)</span> field inside the scanner at each voxel is
-proportional to the phase drift (at that voxel) between two subsequent
-<abbr title="gradient-recalled echo">GRE</abbr> acquisitions.</p>
-<p>This corresponds to <a class="reference external" href="https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/01-magnetic-resonance-imaging-data.html#two-phase-images-and-two-magnitude-images">this section of the BIDS specification</a>.
-Some scanners produce one <code class="docutils literal notranslate"><span class="pre">phasediff</span></code> map, where the drift between the two echos has
-already been calulated (see <a class="reference external" href="https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/01-magnetic-resonance-imaging-data.html#case-1-phase-difference-map-and-at-least-one-magnitude-image">the corresponding section of BIDS</a>).</p>
-</div>
-<div class="section" id="direct-b0-mapping-sequences">
-<span id="sdc-direct-b0"></span><h2>Direct B0 mapping sequences<a class="headerlink" href="#direct-b0-mapping-sequences" title="Permalink to this headline">¶</a></h2>
-<p>The inhomogeneity of the <span class="math notranslate nohighlight">\(B_0\)</span> field can directly be mapped with a
-some MR schemes (such as <abbr title="spiral echo">SE</abbr>).
-These <em>fieldmaps</em> are described with more detail <a class="reference external" href="https://cni.stanford.edu/wiki/GE_Processing#Fieldmaps">here</a>.</p>
-<p>This corresponds to <a class="reference external" href="https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/01-magnetic-resonance-imaging-data.html#case-3-direct-field-mapping">this section of the BIDS specification</a>.</p>
-<dl class="function">
-<dt id="sdcflows.models.fieldmap.init_fmap_postproc_wf">
-<code class="sig-prename descclassname">sdcflows.models.fieldmap.</code><code class="sig-name descname">init_fmap_postproc_wf</code><span class="sig-paren">(</span><em class="sig-param">omp_nthreads</em>, <em class="sig-param">median_kernel_size=5</em>, <em class="sig-param">name='fmap_postproc_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/models/fieldmap.html#init_fmap_postproc_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.models.fieldmap.init_fmap_postproc_wf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Postprocess a <span class="math notranslate nohighlight">\(B_0\)</span> map estimated elsewhere.</p>
-<p>This workflow denoises (mostly via smoothing) a <span class="math notranslate nohighlight">\(B_0\)</span> fieldmap.</p>
-<dl>
-<dt>Workflow Graph</dt><dd><div class="figure align-default">
-<img alt="../_images/sdcflows-models-fieldmap-1.png" src="../_images/sdcflows-models-fieldmap-1.png" />
-</div>
-<p>(<a class="reference external" href="../api/sdcflows-models-fieldmap-1.py">Source code</a>, <a class="reference external" href="../api/sdcflows-models-fieldmap-1.png">png</a>, <a class="reference external" href="../api/sdcflows-models-fieldmap-1.svg">svg</a>, <a class="reference external" href="../api/sdcflows-models-fieldmap-1.pdf">pdf</a>)</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>omp_nthreads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – Maximum number of threads an individual process may use</p></li>
-<li><p><strong>median_kernel_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – Size of the kernel when smoothing is done with a median filter.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of workflow (default: <code class="docutils literal notranslate"><span class="pre">fmap_postproc_wf</span></code>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Inputs</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>fmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) – Fully preprocessed <span class="math notranslate nohighlight">\(B_0\)</span> field nonuniformity map (aka <em>fieldmap</em>).</p></li>
-<li><p><strong>fmap_ref</strong> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) – A preprocessed magnitude/reference image for the fieldmap.</p></li>
-<li><p><strong>fmap_mask</strong> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) – A brain binary mask corresponding to this fieldmap.</p></li>
-</ul>
-</dd>
-<dt class="field-odd">Outputs</dt>
-<dd class="field-odd"><p><strong>out_fmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) – Postprocessed fieldmap.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sdcflows.models.fieldmap.init_fmap_wf">
-<code class="sig-prename descclassname">sdcflows.models.fieldmap.</code><code class="sig-name descname">init_fmap_wf</code><span class="sig-paren">(</span><em class="sig-param">omp_nthreads</em>, <em class="sig-param">mode='phasediff'</em>, <em class="sig-param">name='fmap_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/models/fieldmap.html#init_fmap_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.models.fieldmap.init_fmap_wf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimate the fieldmap based on a field-mapping MRI acquisition.</p>
-<p>Estimates the fieldmap using either one phase-difference map or
-image and one or more
-magnitude images corresponding to two or more <abbr title="Gradient Echo sequence">GRE</abbr>
-acquisitions.</p>
-<p>When we have a sequence that directly measures the fieldmap,
-we just need to mask it (using the corresponding magnitude image)
-to remove the noise in the surrounding air region, and ensure that
-units are Hz.</p>
-<dl>
-<dt>Workflow Graph</dt><dd><div class="figure align-default">
-<img alt="../_images/sdcflows-models-fieldmap-2.png" src="../_images/sdcflows-models-fieldmap-2.png" />
-</div>
-<p>(<a class="reference external" href="../api/sdcflows-models-fieldmap-2.py">Source code</a>, <a class="reference external" href="../api/sdcflows-models-fieldmap-2.png">png</a>, <a class="reference external" href="../api/sdcflows-models-fieldmap-2.svg">svg</a>, <a class="reference external" href="../api/sdcflows-models-fieldmap-2.pdf">pdf</a>)</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>omp_nthreads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – Maximum number of threads an individual process may use.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Unique name of this workflow.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Inputs</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>magnitude</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Path to the corresponding magnitude image for anatomical reference.</p></li>
-<li><p><strong>fieldmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Path to the fieldmap acquisition (<code class="docutils literal notranslate"><span class="pre">*_fieldmap.nii[.gz]</span></code> of BIDS).</p></li>
-</ul>
-</dd>
-<dt class="field-odd">Outputs</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Path to the estimated fieldmap.</p></li>
-<li><p><strong>fmap_ref</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Path to a preprocessed magnitude image reference.</p></li>
-<li><p><strong>fmap_mask</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Path to a binary brain mask corresponding to the <code class="docutils literal notranslate"><span class="pre">fmap</span></code> and <code class="docutils literal notranslate"><span class="pre">fmap_ref</span></code>
-pair.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sdcflows.models.fieldmap.init_magnitude_wf">
-<code class="sig-prename descclassname">sdcflows.models.fieldmap.</code><code class="sig-name descname">init_magnitude_wf</code><span class="sig-paren">(</span><em class="sig-param">omp_nthreads</em>, <em class="sig-param">name='magnitude_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/models/fieldmap.html#init_magnitude_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.models.fieldmap.init_magnitude_wf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prepare the magnitude part of <abbr title="gradient-recalled echo">GRE</abbr> fieldmaps.</p>
-<p>Average (if not done already) the magnitude part of the
-<abbr title="gradient recalled echo">GRE</abbr> images, run N4 to
-correct for B1 field nonuniformity, and skull-strip the
-preprocessed magnitude.</p>
-<dl>
-<dt>Workflow Graph</dt><dd><div class="figure align-default">
-<img alt="../_images/sdcflows-models-fieldmap-3.png" src="../_images/sdcflows-models-fieldmap-3.png" />
-</div>
-<p>(<a class="reference external" href="../api/sdcflows-models-fieldmap-3.py">Source code</a>, <a class="reference external" href="../api/sdcflows-models-fieldmap-3.png">png</a>, <a class="reference external" href="../api/sdcflows-models-fieldmap-3.svg">svg</a>, <a class="reference external" href="../api/sdcflows-models-fieldmap-3.pdf">pdf</a>)</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>omp_nthreads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – Maximum number of threads an individual process may use</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of workflow (default: <code class="docutils literal notranslate"><span class="pre">prepare_magnitude_w</span></code>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Inputs</dt>
-<dd class="field-even"><p><strong>magnitude</strong> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) – Path to the corresponding magnitude path(s).</p>
-</dd>
-<dt class="field-odd">Outputs</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fmap_ref</strong> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) – Path to the fieldmap reference calculated in this workflow.</p></li>
-<li><p><strong>fmap_mask</strong> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) – Path to a binary brain mask corresponding to the reference above.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sdcflows.models.fieldmap.init_phdiff_wf">
-<code class="sig-prename descclassname">sdcflows.models.fieldmap.</code><code class="sig-name descname">init_phdiff_wf</code><span class="sig-paren">(</span><em class="sig-param">omp_nthreads</em>, <em class="sig-param">name='phdiff_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/models/fieldmap.html#init_phdiff_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.models.fieldmap.init_phdiff_wf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a <span class="math notranslate nohighlight">\(B_0\)</span> field from consecutive-phases and phase-difference maps.</p>
-<p>This workflow preprocess phase-difference maps (or generates the phase-difference
-map should two <code class="docutils literal notranslate"><span class="pre">phase1</span></code>/<code class="docutils literal notranslate"><span class="pre">phase2</span></code> be provided at the input), and generates
-an image equivalent to BIDS’s <code class="docutils literal notranslate"><span class="pre">fieldmap</span></code> that can be processed with the
-general fieldmap workflow.</p>
-<p>Besides phase2 - phase1 subtraction, the core of this particular workflow relies
-in the phase-unwrapping with FSL PRELUDE <a class="reference internal" href="#jenkinson2003" id="id1"><span>[Jenkinson2003]</span></a>.
-Because phase (and phase-difference) maps are clipped in the range
-<span class="math notranslate nohighlight">\([0 \dotsb 2\pi )\)</span>, it is necessary to find the integer number of offsets
-that make a region continuously smooth with its neighbors (<em>phase-unwrapping</em>).
-FSL PRELUDE takes wrapped maps in the range 0 to 6.28, <a class="reference external" href="https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FUGUE/Guide#Step_2_-_Getting_.28wrapped.29_phase_in_radians">as per the user guide</a>.</p>
-<p>For the phase-difference maps, recentering back to <span class="math notranslate nohighlight">\([-\pi \dotsb \pi )\)</span>
-is necessary.
-After some massaging and with the scaling of the echo separation factor
-<span class="math notranslate nohighlight">\(\Delta \text{TE}\)</span>, the phase-difference maps are converted into
-an actual <span class="math notranslate nohighlight">\(B_0\)</span> map in Hz units.
-This implementation derives <a class="reference external" href="https://github.com/nipy/nipype/blob/0.12.1/nipype/workflows/dmri/fsl/artifacts.py#L514">originally from Nipype</a>.</p>
-<dl>
-<dt>Workflow Graph</dt><dd><div class="figure align-default">
-<img alt="../_images/sdcflows-models-fieldmap-4.png" src="../_images/sdcflows-models-fieldmap-4.png" />
-</div>
-<p>(<a class="reference external" href="../api/sdcflows-models-fieldmap-4.py">Source code</a>, <a class="reference external" href="../api/sdcflows-models-fieldmap-4.png">png</a>, <a class="reference external" href="../api/sdcflows-models-fieldmap-4.svg">svg</a>, <a class="reference external" href="../api/sdcflows-models-fieldmap-4.pdf">pdf</a>)</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>omp_nthreads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – Maximum number of threads an individual process may use</p>
-</dd>
-<dt class="field-even">Inputs</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>magnitude</strong> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) – A reference magnitude image preprocessed elsewhere.</p></li>
-<li><p><strong>phase</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>)) – List containing one GRE phase-difference map with its corresponding metadata
-(requires <code class="docutils literal notranslate"><span class="pre">EchoTime1</span></code> and <code class="docutils literal notranslate"><span class="pre">EchoTime2</span></code>), or the phase maps for the two
-subsequent echoes, with their metadata (requires <code class="docutils literal notranslate"><span class="pre">EchoTime</span></code>).</p></li>
-<li><p><strong>mask</strong> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) – A brain mask calculated from the magnitude image.</p></li>
-</ul>
-</dd>
-<dt class="field-odd">Outputs</dt>
-<dd class="field-odd"><p><strong>fieldmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">os.PathLike</span></code></a>) – The estimated fieldmap in Hz.  # TODO: write metadata “Units”</p>
-</dd>
-</dl>
-<p class="rubric">References</p>
-<dl class="citation">
-<dt class="label" id="jenkinson2003"><span class="brackets"><a class="fn-backref" href="#id1">Jenkinson2003</a></span></dt>
-<dd><p>Jenkinson, M. (2003) Fast, automated, N-dimensional phase-unwrapping
-algorithm. MRM 49(1):193-197. doi:<a class="reference external" href="10.1002/mrm.10354">10.1002/mrm.10354</a>.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
+<div class="section" id="sdcflows-models-fieldmap-module">
+<h1>sdcflows.models.fieldmap module<a class="headerlink" href="#sdcflows-models-fieldmap-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -439,6 +258,7 @@ algorithm. MRM 49(1):193-197. doi:<a class="reference external" href="10.1002/mr
             <dd><a href="../../1.3.2/index.html">1.3.2</a></dd>
             <dd><a href="../../1.3.3/index.html">1.3.3</a></dd>
             <dd><a href="../../1.4.0rc0/index.html">1.4.0rc0</a></dd>
+            <dd><a href="../../2.0.0rc1/index.html">2.0.0rc1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>

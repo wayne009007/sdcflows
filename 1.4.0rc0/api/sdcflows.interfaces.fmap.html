@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.interfaces.fmap module &mdash; sdcflows 1.3.4.dev61 documentation</title>
+  <title>sdcflows.interfaces.fmap module &mdash; sdcflows 2.0.0rc1 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.3.4.dev61
+                2.0.0rc1
               </div>
             
           
@@ -190,100 +190,20 @@
 <div class="section" id="module-sdcflows.interfaces.fmap">
 <span id="sdcflows-interfaces-fmap-module"></span><h1>sdcflows.interfaces.fmap module<a class="headerlink" href="#module-sdcflows.interfaces.fmap" title="Permalink to this headline">¶</a></h1>
 <p>Interfaces to deal with the various types of fieldmap sources.</p>
-<blockquote>
-<div></div></blockquote>
 <dl class="class">
-<dt id="sdcflows.interfaces.fmap.FUGUEvsm2ANTSwarp">
-<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">FUGUEvsm2ANTSwarp</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#FUGUEvsm2ANTSwarp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.FUGUEvsm2ANTSwarp" title="Permalink to this definition">¶</a></dt>
+<dt id="sdcflows.interfaces.fmap.CheckB0Units">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">CheckB0Units</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#CheckB0Units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.CheckB0Units" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
-<p>Convert a voxel-shift-map to ants warp.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Mandatory Inputs</dt>
-<dd class="field-odd"><p><strong>in_file</strong> (<em>a pathlike object or string representing an existing file</em>) – Input displacements field map.</p>
-</dd>
-<dt class="field-even">Optional Inputs</dt>
-<dd class="field-even"><p><strong>pe_dir</strong> (<em>‘i’ or ‘i-‘ or ‘j’ or ‘j-‘ or ‘k’ or ‘k-‘</em>) – Phase-encoding axis.</p>
-</dd>
-<dt class="field-odd">Outputs</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fieldmap</strong> (<em>a pathlike object or string representing a file</em>) – Field map in mm.</p></li>
-<li><p><strong>out_file</strong> (<em>a pathlike object or string representing a file</em>) – The output warp field.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="class">
-<dt id="sdcflows.interfaces.fmap.FieldEnhance">
-<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">FieldEnhance</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#FieldEnhance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.FieldEnhance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
-<p>Massage the input fieldmap (masking, despiking, etc.).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Mandatory Inputs</dt>
-<dd class="field-odd"><p><strong>in_file</strong> (<em>a pathlike object or string representing an existing file</em>) – Input fieldmap.</p>
-</dd>
-<dt class="field-even">Optional Inputs</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>bspline_smooth</strong> (<em>a boolean</em>) – Run 3D bspline smoother.
-(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
-<li><p><strong>despike</strong> (<em>a boolean</em>) – Run despike filter.
-(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
-<li><p><strong>despike_threshold</strong> (<em>a float</em>) – Mask erosion iterations.
-(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">0.2</span></code>)</p></li>
-<li><p><strong>in_magnitude</strong> (<em>a pathlike object or string representing an existing file</em>) – Input magnitude.</p></li>
-<li><p><strong>in_mask</strong> (<em>a pathlike object or string representing an existing file</em>) – Brain mask.</p></li>
-<li><p><strong>mask_erode</strong> (<em>an integer</em>) – Mask erosion iterations.
-(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
-<li><p><strong>num_threads</strong> (<em>an integer</em>) – Number of jobs.
-(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
-<li><p><strong>unwrap</strong> (<em>a boolean</em>) – Run phase unwrap.
-(Nipype <strong>default</strong> value: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
-</ul>
-</dd>
-<dt class="field-odd">Outputs</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>out_file</strong> (<em>a pathlike object or string representing a file</em>) – The output fieldmap.</p></li>
-<li><p><strong>out_unwrapped</strong> (<em>a pathlike object or string representing a file</em>) – Unwrapped fieldmap.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="class">
-<dt id="sdcflows.interfaces.fmap.FieldToHz">
-<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">FieldToHz</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#FieldToHz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.FieldToHz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
-<p>Convert from arbitrary units to Hz.</p>
+<p>Ensure the input fieldmap is given in Hz.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Mandatory Inputs</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>in_file</strong> (<em>a pathlike object or string representing an existing file</em>) – Input fieldmap.</p></li>
-<li><p><strong>range_hz</strong> (<em>a float</em>) – Range of input field map.</p></li>
+<li><p><strong>units</strong> (<em>‘Hz’ or ‘rad/s’</em>) – Fieldmap units.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Outputs</dt>
-<dd class="field-even"><p><strong>out_file</strong> (<em>a pathlike object or string representing a file</em>) – The output fieldmap.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="class">
-<dt id="sdcflows.interfaces.fmap.FieldToRadS">
-<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">FieldToRadS</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#FieldToRadS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.FieldToRadS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
-<p>Convert from arbitrary units to rad/s.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Mandatory Inputs</dt>
-<dd class="field-odd"><p><strong>in_file</strong> (<em>a pathlike object or string representing an existing file</em>) – Input fieldmap.</p>
-</dd>
-<dt class="field-even">Optional Inputs</dt>
-<dd class="field-even"><p><strong>fmap_range</strong> (<em>a float</em>) – Range of input field map.</p>
-</dd>
-<dt class="field-odd">Outputs</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fmap_range</strong> (<em>a float</em>) – Range of input field map.</p></li>
-<li><p><strong>out_file</strong> (<em>a pathlike object or string representing a file</em>) – The output fieldmap.</p></li>
-</ul>
+<dd class="field-even"><p><strong>out_file</strong> (<em>a pathlike object or string representing an existing file</em>) – Output fieldmap in Hz.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -292,7 +212,7 @@
 <dt id="sdcflows.interfaces.fmap.PhaseMap2rads">
 <em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">PhaseMap2rads</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#PhaseMap2rads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.PhaseMap2rads" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
-<p>Convert a phase map in a.u. to radians.</p>
+<p>Convert a phase map given in a.u. (e.g., 0-4096) to radians.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Mandatory Inputs</dt>
 <dd class="field-odd"><p><strong>in_file</strong> (<em>a pathlike object or string representing an existing file</em>) – Input (wrapped) phase map.</p>
@@ -308,15 +228,6 @@
 <em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">Phasediff2Fieldmap</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#Phasediff2Fieldmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.Phasediff2Fieldmap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
 <p>Convert a phase difference map into a fieldmap in Hz.</p>
-<dl class="simple">
-<dt>This interface is equivalent to running the following steps:</dt><dd><ol class="arabic simple">
-<li><p>Convert from rad to rad/s
-(<code class="docutils literal notranslate"><span class="pre">niflow.nipype1.workflows.dmri.fsl.utils.rads2radsec</span></code>)</p></li>
-<li><p>FUGUE execution: fsl.FUGUE(save_fmap=True)</p></li>
-<li><p>Conversion from rad/s to Hz (divide by 2pi, <code class="docutils literal notranslate"><span class="pre">rsec2hz</span></code>).</p></li>
-</ol>
-</dd>
-</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Mandatory Inputs</dt>
 <dd class="field-odd"><ul class="simple">
@@ -347,32 +258,6 @@
 <li><p><strong>metadata</strong> (<em>a dictionary with keys which are any value and with values which are any value</em>) – Output metadata.</p></li>
 <li><p><strong>phase_diff</strong> (<em>a pathlike object or string representing an existing file</em>) – Phase difference map.</p></li>
 </ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="sdcflows.interfaces.fmap.au2rads">
-<code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">au2rads</code><span class="sig-paren">(</span><em class="sig-param">in_file</em>, <em class="sig-param">newpath=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#au2rads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.au2rads" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert the input phase difference map in arbitrary units (a.u.) to rads.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="sdcflows.interfaces.fmap.phdiff2fmap">
-<code class="sig-prename descclassname">sdcflows.interfaces.fmap.</code><code class="sig-name descname">phdiff2fmap</code><span class="sig-paren">(</span><em class="sig-param">in_file</em>, <em class="sig-param">delta_te</em>, <em class="sig-param">newpath=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/fmap.html#phdiff2fmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.fmap.phdiff2fmap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert the input phase-difference map into a fieldmap in Hz.</p>
-<p>Uses eq. (1) of <a class="reference internal" href="#hutton2002" id="id1"><span>[Hutton2002]</span></a>:</p>
-<div class="math notranslate nohighlight">
-\[\Delta B_0 (\text{T}^{-1}) = \frac{\Delta \Theta}{2\pi\gamma \Delta\text{TE}}\]</div>
-<p>In this case, we do not take into account the gyromagnetic ratio of the
-proton (<span class="math notranslate nohighlight">\(\gamma\)</span>), since it will be applied inside TOPUP:</p>
-<div class="math notranslate nohighlight">
-\[\Delta B_0 (\text{Hz}) = \frac{\Delta \Theta}{2\pi \Delta\text{TE}}\]</div>
-<p class="rubric">References</p>
-<dl class="citation">
-<dt class="label" id="hutton2002"><span class="brackets"><a class="fn-backref" href="#id1">Hutton2002</a></span></dt>
-<dd><p>Hutton et al., Image Distortion Correction in fMRI: A Quantitative
-Evaluation, NeuroImage 16(1):217-240, 2002. doi:<a class="reference external" href="https://doi.org/10.1006/nimg.2001.1054">10.1006/nimg.2001.1054</a>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -449,6 +334,7 @@ Evaluation, NeuroImage 16(1):217-240, 2002. doi:<a class="reference external" hr
             <dd><a href="../../1.3.2/api/sdcflows.interfaces.fmap.html">1.3.2</a></dd>
             <dd><a href="../../1.3.3/api/sdcflows.interfaces.fmap.html">1.3.3</a></dd>
             <dd><a href="sdcflows.interfaces.fmap.html">1.4.0rc0</a></dd>
+            <dd><a href="../../2.0.0rc1/api/sdcflows.interfaces.fmap.html">2.0.0rc1</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
