@@ -11,6 +11,7 @@ Submodules
 
 .. toctree::
 
+   sdcflows.interfaces.bspline
    sdcflows.interfaces.epi
    sdcflows.interfaces.fmap
    sdcflows.interfaces.reportlets

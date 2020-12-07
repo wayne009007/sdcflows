@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.utils.epimanip module &mdash; sdcflows 1.3.4.dev63 documentation</title>
+  <title>sdcflows.utils.epimanip module &mdash; sdcflows 2.0.0rc2.dev3 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                1.3.4.dev63
+                2.0.0rc2.dev3
               </div>
             
           
@@ -184,9 +184,141 @@
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><b>Warning:</b> This document is for an old version of sdcflows.</p>
-<div class="section" id="sdcflows-utils-epimanip-module">
-<h1>sdcflows.utils.epimanip module<a class="headerlink" href="#sdcflows-utils-epimanip-module" title="Permalink to this headline">¶</a></h1>
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../master/api/sdcflows.utils.epimanip.html"><b>Warning:</b> This document is for an old version of sdcflows. The main version is master.</a></p>
+<div class="section" id="module-sdcflows.utils.epimanip">
+<span id="sdcflows-utils-epimanip-module"></span><h1>sdcflows.utils.epimanip module<a class="headerlink" href="#module-sdcflows.utils.epimanip" title="Permalink to this headline">¶</a></h1>
+<p>Manipulation of EPI data.</p>
+<dl class="function">
+<dt id="sdcflows.utils.epimanip.get_trt">
+<code class="sig-prename descclassname">sdcflows.utils.epimanip.</code><code class="sig-name descname">get_trt</code><span class="sig-paren">(</span><em class="sig-param">in_meta</em>, <em class="sig-param">in_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/utils/epimanip.html#get_trt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.utils.epimanip.get_trt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain the <em>total readout time</em> <span class="math notranslate nohighlight">\(T_\text{ro}\)</span> from available metadata.</p>
+<p>BIDS provides two standard mechanisms to store the total readout time,
+<span class="math notranslate nohighlight">\(T_\text{ro}\)</span>, of <abbr title="echo-planar imaging">EPI</abbr> scans.
+The first option is that a <code class="docutils literal notranslate"><span class="pre">TotalReadoutTime</span></code> field is found
+in the JSON sidecar:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;TotalReadoutTime&#39;</span><span class="p">:</span> <span class="mf">0.05251</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_trt</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
+<span class="go">0.05251</span>
+</pre></div>
+</div>
+<p>Alternatively, the <em>effective echo spacing</em> <span class="math notranslate nohighlight">\(t_\text{ees}\)</span>
+(<code class="docutils literal notranslate"><span class="pre">EffectiveEchoSpacing</span></code> BIDS field) may be provided.
+Then, the total readout time <span class="math notranslate nohighlight">\(T_\text{ro}\)</span> can be calculated
+as follows:</p>
+<div class="math notranslate nohighlight">
+\[T_\text{ro} = t_\text{ees} \cdot (N_\text{PE} - 1),
+\label{eq:rotime-ees}\tag{1}\]</div>
+<p>where <span class="math notranslate nohighlight">\(N_\text{PE}\)</span> is the number of pixels along the
+<abbr title="phase-encoding">PE</abbr> direction <strong>on the reconstructed matrix</strong>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;EffectiveEchoSpacing&#39;</span><span class="p">:</span> <span class="mf">0.00059</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">get_trt</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">in_file</span><span class="o">=</span><span class="s1">&#39;epi.nii.gz&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="go">&#39;0.05251&#39;</span>
+</pre></div>
+</div>
+<p>Using nonstandard metadata, there are further options.
+If the <em>echo spacing</em> <span class="math notranslate nohighlight">\(t_\text{es}\)</span> (do not confuse with the
+<em>effective echo spacing</em>, <span class="math notranslate nohighlight">\(t_\text{ees}\)</span>) is set and the
+parallel acceleration factor
+(<abbr title="GeneRalized Auto-calibrating Partial Parallel Acquisition">GRAPPA</abbr>,
+<abbr title="Auto-calibrating Reconstruction for Cartesian imaging">ARC</abbr>, etc.)
+of the EPI <span class="math notranslate nohighlight">\(f_\text{acc}\)</span> is known, then it is possible to calculate
+the readout time as:</p>
+<div class="math notranslate nohighlight">
+\[T_\text{ro} = t_\text{es} \cdot
+    (\left\lfloor\frac{N_\text{PE}}{f_\text{acc}} \right\rfloor - 1).\]</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;EchoSpacing&#39;</span><span class="p">:</span> <span class="mf">0.00119341</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;ParallelReductionFactorInPlane&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">get_trt</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">in_file</span><span class="o">=</span><span class="s1">&#39;epi.nii.gz&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="go">&#39;0.05251&#39;</span>
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Philips stores different parameter names, and there has been quite a bit
+of reverse-engineering and discussion around how to get the total
+readout-time right for the vendor.</p>
+<p>The implementation done here follows the findings of Dr. Rorden,
+summarized in <a class="reference external" href="https://github.com/rordenlab/dcm2niix/issues/377#issuecomment-598685590">this post</a>.</p>
+</div>
+<p>It seems to be possible to calculate the <strong>effective</strong> echo spacing
+(in seconds) as:</p>
+<div class="math notranslate nohighlight">
+\[t_\text{ees} = \frac{f_\text{wfs}}
+    {B_0 \gamma \Delta_\text{w/f} \cdot (f_\text{EPI} + 1)},
+    \label{eq:philips-ees}\tag{2}\]</div>
+<p>where <span class="math notranslate nohighlight">\(f_\text{wfs}\)</span> is the water-fat-shift in pixels,
+<span class="math notranslate nohighlight">\(B_0\)</span> is the field strength in T, <span class="math notranslate nohighlight">\(\gamma\)</span> is the
+gyromagnetic ratio, <span class="math notranslate nohighlight">\(\Delta_\text{w/f}\)</span> is the water/fat
+difference in ppm and <span class="math notranslate nohighlight">\(f_\text{EPI}\)</span> is Philip’s «<em>EPI factor</em>,»
+which accounts for in-plane acceleration with <abbr title="SENSitivity Encoding">SENSE</abbr>.
+The problem with Philip’s «<em>EPI factor</em>» is that it is absolutely necessary
+to calculate the effective echo spacing, because the reported SENSE
+acceleration factor does not allow to calculate the effective train
+length from the reconstructed matrix size along the PE direction
+(neither from the acquisition matrix size if it is strangely found
+stored within the metadata).
+For <span class="math notranslate nohighlight">\(B_0 = 3.0\)</span> [T], then
+<span class="math notranslate nohighlight">\(B_0 \gamma \Delta_\text{w/f} \approx 434.215\)</span>, as
+in <a class="reference external" href="https://www.jiscmail.ac.uk/cgi-bin/webadmin?A2=fsl;162ab1a3.1308">early discussions held on the FSL listserv</a>.</p>
+<p>As per Dr. Rorden, Eq. <span class="math notranslate nohighlight">\(\eqref{eq:philips-ees}\)</span> is equivalent to
+the following formulation:</p>
+<div class="math notranslate nohighlight">
+\[t_\text{ees} = \frac{f_\text{wfs}}
+    {3.4 \cdot F_\text{img} \cdot (f_\text{EPI} + 1)},\]</div>
+<p>where <span class="math notranslate nohighlight">\(F_\text{img}\)</span> is the «<em>Imaging Frequency</em>» in MHz,
+as reported by the Philips console.
+This second formulation seems to be preferred for the better accuracy
+of the Imaging Frequency field over the Magnetic field strength.</p>
+<p>Once the effective echo spacing is obtained, the total readout time
+can then be calculated with Eq. <span class="math notranslate nohighlight">\(\eqref{eq:rotime-ees}\)</span>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;WaterFatShift&#39;</span><span class="p">:</span> <span class="mf">9.2227266</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;EPIFactor&#39;</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;ImagingFrequency&#39;</span><span class="p">:</span> <span class="mf">127.7325</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">get_trt</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">in_file</span><span class="o">=</span><span class="s1">&#39;epi.nii.gz&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">0.5f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="go">&#39;0.05251&#39;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;WaterFatShift&#39;</span><span class="p">:</span> <span class="mf">9.2227266</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;EPIFactor&#39;</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;MagneticFieldStrength&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">get_trt</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">in_file</span><span class="o">=</span><span class="s1">&#39;epi.nii.gz&#39;</span><span class="p">)</span><span class="si">:</span><span class="s2">0.5f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="go">&#39;0.05251&#39;</span>
+</pre></div>
+</div>
+<p>If enough metadata is not available, raise an error:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_trt</span><span class="p">({</span><span class="s1">&#39;PhaseEncodingDirection&#39;</span><span class="p">:</span> <span class="s1">&#39;j-&#39;</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="n">in_file</span><span class="o">=</span><span class="s1">&#39;epi.nii.gz&#39;</span><span class="p">)</span>  
+<span class="gt">Traceback (most recent call last):</span>
+<span class="gr">ValueError</span>:
+</pre></div>
+</div>
+<div class="admonition-thanks admonition">
+<p class="admonition-title">Thanks</p>
+<p>With thanks to Dr. Rorden for his thourough
+<a class="reference external" href="https://github.com/rordenlab/dcm2niix/issues/377">assessment</a>
+and <a class="reference external" href="https://osf.io/9ucek/">validation</a> on the matter,
+and to Pravesh Parekh for <a class="reference external" href="https://neurostars.org/t/consolidating-epi-echo-spacing-and-readout-time-for-philips-scanner/4406">his wonderful review on NeuroStars</a>.</p>
+</div>
+<div class="admonition-see-also admonition">
+<p class="admonition-title">See Also</p>
+<p>Some useful links regarding the calculation of the readout time for Philips:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://support.brainvoyager.com/brainvoyager/functional-analysis-preparation/29-pre-processing/78-epi-distortion-correction-echo-spacing-and-bandwidth">Brain Voyager documentation</a>
+– Please note that I (OE) <em>believe</em> the statement about the effective echo-spacing
+on Philips <strong>is wrong</strong>, as the EPI factor should account for the in-plane
+acceleration.</p></li>
+<li><p><a class="reference external" href="https://web.archive.org/web/20130420035502/www.spinozacentre.nl/wiki/index.php/NeuroWiki:Current_developments">Disappeared documentation of the Spinoza Center</a>.</p></li>
+<li><p>This <a class="reference external" href="https://osf.io/hks7x/">guide for preprocessing of EPI data</a>.</p></li>
+</ul>
+</div></blockquote>
+</div>
+</dd></dl>
+
 </div>
 
 
@@ -269,7 +401,7 @@
             <dd><a href="../../maint_1.2.x/index.html">maint/1.2.x</a></dd>
             <dd><a href="../../maint_1.3.x/index.html">maint/1.3.x</a></dd>
             <dd><a href="../../maint_travis-gh-action-migration/index.html">maint/travis-gh-action-migration</a></dd>
-            <dd><a href="../../master/index.html">master</a></dd>
+            <dd><a href="../../master/api/sdcflows.utils.epimanip.html">master</a></dd>
         </dl>
     </div>
 </div>

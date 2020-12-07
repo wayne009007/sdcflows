@@ -6,6 +6,14 @@ sdcflows.workflows package
    :undoc-members:
    :show-inheritance:
 
+Subpackages
+-----------
+
+.. toctree::
+
+   sdcflows.workflows.apply
+   sdcflows.workflows.fit
+
 Submodules
 ----------
 
@@ -13,4 +21,3 @@ Submodules
 
    sdcflows.workflows.base
    sdcflows.workflows.outputs
-   sdcflows.workflows.unwarp
