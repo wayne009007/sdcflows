@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows.outputs &mdash; sdcflows 2.0.0rc3.dev3 documentation</title>
+  <title>sdcflows.workflows.outputs &mdash; sdcflows 2.0.0rc3.dev5 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                2.0.0rc3.dev3
+                2.0.0rc3.dev5
               </div>
             
           
@@ -180,7 +180,12 @@
 
 
 <div class="viewcode-block" id="init_fmap_reports_wf"><a class="viewcode-back" href="../../../api/sdcflows.workflows.outputs.html#sdcflows.workflows.outputs.init_fmap_reports_wf">[docs]</a><span class="k">def</span> <span class="nf">init_fmap_reports_wf</span><span class="p">(</span>
-    <span class="o">*</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">fmap_type</span><span class="p">,</span> <span class="n">custom_entities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fmap_reports_wf&quot;</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">output_dir</span><span class="p">,</span>
+    <span class="n">fmap_type</span><span class="p">,</span>
+    <span class="n">bids_fmap_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">custom_entities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fmap_reports_wf&quot;</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set up a battery of datasinks to store reports in the right location.</span>
@@ -189,10 +194,12 @@
 <span class="sd">    ----------</span>
 <span class="sd">    fmap_type : :obj:`str`</span>
 <span class="sd">        The fieldmap estimator type.</span>
-<span class="sd">    custom_entities : :obj:`dict`</span>
-<span class="sd">        Define extra entities that will be written out in filenames.</span>
 <span class="sd">    output_dir : :obj:`str`</span>
 <span class="sd">        Directory in which to save derivatives</span>
+<span class="sd">    bids_fmap_id : :obj:`str`</span>
+<span class="sd">        Sets the ``B0FieldIdentifier`` metadata into the outputs.</span>
+<span class="sd">    custom_entities : :obj:`dict`</span>
+<span class="sd">        Define extra entities that will be written out in filenames.</span>
 <span class="sd">    name : :obj:`str`</span>
 <span class="sd">        Workflow name (default: ``&quot;fmap_reports_wf&quot;``)</span>
 
@@ -211,6 +218,8 @@
     <span class="kn">from</span> <span class="nn">..interfaces.reportlets</span> <span class="kn">import</span> <span class="n">FieldmapReportlet</span>
 
     <span class="n">custom_entities</span> <span class="o">=</span> <span class="n">custom_entities</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">bids_fmap_id</span><span class="p">:</span>
+        <span class="n">custom_entities</span><span class="p">[</span><span class="s2">&quot;fmapid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bids_fmap_id</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
@@ -264,14 +273,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    output_dir : :obj:`str`</span>
+<span class="sd">        Directory in which to save derivatives</span>
 <span class="sd">    bids_fmap_id : :obj:`str`</span>
 <span class="sd">        Sets the ``B0FieldIdentifier`` metadata into the outputs.</span>
 <span class="sd">    custom_entities : :obj:`dict`</span>
 <span class="sd">        Define extra entities that will be written out in filenames.</span>
-<span class="sd">    output_dir : :obj:`str`</span>
-<span class="sd">        Directory in which to save derivatives</span>
 <span class="sd">    name : :obj:`str`</span>
 <span class="sd">        Workflow name (default: ``&quot;fmap_derivatives_wf&quot;``)</span>
+<span class="sd">    write_coeff : :obj:`bool`</span>
+<span class="sd">        Build the workflow path to map coefficients into target space.</span>
 
 <span class="sd">    Inputs</span>
 <span class="sd">    ------</span>
@@ -286,6 +297,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">custom_entities</span> <span class="o">=</span> <span class="n">custom_entities</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">bids_fmap_id</span><span class="p">:</span>
+        <span class="n">custom_entities</span><span class="p">[</span><span class="s2">&quot;fmapid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bids_fmap_id</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
