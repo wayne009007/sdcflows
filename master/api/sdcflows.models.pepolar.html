@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.models.pepolar module &mdash; sdcflows 2.0.0rc1 documentation</title>
+  <title>sdcflows.models.pepolar module &mdash; sdcflows 1.3.4.dev63 documentation</title>
   
 
   
@@ -31,6 +31,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -62,7 +63,7 @@
             
             
               <div class="version">
-                2.0.0rc1
+                1.3.4.dev63
               </div>
             
           
@@ -181,8 +182,81 @@
 
 
 
-<div class="section" id="sdcflows-models-pepolar-module">
-<h1>sdcflows.models.pepolar module<a class="headerlink" href="#sdcflows-models-pepolar-module" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-sdcflows.models.pepolar">
+<span id="sdcflows-models-pepolar-module"></span><h1>sdcflows.models.pepolar module<a class="headerlink" href="#module-sdcflows.models.pepolar" title="Permalink to this headline">¶</a></h1>
+<p>Datasets with multiple phase encoded directions.</p>
+<div class="section" id="pepolar-techniques">
+<span id="sdc-pepolar"></span><h2><abbr title="Phase Encoding POLARity">PEPOLAR</abbr> techniques<a class="headerlink" href="#pepolar-techniques" title="Permalink to this headline">¶</a></h2>
+<p>This corresponds to <a class="reference external" href="https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/01-magnetic-resonance-imaging-data.html#case-4-multiple-phase-encoded-directions-pepolar">this section of the BIDS specification</a>.</p>
+<dl class="function">
+<dt id="sdcflows.models.pepolar.init_3dQwarp_wf">
+<code class="sig-prename descclassname">sdcflows.models.pepolar.</code><code class="sig-name descname">init_3dQwarp_wf</code><span class="sig-paren">(</span><em class="sig-param">omp_nthreads=1</em>, <em class="sig-param">name='pepolar_estimate_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/models/pepolar.html#init_3dQwarp_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.models.pepolar.init_3dQwarp_wf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the PEPOLAR field estimation workflow based on AFNI’s <code class="docutils literal notranslate"><span class="pre">3dQwarp</span></code>.</p>
+<p>This workflow takes in two EPI files that MUST have opposed
+<abbr title="phase-encoding">PE</abbr> direction.
+Therefore, EPIs with orthogonal PE directions are not supported.</p>
+<dl>
+<dt>Workflow Graph</dt><dd><div class="figure align-default">
+<img alt="../_images/sdcflows-models-pepolar-1.png" src="../_images/sdcflows-models-pepolar-1.png" />
+</div>
+<p>(<a class="reference external" href="../api/sdcflows-models-pepolar-1.py">Source code</a>, <a class="reference external" href="../api/sdcflows-models-pepolar-1.png">png</a>, <a class="reference external" href="../api/sdcflows-models-pepolar-1.svg">svg</a>, <a class="reference external" href="../api/sdcflows-models-pepolar-1.pdf">pdf</a>)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Name for this workflow</p></li>
+<li><p><strong>omp_nthreads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – Parallelize internal tasks across the number of CPUs given by this option.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Inputs</dt>
+<dd class="field-even"><p><strong>in_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – A list of two EPI files, the first of which will be taken as reference.</p>
+</dd>
+<dt class="field-odd">Outputs</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – The path of the estimated fieldmap.</p></li>
+<li><p><strong>fmap_ref</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – The path of an unwarped conversion of the first element of <code class="docutils literal notranslate"><span class="pre">in_data</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sdcflows.models.pepolar.init_topup_wf">
+<code class="sig-prename descclassname">sdcflows.models.pepolar.</code><code class="sig-name descname">init_topup_wf</code><span class="sig-paren">(</span><em class="sig-param">omp_nthreads=1</em>, <em class="sig-param">debug=False</em>, <em class="sig-param">name='pepolar_estimate_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/models/pepolar.html#init_topup_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.models.pepolar.init_topup_wf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the PEPOLAR field estimation workflow based on FSL’s <code class="docutils literal notranslate"><span class="pre">topup</span></code>.</p>
+<dl>
+<dt>Workflow Graph</dt><dd><div class="figure align-default">
+<img alt="../_images/sdcflows-models-pepolar-2.png" src="../_images/sdcflows-models-pepolar-2.png" />
+</div>
+<p>(<a class="reference external" href="../api/sdcflows-models-pepolar-2.py">Source code</a>, <a class="reference external" href="../api/sdcflows-models-pepolar-2.png">png</a>, <a class="reference external" href="../api/sdcflows-models-pepolar-2.svg">svg</a>, <a class="reference external" href="../api/sdcflows-models-pepolar-2.pdf">pdf</a>)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether a fast configuration of topup (less accurate) should be applied.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Name for this workflow</p></li>
+<li><p><strong>omp_nthreads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – Parallelize internal tasks across the number of CPUs given by this option.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Inputs</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>in_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – A list of EPI files that will be fed into TOPUP.</p></li>
+<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a>) – A list of dictionaries containing the metadata corresponding to each file
+in <code class="docutils literal notranslate"><span class="pre">in_data</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Outputs</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – The path of the estimated fieldmap.</p></li>
+<li><p><strong>fmap_ref</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – The path of an unwarped conversion of files in <code class="docutils literal notranslate"><span class="pre">in_data</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 </div>
 
 
