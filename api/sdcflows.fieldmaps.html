@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.fieldmaps module &mdash; sdcflows 2.0.0rc3.dev5 documentation</title>
+  <title>sdcflows.fieldmaps module &mdash; sdcflows 2.0.0rc3.dev8 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                2.0.0rc3.dev5
+                2.0.0rc3.dev8
               </div>
             
           
@@ -380,6 +380,26 @@ will overwrite metadata read from sidecar JSON.</p>
 <em class="property">exception </em><code class="sig-prename descclassname">sdcflows.fieldmaps.</code><code class="sig-name descname">MetadataError</code><a class="reference internal" href="../_modules/sdcflows/fieldmaps.html#MetadataError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.fieldmaps.MetadataError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a></p>
 <p>A better name for a specific value error.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sdcflows.fieldmaps.clear_registry">
+<code class="sig-prename descclassname">sdcflows.fieldmaps.</code><code class="sig-name descname">clear_registry</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/fieldmaps.html#clear_registry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.fieldmaps.clear_registry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Empty registries.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="sdcflows.fieldmaps.get_identifier">
+<code class="sig-prename descclassname">sdcflows.fieldmaps.</code><code class="sig-name descname">get_identifier</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">by='IntendedFor'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/fieldmaps.html#get_identifier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.fieldmaps.get_identifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the fieldmap identifier for a given filename.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – The file we want to search in indexes.</p></li>
+<li><p><strong>by</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a> (<code class="docutils literal notranslate"><span class="pre">IntendedFor</span></code> or <code class="docutils literal notranslate"><span class="pre">sources</span></code>)) – Index table in which the search should be performed.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
