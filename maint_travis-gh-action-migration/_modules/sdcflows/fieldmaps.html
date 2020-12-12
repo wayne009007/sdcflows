@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.fieldmaps &mdash; sdcflows 2.0.0rc3.dev9 documentation</title>
+  <title>sdcflows.fieldmaps &mdash; sdcflows 2.0.0rc3.dev14 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                2.0.0rc3.dev9
+                2.0.0rc3.dev14
               </div>
             
           
@@ -246,65 +246,65 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; f = FieldmapFile(testdata_dir / &quot;sub-01&quot; / &quot;anat&quot; / &quot;sub-01_T1w.nii.gz&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; f = FieldmapFile(dsA_dir / &quot;sub-01&quot; / &quot;anat&quot; / &quot;sub-01_T1w.nii.gz&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; f.suffix</span>
 <span class="sd">    &#39;T1w&#39;</span>
 
 <span class="sd">    &gt;&gt;&gt; FieldmapFile(</span>
-<span class="sd">    ...     testdata_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_dir-LR_epi.nii.gz&quot;,</span>
+<span class="sd">    ...     dsA_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_dir-LR_epi.nii.gz&quot;,</span>
 <span class="sd">    ...     find_meta=False</span>
 <span class="sd">    ... )  # doctest: +IGNORE_EXCEPTION_DETAIL</span>
 <span class="sd">    Traceback (most recent call last):</span>
 <span class="sd">    MetadataError:</span>
 
 <span class="sd">    &gt;&gt;&gt; f = FieldmapFile(</span>
-<span class="sd">    ...     testdata_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_dir-LR_epi.nii.gz&quot;,</span>
+<span class="sd">    ...     dsA_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_dir-LR_epi.nii.gz&quot;,</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; f.metadata[&#39;TotalReadoutTime&#39;]</span>
 <span class="sd">    0.005</span>
 
 <span class="sd">    &gt;&gt;&gt; f = FieldmapFile(</span>
-<span class="sd">    ...     testdata_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_dir-LR_epi.nii.gz&quot;,</span>
+<span class="sd">    ...     dsA_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_dir-LR_epi.nii.gz&quot;,</span>
 <span class="sd">    ...     metadata={&#39;TotalReadoutTime&#39;: 0.006}</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; f.metadata[&#39;TotalReadoutTime&#39;]</span>
 <span class="sd">    0.006</span>
 
 <span class="sd">    &gt;&gt;&gt; FieldmapFile(</span>
-<span class="sd">    ...     testdata_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_phasediff.nii.gz&quot;,</span>
+<span class="sd">    ...     dsA_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_phasediff.nii.gz&quot;,</span>
 <span class="sd">    ...     find_meta=False</span>
 <span class="sd">    ... )  # doctest: +IGNORE_EXCEPTION_DETAIL</span>
 <span class="sd">    Traceback (most recent call last):</span>
 <span class="sd">    MetadataError:</span>
 
 <span class="sd">    &gt;&gt;&gt; f = FieldmapFile(</span>
-<span class="sd">    ...     testdata_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_phasediff.nii.gz&quot;</span>
+<span class="sd">    ...     dsA_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_phasediff.nii.gz&quot;</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; f.metadata[&#39;EchoTime2&#39;]</span>
 <span class="sd">    0.00746</span>
 
 <span class="sd">    &gt;&gt;&gt; FieldmapFile(</span>
-<span class="sd">    ...     testdata_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_phase2.nii.gz&quot;,</span>
+<span class="sd">    ...     dsA_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_phase2.nii.gz&quot;,</span>
 <span class="sd">    ...     find_meta=False</span>
 <span class="sd">    ... )  # doctest: +IGNORE_EXCEPTION_DETAIL</span>
 <span class="sd">    Traceback (most recent call last):</span>
 <span class="sd">    MetadataError:</span>
 
 <span class="sd">    &gt;&gt;&gt; f = FieldmapFile(</span>
-<span class="sd">    ...     testdata_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_phase2.nii.gz&quot;</span>
+<span class="sd">    ...     dsA_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_phase2.nii.gz&quot;</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; f.metadata[&#39;EchoTime&#39;]</span>
 <span class="sd">    0.00746</span>
 
 <span class="sd">    &gt;&gt;&gt; FieldmapFile(</span>
-<span class="sd">    ...     testdata_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_fieldmap.nii.gz&quot;,</span>
+<span class="sd">    ...     dsA_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_fieldmap.nii.gz&quot;,</span>
 <span class="sd">    ...     find_meta=False</span>
 <span class="sd">    ... )  # doctest: +IGNORE_EXCEPTION_DETAIL</span>
 <span class="sd">    Traceback (most recent call last):</span>
 <span class="sd">    MetadataError:</span>
 
 <span class="sd">    &gt;&gt;&gt; f = FieldmapFile(</span>
-<span class="sd">    ...     testdata_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_fieldmap.nii.gz&quot;</span>
+<span class="sd">    ...     dsA_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_fieldmap.nii.gz&quot;</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; f.metadata[&#39;Units&#39;]</span>
 <span class="sd">    &#39;rad/s&#39;</span>

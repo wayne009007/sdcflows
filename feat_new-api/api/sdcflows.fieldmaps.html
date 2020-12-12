@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.fieldmaps module &mdash; sdcflows 2.0.0rc3.dev9 documentation</title>
+  <title>sdcflows.fieldmaps module &mdash; sdcflows 2.0.0rc3.dev14 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                2.0.0rc3.dev9
+                2.0.0rc3.dev14
               </div>
             
           
@@ -248,13 +248,13 @@ and collects all the available metadata.</p>
 of the file.
 This class may receive metadata as a keyword argument at initialization.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">FieldmapFile</span><span class="p">(</span><span class="n">testdata_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;anat&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_T1w.nii.gz&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">FieldmapFile</span><span class="p">(</span><span class="n">dsA_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;anat&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_T1w.nii.gz&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">suffix</span>
 <span class="go">&#39;T1w&#39;</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">FieldmapFile</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">testdata_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_dir-LR_epi.nii.gz&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dsA_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_dir-LR_epi.nii.gz&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">find_meta</span><span class="o">=</span><span class="kc">False</span>
 <span class="gp">... </span><span class="p">)</span>  
 <span class="gt">Traceback (most recent call last):</span>
@@ -262,14 +262,14 @@ This class may receive metadata as a keyword argument at initialization.</p>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">FieldmapFile</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">testdata_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_dir-LR_epi.nii.gz&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dsA_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_dir-LR_epi.nii.gz&quot;</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;TotalReadoutTime&#39;</span><span class="p">]</span>
 <span class="go">0.005</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">FieldmapFile</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">testdata_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_dir-LR_epi.nii.gz&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dsA_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_dir-LR_epi.nii.gz&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;TotalReadoutTime&#39;</span><span class="p">:</span> <span class="mf">0.006</span><span class="p">}</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;TotalReadoutTime&#39;</span><span class="p">]</span>
@@ -277,7 +277,7 @@ This class may receive metadata as a keyword argument at initialization.</p>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">FieldmapFile</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">testdata_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_phasediff.nii.gz&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dsA_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_phasediff.nii.gz&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">find_meta</span><span class="o">=</span><span class="kc">False</span>
 <span class="gp">... </span><span class="p">)</span>  
 <span class="gt">Traceback (most recent call last):</span>
@@ -285,14 +285,14 @@ This class may receive metadata as a keyword argument at initialization.</p>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">FieldmapFile</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">testdata_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_phasediff.nii.gz&quot;</span>
+<span class="gp">... </span>    <span class="n">dsA_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_phasediff.nii.gz&quot;</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;EchoTime2&#39;</span><span class="p">]</span>
 <span class="go">0.00746</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">FieldmapFile</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">testdata_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_phase2.nii.gz&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dsA_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_phase2.nii.gz&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">find_meta</span><span class="o">=</span><span class="kc">False</span>
 <span class="gp">... </span><span class="p">)</span>  
 <span class="gt">Traceback (most recent call last):</span>
@@ -300,14 +300,14 @@ This class may receive metadata as a keyword argument at initialization.</p>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">FieldmapFile</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">testdata_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_phase2.nii.gz&quot;</span>
+<span class="gp">... </span>    <span class="n">dsA_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_phase2.nii.gz&quot;</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;EchoTime&#39;</span><span class="p">]</span>
 <span class="go">0.00746</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">FieldmapFile</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">testdata_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_fieldmap.nii.gz&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dsA_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_fieldmap.nii.gz&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">find_meta</span><span class="o">=</span><span class="kc">False</span>
 <span class="gp">... </span><span class="p">)</span>  
 <span class="gt">Traceback (most recent call last):</span>
@@ -315,7 +315,7 @@ This class may receive metadata as a keyword argument at initialization.</p>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">FieldmapFile</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">testdata_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_fieldmap.nii.gz&quot;</span>
+<span class="gp">... </span>    <span class="n">dsA_dir</span> <span class="o">/</span> <span class="s2">&quot;sub-01&quot;</span> <span class="o">/</span> <span class="s2">&quot;fmap&quot;</span> <span class="o">/</span> <span class="s2">&quot;sub-01_fieldmap.nii.gz&quot;</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;Units&#39;</span><span class="p">]</span>
 <span class="go">&#39;rad/s&#39;</span>

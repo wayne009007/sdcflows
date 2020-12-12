@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.utils.epimanip &mdash; sdcflows 2.0.0rc3.dev9 documentation</title>
+  <title>sdcflows.utils.epimanip &mdash; sdcflows 2.0.0rc3.dev14 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc3.dev9
+                2.0.0rc3.dev14
               </div>
             
           
@@ -362,6 +362,51 @@
             <span class="k">return</span> <span class="n">ees</span> <span class="o">*</span> <span class="p">(</span><span class="n">npe</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown total-readout time specification&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="epi_mask"><a class="viewcode-back" href="../../../api/sdcflows.utils.epimanip.html#sdcflows.utils.epimanip.epi_mask">[docs]</a><span class="k">def</span> <span class="nf">epi_mask</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Use grayscale morphological operations to obtain a quick mask of EPI data.&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+    <span class="kn">import</span> <span class="nn">nibabel</span> <span class="k">as</span> <span class="nn">nb</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">ndimage</span>
+    <span class="kn">from</span> <span class="nn">skimage.morphology</span> <span class="kn">import</span> <span class="n">ball</span>
+
+    <span class="k">if</span> <span class="n">out_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">out_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;mask.nii.gz&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
+
+    <span class="n">img</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+    <span class="c1"># First open to blur out the skull around the brain</span>
+    <span class="n">opened</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">grey_opening</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">structure</span><span class="o">=</span><span class="n">ball</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    <span class="c1"># Second, close large vessels and the ventricles</span>
+    <span class="n">closed</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">grey_closing</span><span class="p">(</span><span class="n">opened</span><span class="p">,</span> <span class="n">structure</span><span class="o">=</span><span class="n">ball</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="c1"># Window filter on percentile 30</span>
+    <span class="n">closed</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">closed</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+    <span class="c1"># Window filter on percentile 90 of data</span>
+    <span class="n">maxnorm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">closed</span><span class="p">[</span><span class="n">closed</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">90</span><span class="p">)</span>
+    <span class="n">closed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">closed</span><span class="p">,</span> <span class="n">a_min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">a_max</span><span class="o">=</span><span class="n">maxnorm</span><span class="p">)</span>
+    <span class="c1"># Calculate index of center of masses</span>
+    <span class="n">cm</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">ndimage</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">closed</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+    <span class="c1"># Erode the picture of the brain by a lot</span>
+    <span class="n">eroded</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">grey_erosion</span><span class="p">(</span><span class="n">closed</span><span class="p">,</span> <span class="n">structure</span><span class="o">=</span><span class="n">ball</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+    <span class="c1"># Calculate the residual</span>
+    <span class="n">wshed</span> <span class="o">=</span> <span class="n">opened</span> <span class="o">-</span> <span class="n">eroded</span>
+    <span class="n">wshed</span> <span class="o">-=</span> <span class="n">wshed</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="n">wshed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mf">1e3</span> <span class="o">*</span> <span class="n">wshed</span> <span class="o">/</span> <span class="n">wshed</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
+    <span class="n">markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">wshed</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">markers</span><span class="p">[</span><span class="n">cm</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">markers</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="c1"># Run watershed</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">watershed_ift</span><span class="p">(</span><span class="n">wshed</span><span class="p">,</span> <span class="n">markers</span><span class="p">)</span>
+
+    <span class="n">hdr</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">hdr</span><span class="o">.</span><span class="n">set_data_dtype</span><span class="p">(</span><span class="s2">&quot;uint8&quot;</span><span class="p">)</span>
+    <span class="n">nb</span><span class="o">.</span><span class="n">Nifti1Image</span><span class="p">(</span>
+        <span class="n">ndimage</span><span class="o">.</span><span class="n">binary_dilation</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="n">ball</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint8&quot;</span><span class="p">),</span> <span class="n">img</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="n">hdr</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">to_filename</span><span class="p">(</span><span class="n">out_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out_file</span></div>
 </pre></div>
 
            </div>

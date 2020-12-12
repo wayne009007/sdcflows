@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows.base &mdash; sdcflows 2.0.0rc3.dev9 documentation</title>
+  <title>sdcflows.workflows.base &mdash; sdcflows 2.0.0rc3.dev14 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc3.dev9
+                2.0.0rc3.dev14
               </div>
             
           
@@ -285,16 +285,6 @@
                 <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">est_wf</span><span class="p">,</span> <span class="p">[(</span><span class="n">f</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;inputnode.</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">])</span>
             <span class="p">])</span>
             <span class="c1"># fmt:on</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># PEPOLAR and ANAT do not produce masks</span>
-            <span class="c1"># fmt:off</span>
-            <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
-                <span class="p">(</span><span class="n">est_wf</span><span class="p">,</span> <span class="n">fmap_reports_wf</span><span class="p">,</span> <span class="p">[</span>
-                    <span class="p">(</span><span class="s2">&quot;outputnode.fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.fmap_mask&quot;</span><span class="p">),</span>
-                <span class="p">]),</span>
-                <span class="p">(</span><span class="n">est_wf</span><span class="p">,</span> <span class="n">out_map</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;outputnode.fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_mask&quot;</span><span class="p">)]),</span>
-            <span class="p">])</span>
-            <span class="c1"># fmt:on</span>
 
         <span class="c1"># fmt:off</span>
         <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
@@ -306,11 +296,13 @@
             <span class="p">(</span><span class="n">est_wf</span><span class="p">,</span> <span class="n">fmap_reports_wf</span><span class="p">,</span> <span class="p">[</span>
                 <span class="p">(</span><span class="s2">&quot;outputnode.fmap&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.fieldmap&quot;</span><span class="p">),</span>
                 <span class="p">(</span><span class="s2">&quot;outputnode.fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.fmap_ref&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;outputnode.fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.fmap_mask&quot;</span><span class="p">),</span>
             <span class="p">]),</span>
             <span class="p">(</span><span class="n">est_wf</span><span class="p">,</span> <span class="n">out_map</span><span class="p">,</span> <span class="p">[</span>
                 <span class="p">(</span><span class="s2">&quot;outputnode.fmap&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap&quot;</span><span class="p">),</span>
                 <span class="p">(</span><span class="s2">&quot;outputnode.fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">),</span>
                 <span class="p">(</span><span class="s2">&quot;outputnode.fmap_coeff&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_coeff&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;outputnode.fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_mask&quot;</span><span class="p">),</span>
             <span class="p">]),</span>
         <span class="p">])</span>
         <span class="c1"># fmt:on</span>
