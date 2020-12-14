@@ -5,6 +5,7 @@ strict digraph  {
 "concat_blips (nibabel)";
 "topup (fsl)";
 "merge_corrected (images)";
+"fix_coeff (bspline)";
 "outputnode (utility)";
 "epi_mask (epi)";
 "inputnode (utility)" -> "flatten (utils)";
@@ -14,8 +15,10 @@ strict digraph  {
 "readout_time (epi)" -> "topup (fsl)";
 "concat_blips (nibabel)" -> "topup (fsl)";
 "topup (fsl)" -> "merge_corrected (images)";
+"topup (fsl)" -> "fix_coeff (bspline)";
 "topup (fsl)" -> "outputnode (utility)";
 "merge_corrected (images)" -> "epi_mask (epi)";
 "merge_corrected (images)" -> "outputnode (utility)";
+"fix_coeff (bspline)" -> "outputnode (utility)";
 "epi_mask (epi)" -> "outputnode (utility)";
 }

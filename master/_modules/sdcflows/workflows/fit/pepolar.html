@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows.fit.pepolar &mdash; sdcflows 2.0.0rc3.dev12 documentation</title>
+  <title>sdcflows.workflows.fit.pepolar &mdash; sdcflows 2.0.0rc3.dev18 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc3.dev12
+                2.0.0rc3.dev18
               </div>
             
           
@@ -231,6 +231,7 @@
 
     <span class="kn">from</span> <span class="nn">...interfaces.epi</span> <span class="kn">import</span> <span class="n">GetReadoutTime</span><span class="p">,</span> <span class="n">EPIMask</span>
     <span class="kn">from</span> <span class="nn">...interfaces.utils</span> <span class="kn">import</span> <span class="n">Flatten</span>
+    <span class="kn">from</span> <span class="nn">...interfaces.bspline</span> <span class="kn">import</span> <span class="n">TOPUPCoeffReorient</span>
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="n">workflow</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
@@ -275,6 +276,11 @@
     <span class="p">)</span>
 
     <span class="n">epi_mask</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">EPIMask</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;epi_mask&quot;</span><span class="p">)</span>
+
+    <span class="n">fix_coeff</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">TOPUPCoeffReorient</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fix_coeff&quot;</span><span class="p">,</span> <span class="n">run_without_submitting</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
     <span class="c1"># fmt: off</span>
     <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
         <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">flatten</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;in_data&quot;</span><span class="p">,</span> <span class="s2">&quot;in_data&quot;</span><span class="p">),</span>
@@ -286,14 +292,16 @@
         <span class="p">(</span><span class="n">readout_time</span><span class="p">,</span> <span class="n">topup</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;readout_time&quot;</span><span class="p">,</span> <span class="s2">&quot;readout_times&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">concat_blips</span><span class="p">,</span> <span class="n">topup</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">topup</span><span class="p">,</span> <span class="n">merge_corrected</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_corrected&quot;</span><span class="p">,</span> <span class="s2">&quot;in_files&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">topup</span><span class="p">,</span> <span class="n">fix_coeff</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_fieldcoef&quot;</span><span class="p">,</span> <span class="s2">&quot;in_coeff&quot;</span><span class="p">),</span>
+                            <span class="p">(</span><span class="s2">&quot;out_corrected&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">topup</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_field&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap&quot;</span><span class="p">),</span>
-                             <span class="p">(</span><span class="s2">&quot;out_fieldcoef&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_coeff&quot;</span><span class="p">),</span>
                              <span class="p">(</span><span class="s2">&quot;out_jacs&quot;</span><span class="p">,</span> <span class="s2">&quot;jacobians&quot;</span><span class="p">),</span>
                              <span class="p">(</span><span class="s2">&quot;out_mats&quot;</span><span class="p">,</span> <span class="s2">&quot;xfms&quot;</span><span class="p">),</span>
                              <span class="p">(</span><span class="s2">&quot;out_warps&quot;</span><span class="p">,</span> <span class="s2">&quot;out_warps&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">merge_corrected</span><span class="p">,</span> <span class="n">epi_mask</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_avg&quot;</span><span class="p">,</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">merge_corrected</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_avg&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">epi_mask</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_mask&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">fix_coeff</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_coeff&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_coeff&quot;</span><span class="p">)]),</span>
     <span class="p">])</span>
     <span class="c1"># fmt: on</span>
 
@@ -591,6 +599,7 @@
             <dd><a href="../../../../../maint_1.3.x/index.html">maint/1.3.x</a></dd>
             <dd><a href="../../../../../maint_travis-gh-action-migration/index.html">maint/travis-gh-action-migration</a></dd>
             <dd><a href="pepolar.html">master</a></dd>
+            <dd><a href="../../../../../oesteban-patch-1/index.html">oesteban-patch-1</a></dd>
         </dl>
     </div>
 </div>
