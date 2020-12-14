@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.interfaces.bspline &mdash; sdcflows 2.0.0rc3.dev20 documentation</title>
+  <title>sdcflows.interfaces.bspline &mdash; sdcflows 2.0.0rc3.dev22 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc3.dev20
+                2.0.0rc3.dev22
               </div>
             
           
@@ -392,6 +392,8 @@
     <span class="n">output_spec</span> <span class="o">=</span> <span class="n">_Coefficients2WarpOutputSpec</span>
 
     <span class="k">def</span> <span class="nf">_run_interface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runtime</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..utils.misc</span> <span class="kn">import</span> <span class="n">get_free_mem</span>
+
         <span class="c1"># Calculate the physical coordinates of target grid</span>
         <span class="n">targetnii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_target</span><span class="p">)</span>
         <span class="n">targetaff</span> <span class="o">=</span> <span class="n">targetnii</span><span class="o">.</span><span class="n">affine</span>
@@ -402,10 +404,20 @@
         <span class="n">weights</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">coeffs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">blocksize</span> <span class="o">=</span> <span class="n">LOW_MEM_BLOCK_SIZE</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">low_mem</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">cname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_coeff</span><span class="p">:</span>
             <span class="n">cnii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">cname</span><span class="p">)</span>
             <span class="n">cdata</span> <span class="o">=</span> <span class="n">cnii</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
             <span class="n">coeffs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cdata</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+            <span class="c1"># Try to probe the free memory</span>
+            <span class="n">_free_mem</span> <span class="o">=</span> <span class="n">get_free_mem</span><span class="p">()</span>
+            <span class="n">suggested_blocksize</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">_free_mem</span> <span class="o">*</span> <span class="mf">0.80</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">cdata</span><span class="o">.</span><span class="n">size</span><span class="p">)))</span>
+                <span class="k">if</span> <span class="n">_free_mem</span>
+                <span class="k">else</span> <span class="n">blocksize</span>
+            <span class="p">)</span>
+            <span class="n">blocksize</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">blocksize</span><span class="p">,</span> <span class="n">suggested_blocksize</span><span class="p">)</span>
 
             <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">block_w</span> <span class="o">=</span> <span class="p">[]</span>
