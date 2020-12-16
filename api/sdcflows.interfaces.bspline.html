@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.interfaces.bspline module &mdash; sdcflows 2.0.0rc3.dev24 documentation</title>
+  <title>sdcflows.interfaces.bspline module &mdash; sdcflows 2.0.0rc3.dev30 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                2.0.0rc3.dev24
+                2.0.0rc3.dev30
               </div>
             
           
@@ -338,7 +338,7 @@ The s-form header is used because the imaging axes may be oblique.</p>
 
 <dl class="function">
 <dt id="sdcflows.interfaces.bspline.bspline_weights">
-<code class="sig-prename descclassname">sdcflows.interfaces.bspline.</code><code class="sig-name descname">bspline_weights</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">ctrl_nii</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/bspline.html#bspline_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.bspline.bspline_weights" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sdcflows.interfaces.bspline.</code><code class="sig-name descname">bspline_weights</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">ctrl_nii</em>, <em class="sig-param">blocksize=None</em>, <em class="sig-param">mem_percent=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/bspline.html#bspline_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.bspline.bspline_weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the tensor-product cubic B-Spline kernel weights for a list of 3D points.</p>
 <p>For each of the <em>N</em> input samples <span class="math notranslate nohighlight">\((s_1, s_2, s_3)\)</span> and <em>K</em> control
 points or <em>knots</em> <span class="math notranslate nohighlight">\(\mathbf{k} =(k_1, k_2, k_3)\)</span>, the tensor-product
@@ -376,6 +376,12 @@ step of approximation/extrapolation.</p>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (<span class="math notranslate nohighlight">\(K \times N\)</span>)</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="sdcflows.interfaces.bspline.grid_bspline_weights">
+<code class="sig-prename descclassname">sdcflows.interfaces.bspline.</code><code class="sig-name descname">grid_bspline_weights</code><span class="sig-paren">(</span><em class="sig-param">target_nii</em>, <em class="sig-param">ctrl_nii</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/bspline.html#grid_bspline_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.bspline.grid_bspline_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fast, gridded evaluation.</p>
 </dd></dl>
 
 </div>
