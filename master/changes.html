@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>What’s new? &mdash; sdcflows 2.0.0rc3 documentation</title>
+  <title>What’s new? &mdash; sdcflows 2.0.0rc4.dev3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                2.0.0rc3
+                2.0.0rc4.dev3
               </div>
             
           
@@ -195,7 +195,7 @@
 <h1>What’s new?<a class="headerlink" href="#what-s-new" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="tbd">
 <h2>2.0.0 (TBD)<a class="headerlink" href="#tbd" title="Permalink to this headline">¶</a></h2>
-<p>The <em>SDCFlows</em> 2.0.x series are release with a comprehensive overhaul of the software’s API.
+<p>The <em>SDCFlows</em> 2.0.x series are released with a comprehensive overhaul of the software’s API.
 This overhaul has the vision of converting <em>SDCFlows</em> into some sort of subordinate pipeline
 to other <em>d/fMRIPrep</em>, inline with <em>sMRIPrep</em>’s approach.
 The idea is to consider fieldmaps a first-citizen input, for which derivatives are generated
@@ -233,10 +233,22 @@ coefficients.</p></li>
 <a class="reference internal" href="api/sdcflows.workflows.fit.pepolar.html#sdcflows.workflows.fit.pepolar.init_topup_wf" title="sdcflows.workflows.fit.pepolar.init_topup_wf"><code class="xref py py-func docutils literal notranslate"><span class="pre">sdcflows.workflows.fit.pepolar.init_topup_wf()</span></code></a>).</p></li>
 <li><p>Pushed the code coverage with tests, along with a deep code cleanup.</p></li>
 </ul>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p><em>SDCFlows</em> drops Python 3.6 starting with 1.4.x series.</p>
+</div>
 <p>Some of the most prominent pull-requests conducive to this release are:</p>
 <ul class="simple">
 <li><p>FIX: Convert SEI fieldmaps given in rad/s into Hz (#127)</p></li>
 <li><p>FIX: Limit <code class="docutils literal notranslate"><span class="pre">3dQwarp</span></code> to maximum 4 CPUs for stability reasons (#128)</p></li>
+<li><p>ENH: Increase unit-tests coverage of <code class="docutils literal notranslate"><span class="pre">sdcflows.fieldmaps</span></code> (#159)</p></li>
+<li><p>ENH: Optimize tensor-product B-Spline kernel evaluation (#157)</p></li>
+<li><p>ENH: Add a memory check to dynamically limit interpolation blocksize (#156)</p></li>
+<li><p>ENH: Massage TOPUP’s fieldcoeff files to be compatible with ours (#154)</p></li>
+<li><p>ENH: Add a simplistic EPI masking algorithm (#152)</p></li>
+<li><p>ENH: Utility that returns the <code class="docutils literal notranslate"><span class="pre">B0FieldSource</span></code> of a given potential EPI target (#151)</p></li>
+<li><p>ENH: Write <code class="docutils literal notranslate"><span class="pre">fmapid-</span></code> entity in Derivatives (#150)</p></li>
+<li><p>ENH: Multiplex fieldmap estimation outputs into a single <code class="docutils literal notranslate"><span class="pre">outputnode</span></code> (#149)</p></li>
 <li><p>ENH: Putting the new API together on a base workflow (#143)</p></li>
 <li><p>ENH: Autogenerate <code class="docutils literal notranslate"><span class="pre">B0FieldIdentifiers</span></code> from <code class="docutils literal notranslate"><span class="pre">IntendedFor</span></code> (#142)</p></li>
 <li><p>ENH: Finalizing the API overhaul (#132)</p></li>
@@ -244,7 +256,10 @@ coefficients.</p></li>
 <li><p>ENH: New objects for better representation of fieldmap estimation (#114)</p></li>
 <li><p>ENH: Show FieldmapReportlet oriented aligned with cardinal axes (#120)</p></li>
 <li><p>ENH: New estimation API (featuring a TOPUP implementation!) (#115)</p></li>
+<li><p>DOC: Fix typo in docstring (#155)</p></li>
 <li><p>DOC: Enable NiPype’s sphinx-extension to better render Interfaces (#131)</p></li>
+<li><p>MAINT: Drop Python 3.6 (#160)</p></li>
+<li><p>MAINT: Enable Git-archive protocol with setuptools-scm-archive (#153)</p></li>
 <li><p>MAINT: Migrate TravisCI -&gt; GH Actions (completion) (#138)</p></li>
 <li><p>MAINT: Migrate TravisCI -&gt; GH Actions (#137)</p></li>
 <li><p>MAINT: Minimal unit test and refactor of pepolar workflow node (#133)</p></li>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows.apply.correction &mdash; sdcflows 2.0.0rc3 documentation</title>
+  <title>sdcflows.workflows.apply.correction &mdash; sdcflows 2.0.0rc4.dev3 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc3
+                2.0.0rc4.dev3
               </div>
             
           
@@ -171,7 +171,7 @@
 <span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="kn">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
 
 
-<div class="viewcode-block" id="init_unwarp_wf"><a class="viewcode-back" href="../../../../api/sdcflows.workflows.apply.correction.html#sdcflows.workflows.apply.correction.init_unwarp_wf">[docs]</a><span class="k">def</span> <span class="nf">init_unwarp_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unwarp_wf&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="init_unwarp_wf"><a class="viewcode-back" href="../../../../api/sdcflows.workflows.apply.correction.html#sdcflows.workflows.apply.correction.init_unwarp_wf">[docs]</a><span class="k">def</span> <span class="nf">init_unwarp_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unwarp_wf&quot;</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set up a workflow that unwarps the input :abbr:`EPI (echo-planar imaging)` dataset.</span>
 
@@ -189,6 +189,10 @@
 <span class="sd">        Maximum number of threads an individual process may use.</span>
 <span class="sd">    name : :obj:`str`</span>
 <span class="sd">        Unique name of this workflow.</span>
+<span class="sd">    debug : :obj:`bool`</span>
+<span class="sd">        Whether to run in *sloppy* mode.</span>
+<span class="sd">    mask : obj:`bool`</span>
+<span class="sd">        Generate a quick mask.</span>
 
 <span class="sd">    Inputs</span>
 <span class="sd">    ------</span>
@@ -206,7 +210,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">niworkflows.interfaces.fixes</span> <span class="kn">import</span> <span class="n">FixHeaderApplyTransforms</span> <span class="k">as</span> <span class="n">ApplyTransforms</span>
-    <span class="kn">from</span> <span class="nn">...interfaces.epi</span> <span class="kn">import</span> <span class="n">GetReadoutTime</span>
+    <span class="kn">from</span> <span class="nn">...interfaces.epi</span> <span class="kn">import</span> <span class="n">GetReadoutTime</span><span class="p">,</span> <span class="n">EPIMask</span>
     <span class="kn">from</span> <span class="nn">...interfaces.bspline</span> <span class="kn">import</span> <span class="n">Coefficients2Warp</span>
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
@@ -215,7 +219,8 @@
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inputnode&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
-        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;corrected&quot;</span><span class="p">,</span> <span class="s2">&quot;fieldmap&quot;</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;outputnode&quot;</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;corrected&quot;</span><span class="p">,</span> <span class="s2">&quot;fieldmap&quot;</span><span class="p">,</span> <span class="s2">&quot;corrected_mask&quot;</span><span class="p">]),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;outputnode&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">rotime</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">GetReadoutTime</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;rotime&quot;</span><span class="p">)</span>
@@ -238,6 +243,18 @@
         <span class="p">(</span><span class="n">resample</span><span class="p">,</span> <span class="n">unwarp</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_warp&quot;</span><span class="p">,</span> <span class="s2">&quot;transforms&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">resample</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_field&quot;</span><span class="p">,</span> <span class="s2">&quot;fieldmap&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">unwarp</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;output_image&quot;</span><span class="p">,</span> <span class="s2">&quot;corrected&quot;</span><span class="p">)]),</span>
+    <span class="p">])</span>
+    <span class="c1"># fmt:on</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mask</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">workflow</span>
+
+    <span class="n">epi_mask</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">EPIMask</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;epi_mask&quot;</span><span class="p">)</span>
+
+    <span class="c1"># fmt:off</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
+        <span class="p">(</span><span class="n">unwarp</span><span class="p">,</span> <span class="n">epi_mask</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;output_image&quot;</span><span class="p">,</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">epi_mask</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;corrected_mask&quot;</span><span class="p">)]),</span>
     <span class="p">])</span>
     <span class="c1"># fmt:on</span>
     <span class="k">return</span> <span class="n">workflow</span></div>

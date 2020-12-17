@@ -4,6 +4,7 @@ strict digraph  {
 "resample (bspline)";
 "unwarp (fixes)";
 "outputnode (utility)";
+"epi_mask (epi)";
 "inputnode (utility)" -> "rotime (epi)";
 "inputnode (utility)" -> "resample (bspline)";
 "inputnode (utility)" -> "unwarp (fixes)";
@@ -11,4 +12,6 @@ strict digraph  {
 "resample (bspline)" -> "unwarp (fixes)";
 "resample (bspline)" -> "outputnode (utility)";
 "unwarp (fixes)" -> "outputnode (utility)";
+"unwarp (fixes)" -> "epi_mask (epi)";
+"epi_mask (epi)" -> "outputnode (utility)";
 }

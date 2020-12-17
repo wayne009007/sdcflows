@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows.apply.correction module &mdash; sdcflows 2.0.0rc3 documentation</title>
+  <title>sdcflows.workflows.apply.correction module &mdash; sdcflows 2.0.0rc4.dev3 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                2.0.0rc3
+                2.0.0rc4.dev3
               </div>
             
           
@@ -181,18 +181,15 @@
   
 
 
-    
-    
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../master/api/sdcflows.workflows.apply.correction.html"><b>Warning:</b> This document is for an old version of sdcflows. The main version is master.</a></p>
 <div class="section" id="module-sdcflows.workflows.apply.correction">
 <span id="sdcflows-workflows-apply-correction-module"></span><h1>sdcflows.workflows.apply.correction module<a class="headerlink" href="#module-sdcflows.workflows.apply.correction" title="Permalink to this headline">¶</a></h1>
 <p>Applying a fieldmap given its B-Spline coefficients in Hz.</p>
 <dl class="function">
 <dt id="sdcflows.workflows.apply.correction.init_unwarp_wf">
-<code class="sig-prename descclassname">sdcflows.workflows.apply.correction.</code><code class="sig-name descname">init_unwarp_wf</code><span class="sig-paren">(</span><em class="sig-param">omp_nthreads=1</em>, <em class="sig-param">debug=False</em>, <em class="sig-param">name='unwarp_wf'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/apply/correction.html#init_unwarp_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.apply.correction.init_unwarp_wf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">sdcflows.workflows.apply.correction.</code><code class="sig-name descname">init_unwarp_wf</code><span class="sig-paren">(</span><em class="sig-param">omp_nthreads=1</em>, <em class="sig-param">debug=False</em>, <em class="sig-param">name='unwarp_wf'</em>, <em class="sig-param">mask=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/workflows/apply/correction.html#init_unwarp_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.workflows.apply.correction.init_unwarp_wf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up a workflow that unwarps the input <abbr title="echo-planar imaging">EPI</abbr> dataset.</p>
 <dl>
 <dt>Workflow Graph</dt><dd><div class="figure align-default">
@@ -206,6 +203,8 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>omp_nthreads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – Maximum number of threads an individual process may use.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – Unique name of this workflow.</p></li>
+<li><p><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to run in <em>sloppy</em> mode.</p></li>
+<li><p><strong>mask</strong> (obj:<cite>bool</cite>) – Generate a quick mask.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Inputs</dt>
@@ -269,7 +268,7 @@
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: 2.0.0rc3
+        v: master
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
