@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.fieldmaps &mdash; sdcflows 2.0.0rc3.dev30 documentation</title>
+  <title>sdcflows.fieldmaps &mdash; sdcflows 2.0.0rc3.dev34 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc3.dev30
+                2.0.0rc3.dev34
               </div>
             
           
@@ -212,8 +212,7 @@
     <span class="sd">&quot;&quot;&quot;Make sure the type of estimation is not changed.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">value</span>
-
-    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">method</span> <span class="o">!=</span> <span class="n">EstimatorType</span><span class="o">.</span><span class="n">UNKNOWN</span> <span class="ow">and</span> <span class="n">obj</span><span class="o">.</span><span class="n">method</span> <span class="o">!=</span> <span class="n">value</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">method</span> <span class="o">!=</span> <span class="n">EstimatorType</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot change determined method </span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
@@ -260,6 +259,13 @@
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; f.metadata[&#39;TotalReadoutTime&#39;]</span>
 <span class="sd">    0.005</span>
+
+<span class="sd">    &gt;&gt;&gt; f = FieldmapFile(</span>
+<span class="sd">    ...     dsA_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_dir-LR_epi.nii.gz&quot;,</span>
+<span class="sd">    ...     metadata={&quot;TotalReadoutTime&quot;: None},</span>
+<span class="sd">    ... )  # doctest: +IGNORE_EXCEPTION_DETAIL</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">    MetadataError:</span>
 
 <span class="sd">    &gt;&gt;&gt; f = FieldmapFile(</span>
 <span class="sd">    ...     dsA_dir / &quot;sub-01&quot; / &quot;fmap&quot; / &quot;sub-01_dir-LR_epi.nii.gz&quot;,</span>
@@ -333,17 +339,12 @@
 <div class="viewcode-block" id="FieldmapFile.check_path"><a class="viewcode-back" href="../../api/sdcflows.fieldmaps.html#sdcflows.fieldmaps.FieldmapFile.check_path">[docs]</a>    <span class="nd">@path</span><span class="o">.</span><span class="n">validator</span>
     <span class="k">def</span> <span class="nf">check_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate a fieldmap path.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">BIDSFile</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;File path &lt;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&gt; does not exist, is a broken link, or it is not a file&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">&quot;.nii&quot;</span><span class="p">,</span> <span class="s2">&quot;.nii.gz&quot;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">&quot;.nii&quot;</span><span class="p">,</span> <span class="s2">&quot;.nii.gz&quot;</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File path &lt;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&gt; does not look like a NIfTI file.&quot;</span><span class="p">)</span>
 
         <span class="n">suffix</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?&lt;=_)\w+(?=\.nii)&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
@@ -370,8 +371,11 @@
 
         <span class="c1"># Attempt to infer a bids_root folder</span>
         <span class="n">relative_path</span> <span class="o">=</span> <span class="n">relative_to_root</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">relative_path</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bids_root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)[:</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">relative_path</span><span class="p">))])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bids_root</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)[:</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">relative_path</span><span class="p">))])</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">relative_path</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
 
         <span class="c1"># Check for REQUIRED metadata (depends on suffix.)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span> <span class="s2">&quot;dwi&quot;</span><span class="p">,</span> <span class="s2">&quot;epi&quot;</span><span class="p">,</span> <span class="s2">&quot;sbref&quot;</span><span class="p">):</span>
@@ -384,10 +388,10 @@
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">get_trt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span> <span class="n">in_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">MetadataError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Missing readout timing information for &lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&gt;.&quot;</span>
-                <span class="p">)</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;fieldmap&quot;</span> <span class="ow">and</span> <span class="s2">&quot;Units&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">MetadataError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing &#39;Units&#39; for &lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&gt;.&quot;</span><span class="p">)</span>
@@ -690,6 +694,7 @@
             <dd><a href="../../../1.4.0rc0/index.html">1.4.0rc0</a></dd>
             <dd><a href="../../../2.0.0rc1/index.html">2.0.0rc1</a></dd>
             <dd><a href="../../../2.0.0rc2/index.html">2.0.0rc2</a></dd>
+            <dd><a href="../../../2.0.0rc3/index.html">2.0.0rc3</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
@@ -700,6 +705,7 @@
             <dd><a href="../../../maint_1.3.x/index.html">maint/1.3.x</a></dd>
             <dd><a href="../../../maint_travis-gh-action-migration/index.html">maint/travis-gh-action-migration</a></dd>
             <dd><a href="fieldmaps.html">master</a></dd>
+            <dd><a href="../../../rel_2.0.0rc3/index.html">rel/2.0.0rc3</a></dd>
         </dl>
     </div>
 </div>
