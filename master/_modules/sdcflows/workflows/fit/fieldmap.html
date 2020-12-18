@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows.fit.fieldmap &mdash; sdcflows 2.0.0rc4.dev3 documentation</title>
+  <title>sdcflows.workflows.fit.fieldmap &mdash; sdcflows 2.0.0rc4.dev5 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc4.dev3
+                2.0.0rc4.dev5
               </div>
             
           
@@ -353,9 +353,9 @@
     <span class="c1"># fmt: on</span>
 
     <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;phasediff&quot;</span><span class="p">:</span>
-        <span class="n">workflow</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">__postdesc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
 <span class="s2">A *B&lt;sub&gt;0&lt;/sub&gt;* nonuniformity map (or *fieldmap*) was estimated from the</span>
-<span class="s2">phase-drift map(s) measure with two consecutive GRE (gradient-recall echo)</span>
+<span class="s2">phase-drift map(s) measure with two consecutive GRE (gradient-recalled echo)</span>
 <span class="s2">acquisitions.</span>
 <span class="s2">&quot;&quot;&quot;</span>
         <span class="n">phdiff_wf</span> <span class="o">=</span> <span class="n">init_phdiff_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
@@ -376,7 +376,7 @@
         <span class="kn">from</span> <span class="nn">niworkflows.interfaces.images</span> <span class="kn">import</span> <span class="n">IntraModalMerge</span>
         <span class="kn">from</span> <span class="nn">...interfaces.fmap</span> <span class="kn">import</span> <span class="n">CheckB0Units</span>
 
-        <span class="n">workflow</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">__postdesc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
 <span class="s2">A *B&lt;sub&gt;0&lt;/sub&gt;* nonuniformity map (or *fieldmap*) was directly measured with</span>
 <span class="s2">an MRI scheme designed with that purpose such as SEI (Spiral-Echo Imaging).</span>
 <span class="s2">&quot;&quot;&quot;</span>
@@ -530,7 +530,7 @@
     <span class="kn">from</span> <span class="nn">...interfaces.fmap</span> <span class="kn">import</span> <span class="n">Phasediff2Fieldmap</span><span class="p">,</span> <span class="n">PhaseMap2rads</span><span class="p">,</span> <span class="n">SubtractPhases</span>
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">workflow</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">__postdesc__</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
 <span class="s2">The corresponding phase-map(s) were phase-unwrapped with `prelude` (FSL </span><span class="si">{</span><span class="n">PRELUDE</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">).</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
