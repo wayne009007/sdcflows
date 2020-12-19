@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows.fit.syn module &mdash; sdcflows 2.0.0rc4 documentation</title>
+  <title>sdcflows.workflows.fit.syn module &mdash; sdcflows 2.0.0rc4.dev9 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                2.0.0rc4
+                2.0.0rc4.dev9
               </div>
             
           
@@ -266,7 +266,7 @@ element is a dictionary of associated metadata.</p></li>
 <li><p><strong>epi_mask</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – A path to a brain mask corresponding to <code class="docutils literal notranslate"><span class="pre">epi_ref</span></code>.</p></li>
 <li><p><strong>anat_brain</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – A preprocessed, skull-stripped anatomical (T1w or T2w) image.</p></li>
 <li><p><strong>std2anat_xfm</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – inverse registration transform of T1w image to MNI template</p></li>
-<li><p><strong>anat2bold_xfm</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – transform mapping coordinates from the EPI space to the anatomical
+<li><p><strong>anat2epi_xfm</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – transform mapping coordinates from the EPI space to the anatomical
 space (i.e., the transform to resample anatomical info into EPI space.)</p></li>
 </ul>
 </dd>

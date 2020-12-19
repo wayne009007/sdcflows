@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.interfaces.bspline &mdash; sdcflows 2.0.0rc4 documentation</title>
+  <title>sdcflows.interfaces.bspline &mdash; sdcflows 2.0.0rc4.dev9 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc4
+                2.0.0rc4.dev9
               </div>
             
           
@@ -405,10 +405,10 @@
 
         <span class="c1"># Calculate the physical coordinates of target grid</span>
         <span class="n">targetnii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_target</span><span class="p">)</span>
-        <span class="n">targetaff</span> <span class="o">=</span> <span class="n">targetnii</span><span class="o">.</span><span class="n">affine</span>
         <span class="n">allmask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">targetnii</span><span class="o">.</span><span class="n">dataobj</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;uint8&quot;</span><span class="p">)</span>
-        <span class="n">voxels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">allmask</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
-        <span class="n">points</span> <span class="o">=</span> <span class="n">apply_affine</span><span class="p">(</span><span class="n">targetaff</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">voxels</span><span class="p">)</span>
+        <span class="c1"># targetaff = targetnii.affine</span>
+        <span class="c1"># voxels = np.argwhere(allmask == 1).astype(&quot;float32&quot;)</span>
+        <span class="c1"># points = apply_affine(targetaff.astype(&quot;float32&quot;), voxels)</span>
 
         <span class="n">weights</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">coeffs</span> <span class="o">=</span> <span class="p">[]</span>

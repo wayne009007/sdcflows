@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.interfaces.bspline &mdash; sdcflows 2.0.0rc4 documentation</title>
+  <title>sdcflows.interfaces.bspline &mdash; sdcflows 2.0.0rc4.dev9 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc4
+                2.0.0rc4.dev9
               </div>
             
           
@@ -156,12 +156,9 @@
   
 
 
-    
-    
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><b>Warning:</b> This document is for an old version of sdcflows.</p>
 <h1>Source code for sdcflows.interfaces.bspline</h1><div class="highlight"><pre>
 <span></span><span class="c1"># emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-</span>
 <span class="c1"># vi: set ft=python sts=4 ts=4 sw=4 et:</span>
@@ -405,10 +402,10 @@
 
         <span class="c1"># Calculate the physical coordinates of target grid</span>
         <span class="n">targetnii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_target</span><span class="p">)</span>
-        <span class="n">targetaff</span> <span class="o">=</span> <span class="n">targetnii</span><span class="o">.</span><span class="n">affine</span>
         <span class="n">allmask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">targetnii</span><span class="o">.</span><span class="n">dataobj</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;uint8&quot;</span><span class="p">)</span>
-        <span class="n">voxels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">allmask</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
-        <span class="n">points</span> <span class="o">=</span> <span class="n">apply_affine</span><span class="p">(</span><span class="n">targetaff</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">voxels</span><span class="p">)</span>
+        <span class="c1"># targetaff = targetnii.affine</span>
+        <span class="c1"># voxels = np.argwhere(allmask == 1).astype(&quot;float32&quot;)</span>
+        <span class="c1"># points = apply_affine(targetaff.astype(&quot;float32&quot;), voxels)</span>
 
         <span class="n">weights</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">coeffs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -829,7 +826,7 @@
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: 2.0.0rc4
+        v: master
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
@@ -856,7 +853,7 @@
             <dd><a href="../../../2.0.0rc1/index.html">2.0.0rc1</a></dd>
             <dd><a href="../../../2.0.0rc2/index.html">2.0.0rc2</a></dd>
             <dd><a href="../../../2.0.0rc3/index.html">2.0.0rc3</a></dd>
-            <dd><a href="../../../2.0.0rc4/_modules/sdcflows/interfaces/bspline.html">2.0.0rc4</a></dd>
+            <dd><a href="../../../2.0.0rc4/index.html">2.0.0rc4</a></dd>
         </dl>
         <dl>
             <dt>Branches</dt>
@@ -866,7 +863,7 @@
             <dd><a href="../../../maint_1.2.x/index.html">maint/1.2.x</a></dd>
             <dd><a href="../../../maint_1.3.x/index.html">maint/1.3.x</a></dd>
             <dd><a href="../../../maint_travis-gh-action-migration/index.html">maint/travis-gh-action-migration</a></dd>
-            <dd><a href="../../../master/index.html">master</a></dd>
+            <dd><a href="../../../master/_modules/sdcflows/interfaces/bspline.html">master</a></dd>
             <dd><a href="../../../rel_2.0.0rc3/index.html">rel/2.0.0rc3</a></dd>
         </dl>
     </div>
