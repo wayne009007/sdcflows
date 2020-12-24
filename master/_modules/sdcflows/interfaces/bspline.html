@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.interfaces.bspline &mdash; sdcflows 2.0.0rc4.dev9 documentation</title>
+  <title>sdcflows.interfaces.bspline &mdash; sdcflows 2.0.0rc4.dev11 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc4.dev9
+                2.0.0rc4.dev11
               </div>
             
           
@@ -403,9 +403,6 @@
         <span class="c1"># Calculate the physical coordinates of target grid</span>
         <span class="n">targetnii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_target</span><span class="p">)</span>
         <span class="n">allmask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">targetnii</span><span class="o">.</span><span class="n">dataobj</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;uint8&quot;</span><span class="p">)</span>
-        <span class="c1"># targetaff = targetnii.affine</span>
-        <span class="c1"># voxels = np.argwhere(allmask == 1).astype(&quot;float32&quot;)</span>
-        <span class="c1"># points = apply_affine(targetaff.astype(&quot;float32&quot;), voxels)</span>
 
         <span class="n">weights</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">coeffs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -413,9 +410,6 @@
         <span class="k">for</span> <span class="n">cname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">in_coeff</span><span class="p">:</span>
             <span class="n">coeff_nii</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">cname</span><span class="p">)</span>
             <span class="n">wmat</span> <span class="o">=</span> <span class="n">grid_bspline_weights</span><span class="p">(</span><span class="n">targetnii</span><span class="p">,</span> <span class="n">coeff_nii</span><span class="p">)</span>
-            <span class="c1"># wmat = bspline_weights(</span>
-            <span class="c1">#     points, coeff_nii, mem_percent=0.1 if self.inputs.low_mem else None,</span>
-            <span class="c1"># )</span>
             <span class="n">weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wmat</span><span class="p">)</span>
             <span class="n">coeffs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coeff_nii</span><span class="o">.</span><span class="n">get_fdata</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 
@@ -446,6 +440,7 @@
         <span class="n">field</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">phaseEncDim</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">aff</span> <span class="o">=</span> <span class="n">targetnii</span><span class="o">.</span><span class="n">affine</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">aff</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="c1"># Multiplying by the affine implicitly applies the voxel size to the shift map</span>
         <span class="n">field</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">affines</span><span class="o">.</span><span class="n">apply_affine</span><span class="p">(</span><span class="n">aff</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">fieldshape</span><span class="p">)</span>
         <span class="n">warpnii</span> <span class="o">=</span> <span class="n">targetnii</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
             <span class="n">field</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">),</span> <span class="n">targetnii</span><span class="o">.</span><span class="n">affine</span><span class="p">,</span> <span class="kc">None</span>

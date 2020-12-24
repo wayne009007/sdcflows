@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.interfaces.utils module &mdash; sdcflows 2.0.0rc4.dev9 documentation</title>
+  <title>sdcflows.interfaces.utils module &mdash; sdcflows 2.0.0rc4.dev11 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                2.0.0rc4.dev9
+                2.0.0rc4.dev11
               </div>
             
           
@@ -206,6 +206,31 @@
 </dd></dl>
 
 <dl class="class">
+<dt id="sdcflows.interfaces.utils.Deoblique">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.utils.</code><code class="sig-name descname">Deoblique</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/utils.html#Deoblique"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.utils.Deoblique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
+<p>Make a dataset plumb.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mandatory Inputs</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_anat</strong> (<em>a pathlike object or string representing an existing file</em>) – The corresponging anatomical dataset potentially oblique.</p></li>
+<li><p><strong>in_epi</strong> (<em>a pathlike object or string representing an existing file</em>) – The EPI dataset potentially oblique.</p></li>
+<li><p><strong>mask_anat</strong> (<em>a pathlike object or string representing an existing file</em>) – A binary mask corresponding to the anatomical dataset.</p></li>
+<li><p><strong>mask_epi</strong> (<em>a pathlike object or string representing an existing file</em>) – A binary mask corresponding to the EPI dataset.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Outputs</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>mask_anat</strong> (<em>a pathlike object or string representing an existing file</em>) – A binary mask corresponding to the anatomical dataset.</p></li>
+<li><p><strong>mask_epi</strong> (<em>a pathlike object or string representing an existing file</em>) – A binary mask corresponding to the EPI dataset.</p></li>
+<li><p><strong>out_anat</strong> (<em>a pathlike object or string representing an existing file</em>) – The plumb, anatomical dataset.</p></li>
+<li><p><strong>out_epi</strong> (<em>a pathlike object or string representing an existing file</em>) – The plumb, EPI dataset.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
 <dt id="sdcflows.interfaces.utils.Flatten">
 <em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.utils.</code><code class="sig-name descname">Flatten</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/utils.html#Flatten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.utils.Flatten" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
@@ -226,6 +251,28 @@
 <li><p><strong>out_data</strong> (<em>a list of items which are a pathlike object or string representing an existing file</em>)</p></li>
 <li><p><strong>out_list</strong> (<em>a list of items which are a tuple of the form: (a pathlike object or string representing an existing file, a dictionary with keys which are a value of class ‘str’ and with values which are any value)</em>) – List of output files.</p></li>
 <li><p><strong>out_meta</strong> (<em>a list of items which are a dictionary with keys which are a value of class ‘str’ and with values which are any value</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="sdcflows.interfaces.utils.Reoblique">
+<em class="property">class </em><code class="sig-prename descclassname">sdcflows.interfaces.utils.</code><code class="sig-name descname">Reoblique</code><span class="sig-paren">(</span><em class="sig-param">from_file=None</em>, <em class="sig-param">resource_monitor=None</em>, <em class="sig-param">**inputs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sdcflows/interfaces/utils.html#Reoblique"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdcflows.interfaces.utils.Reoblique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">nipype.interfaces.base.core.SimpleInterface</span></code></p>
+<p>Make a dataset plumb.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mandatory Inputs</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_epi</strong> (<em>a pathlike object or string representing an existing file</em>) – The original, potentially oblique EPI image.</p></li>
+<li><p><strong>in_field</strong> (<em>a pathlike object or string representing an existing file</em>) – The plumb field map, extracted from the displacements field estimated by SyN.</p></li>
+<li><p><strong>in_plumb</strong> (<em>a pathlike object or string representing an existing file</em>) – The plumb EPI image.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Outputs</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>out_epi</strong> (<em>a pathlike object or string representing an existing file</em>) – The reoblique’d EPI image.</p></li>
+<li><p><strong>out_field</strong> (<em>a pathlike object or string representing an existing file</em>) – The reoblique’d EPI image.</p></li>
 </ul>
 </dd>
 </dl>
