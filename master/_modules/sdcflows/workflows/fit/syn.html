@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows.fit.syn &mdash; sdcflows 2.0.0rc5 documentation</title>
+  <title>sdcflows.workflows.fit.syn &mdash; sdcflows 2.0.0rc6.dev5 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc5
+                2.0.0rc6.dev5
               </div>
             
           
@@ -226,11 +226,7 @@
 
 
 <div class="viewcode-block" id="init_syn_sdc_wf"><a class="viewcode-back" href="../../../../api/sdcflows.workflows.fit.syn.html#sdcflows.workflows.fit.syn.init_syn_sdc_wf">[docs]</a><span class="k">def</span> <span class="nf">init_syn_sdc_wf</span><span class="p">(</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">atlas_threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-    <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;syn_sdc_wf&quot;</span><span class="p">,</span>
-    <span class="n">omp_nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span> <span class="n">atlas_threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;syn_sdc_wf&quot;</span><span class="p">,</span> <span class="n">omp_nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build the *fieldmap-less* susceptibility-distortion estimation workflow.</span>
@@ -361,10 +357,7 @@
         <span class="n">n_procs</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="n">unwarp_ref</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
-        <span class="n">ApplyTransforms</span><span class="p">(</span><span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;BSpline&quot;</span><span class="p">),</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unwarp_ref&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">unwarp_ref</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">ApplyTransforms</span><span class="p">(</span><span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;BSpline&quot;</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unwarp_ref&quot;</span><span class="p">,)</span>
 
     <span class="n">epi_mask</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">EPIMask</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;epi_mask&quot;</span><span class="p">)</span>
 

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.utils.wrangler &mdash; sdcflows 2.0.0rc5 documentation</title>
+  <title>sdcflows.utils.wrangler &mdash; sdcflows 2.0.0rc6.dev5 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc5
+                2.0.0rc6.dev5
               </div>
             
           
@@ -164,12 +164,19 @@
 <span class="c1"># vi: set ft=python sts=4 ts=4 sw=4 et:</span>
 <span class="sd">&quot;&quot;&quot;Find fieldmaps on the BIDS inputs for :abbr:`SDC (susceptibility distortion correction)`.&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">suppress</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 
-<div class="viewcode-block" id="find_estimators"><a class="viewcode-back" href="../../../api/sdcflows.utils.wrangler.html#sdcflows.utils.wrangler.find_estimators">[docs]</a><span class="k">def</span> <span class="nf">find_estimators</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">subject</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="find_estimators"><a class="viewcode-back" href="../../../api/sdcflows.utils.wrangler.html#sdcflows.utils.wrangler.find_estimators">[docs]</a><span class="k">def</span> <span class="nf">find_estimators</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">fmapless</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force_fmapless</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply basic heuristics to automatically find available data for fieldmap estimation.</span>
+
+<span class="sd">    The &quot;*fieldmap-less*&quot; heuristics only attempt to find ``_dwi`` and ``_bold`` candidates</span>
+<span class="sd">    to pair with a ``_T1w`` anatomical reference.</span>
+<span class="sd">    For more complicated heuristics (for instance, using ``_T2w`` images or ``_sbref``</span>
+<span class="sd">    images,) the :py:class:`~sdcflows.fieldmaps.FieldmapEstimation` object must be</span>
+<span class="sd">    created manually by the user.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -177,6 +184,14 @@
 <span class="sd">        An initialized PyBIDS layout.</span>
 <span class="sd">    subject : :obj:`str`</span>
 <span class="sd">        Participant label for this single-subject workflow.</span>
+<span class="sd">    fmapless : :obj:`bool` or :obj:`set`</span>
+<span class="sd">        Indicates if fieldmap-less heuristics should be executed.</span>
+<span class="sd">        When ``fmapless`` is a :obj:`set`, it can contain valid BIDS suffices</span>
+<span class="sd">        for EPI images (namely, ``&quot;dwi&quot;``, ``&quot;bold&quot;``, or ``&quot;sbref&quot;``).</span>
+<span class="sd">        When ``fmapless`` is ``True``, heuristics will use the ``{&quot;bold&quot;, &quot;dwi&quot;}`` set.</span>
+<span class="sd">    force_fmapless : :obj:`bool`</span>
+<span class="sd">        When some other fieldmap estimation methods have been found, fieldmap-less</span>
+<span class="sd">        estimation will be skipped except if ``force_fmapless`` is ``True``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -187,59 +202,148 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    Our ``ds000054`` dataset, created for *fMRIPrep*, only has one *phasediff* type of fieldmap</span>
+<span class="sd">    with ``magnitude1`` and ``magnitude2`` files:</span>
+
 <span class="sd">    &gt;&gt;&gt; find_estimators(</span>
 <span class="sd">    ...     layout=layouts[&#39;ds000054&#39;],</span>
 <span class="sd">    ...     subject=&quot;100185&quot;,</span>
+<span class="sd">    ...     fmapless=False,</span>
 <span class="sd">    ... )  # doctest: +ELLIPSIS</span>
-<span class="sd">    [FieldmapEstimation(sources=&lt;3 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;, bids_id=&#39;...&#39;)]</span>
+<span class="sd">    [FieldmapEstimation(sources=&lt;3 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00000&#39;)]</span>
+
+<span class="sd">    OpenNeuro&#39;s dataset with fake :math:`B_0` maps derived from two *PEPOLAR* acquisitions</span>
+<span class="sd">    has a total of 4 possible estimations: the two original *PEPOLAR* acquisitions and the</span>
+<span class="sd">    corresponding two that are just renamed versions of the former:</span>
 
 <span class="sd">    &gt;&gt;&gt; find_estimators(</span>
 <span class="sd">    ...     layout=layouts[&#39;ds001771&#39;],</span>
 <span class="sd">    ...     subject=&quot;36&quot;,</span>
 <span class="sd">    ... )  # doctest: +ELLIPSIS</span>
-<span class="sd">    [FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.MAPPED: 4&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.MAPPED: 4&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;, bids_id=&#39;...&#39;)]</span>
+<span class="sd">    [FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.MAPPED: 4&gt;, bids_id=&#39;auto_00001&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.MAPPED: 4&gt;, bids_id=&#39;auto_00002&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00003&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00004&#39;)]</span>
+
+<span class="sd">    OpenNeuro&#39;s ``ds001600`` is an SDC test-dataset containing many different possibilities</span>
+<span class="sd">    for fieldmap estimation:</span>
 
 <span class="sd">    &gt;&gt;&gt; find_estimators(</span>
 <span class="sd">    ...     layout=layouts[&#39;ds001600&#39;],</span>
 <span class="sd">    ...     subject=&quot;1&quot;,</span>
 <span class="sd">    ... )  # doctest: +ELLIPSIS</span>
-<span class="sd">    [FieldmapEstimation(sources=&lt;4 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;4 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;3 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;, bids_id=&#39;...&#39;)]</span>
+<span class="sd">    [FieldmapEstimation(sources=&lt;4 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00005&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;4 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00006&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;3 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00007&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00008&#39;)]</span>
+
+<span class="sd">    We can also pick one (simplified) HCP subject for testing purposes:</span>
 
 <span class="sd">    &gt;&gt;&gt; find_estimators(</span>
 <span class="sd">    ...     layout=layouts[&#39;HCP101006&#39;],</span>
 <span class="sd">    ...     subject=&quot;101006&quot;,</span>
 <span class="sd">    ... )  # doctest: +ELLIPSIS</span>
-<span class="sd">    [FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;, bids_id=&#39;...&#39;)]</span>
+<span class="sd">    [FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00009&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00010&#39;)]</span>
+
+<span class="sd">    Finally, *SDCFlows*&#39; &quot;*dataset A*&quot; contains a BIDS structure with zero-bytes</span>
+<span class="sd">    NIfTI files and some corresponding metadata:</span>
 
 <span class="sd">    &gt;&gt;&gt; find_estimators(</span>
 <span class="sd">    ...     layout=layouts[&#39;dsA&#39;],</span>
 <span class="sd">    ...     subject=&quot;01&quot;,</span>
 <span class="sd">    ... )  # doctest: +ELLIPSIS</span>
-<span class="sd">    [FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.MAPPED: 4&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;4 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;3 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;4 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;, bids_id=&#39;...&#39;),</span>
-<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;, bids_id=&#39;...&#39;)]</span>
+<span class="sd">    [FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.MAPPED: 4&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00011&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;4 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00012&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;3 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00013&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;4 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00014&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00015&#39;)]</span>
+
+<span class="sd">    After cleaning the registry, we can see how the &quot;*fieldmap-less*&quot; estimation</span>
+<span class="sd">    can be forced:</span>
+
+<span class="sd">    &gt;&gt;&gt; from .. import fieldmaps as fm</span>
+<span class="sd">    &gt;&gt;&gt; fm.clear_registry()</span>
+<span class="sd">    &gt;&gt;&gt; find_estimators(</span>
+<span class="sd">    ...     layout=layouts[&#39;ds000054&#39;],</span>
+<span class="sd">    ...     subject=&quot;100185&quot;,</span>
+<span class="sd">    ...     fmapless={&quot;bold&quot;},</span>
+<span class="sd">    ...     force_fmapless=True,</span>
+<span class="sd">    ... )  # doctest: +ELLIPSIS</span>
+<span class="sd">    [FieldmapEstimation(sources=&lt;3 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00000&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;3 files&gt;, method=&lt;EstimatorType.ANAT: 5&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00001&#39;)]</span>
+
+<span class="sd">    Likewise in a more comprehensive dataset:</span>
+
+<span class="sd">    &gt;&gt;&gt; find_estimators(</span>
+<span class="sd">    ...     layout=layouts[&#39;ds001771&#39;],</span>
+<span class="sd">    ...     subject=&quot;36&quot;,</span>
+<span class="sd">    ...     force_fmapless=True,</span>
+<span class="sd">    ... )  # doctest: +ELLIPSIS</span>
+<span class="sd">    [FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.MAPPED: 4&gt;,</span>
+<span class="sd">                       bids_id=&#39;auto_00002&#39;),</span>
+<span class="sd">    FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.MAPPED: 4&gt;,</span>
+<span class="sd">                       bids_id=&#39;auto_00003&#39;),</span>
+<span class="sd">    FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;,</span>
+<span class="sd">                       bids_id=&#39;auto_00004&#39;),</span>
+<span class="sd">    FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;,</span>
+<span class="sd">                       bids_id=&#39;auto_00005&#39;),</span>
+<span class="sd">    FieldmapEstimation(sources=&lt;7 files&gt;, method=&lt;EstimatorType.ANAT: 5&gt;,</span>
+<span class="sd">                       bids_id=&#39;auto_00006&#39;),</span>
+<span class="sd">    FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.ANAT: 5&gt;,</span>
+<span class="sd">                       bids_id=&#39;auto_00007&#39;),</span>
+<span class="sd">    FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.ANAT: 5&gt;,</span>
+<span class="sd">                       bids_id=&#39;auto_00008&#39;)]</span>
+
+<span class="sd">    Because &quot;*dataset A*&quot; contains very few metadata fields available, &quot;*fieldmap-less*&quot;</span>
+<span class="sd">    heuristics come back empty (BOLD and DWI files are missing</span>
+<span class="sd">    the mandatory ``PhaseEncodingDirection``, in this case):</span>
+
+<span class="sd">    &gt;&gt;&gt; find_estimators(</span>
+<span class="sd">    ...     layout=layouts[&#39;dsA&#39;],</span>
+<span class="sd">    ...     subject=&quot;01&quot;,</span>
+<span class="sd">    ...     force_fmapless=True,</span>
+<span class="sd">    ... )  # doctest: +ELLIPSIS</span>
+<span class="sd">    [FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.MAPPED: 4&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00009&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;4 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00010&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;3 files&gt;, method=&lt;EstimatorType.PHASEDIFF: 3&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00011&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;4 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00012&#39;),</span>
+<span class="sd">     FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.PEPOLAR: 2&gt;,</span>
+<span class="sd">                        bids_id=&#39;auto_00013&#39;)]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">fieldmaps</span> <span class="k">as</span> <span class="n">fm</span>
     <span class="kn">from</span> <span class="nn">bids.layout</span> <span class="kn">import</span> <span class="n">Query</span>
 
-    <span class="k">if</span> <span class="n">subject</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">subject</span> <span class="o">=</span> <span class="n">Query</span><span class="o">.</span><span class="n">ANY</span>
-
     <span class="n">base_entities</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="n">subject</span><span class="p">,</span>
         <span class="s2">&quot;extension&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;.nii&quot;</span><span class="p">,</span> <span class="s2">&quot;.nii.gz&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;space&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Ensure derivatives are not captured</span>
+        <span class="s2">&quot;scope&quot;</span><span class="p">:</span> <span class="s2">&quot;raw&quot;</span><span class="p">,</span>  <span class="c1"># Ensure derivatives are not captured</span>
     <span class="p">}</span>
+
+    <span class="n">fmapless</span> <span class="o">=</span> <span class="n">fmapless</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">fmapless</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">fmapless</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span> <span class="s2">&quot;dwi&quot;</span><span class="p">}</span>
 
     <span class="n">estimators</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -272,10 +376,9 @@
 
     <span class="c1"># At this point, only single-PE _epi files WITH ``IntendedFor`` can be automatically processed</span>
     <span class="c1"># (this will be easier with bids-standard/bids-specification#622 in).</span>
-    <span class="k">try</span><span class="p">:</span>
+    <span class="n">has_intended</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
         <span class="n">has_intended</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;epi&quot;</span><span class="p">,</span> <span class="n">IntendedFor</span><span class="o">=</span><span class="n">Query</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span> <span class="o">**</span><span class="n">base_entities</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="n">has_intended</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
 
     <span class="k">for</span> <span class="n">epi_fmap</span> <span class="ow">in</span> <span class="n">has_intended</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">epi_fmap</span><span class="o">.</span><span class="n">path</span> <span class="ow">in</span> <span class="n">fm</span><span class="o">.</span><span class="n">_estimators</span><span class="o">.</span><span class="n">sources</span><span class="p">:</span>
@@ -289,17 +392,70 @@
 
         <span class="n">epi_sources</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">fmap</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="n">fm</span><span class="o">.</span><span class="n">MetadataError</span><span class="p">):</span>
                 <span class="n">epi_sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">fm</span><span class="o">.</span><span class="n">FieldmapFile</span><span class="p">(</span><span class="n">fmap</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">fmap</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">())</span>
                 <span class="p">)</span>
-            <span class="k">except</span> <span class="n">fm</span><span class="o">.</span><span class="n">MetadataError</span><span class="p">:</span>
-                <span class="k">pass</span>
 
-        <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
             <span class="n">estimators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fm</span><span class="o">.</span><span class="n">FieldmapEstimation</span><span class="p">(</span><span class="n">epi_sources</span><span class="p">))</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
-            <span class="k">pass</span>
+
+    <span class="k">if</span> <span class="n">estimators</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force_fmapless</span><span class="p">:</span>
+        <span class="n">fmapless</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Find fieldmap-less schemes</span>
+    <span class="n">anat_file</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;T1w&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">base_entities</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fmapless</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">anat_file</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">estimators</span>
+
+    <span class="kn">from</span> <span class="nn">.epimanip</span> <span class="kn">import</span> <span class="n">get_trt</span>
+
+    <span class="n">intended_root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">anat_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
+    <span class="k">for</span> <span class="n">ses</span><span class="p">,</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">sessions</span><span class="p">,</span> <span class="n">fmapless</span><span class="p">)):</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="n">suffix</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">ses</span><span class="p">,</span> <span class="o">**</span><span class="n">base_entities</span><span class="p">)</span>
+
+        <span class="c1"># Filter out candidates without defined PE direction</span>
+        <span class="n">epi_targets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">pe_dirs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ro_totals</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+            <span class="n">meta</span> <span class="o">=</span> <span class="n">candidate</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">()</span>
+            <span class="n">pe_dir</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PhaseEncodingDirection&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pe_dir</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">pe_dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pe_dir</span><span class="p">)</span>
+            <span class="n">ro</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+                <span class="n">ro</span> <span class="o">=</span> <span class="n">get_trt</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">candidate</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">ro_totals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ro</span><span class="p">)</span>
+            <span class="n">meta</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;TotalReadoutTime&quot;</span><span class="p">:</span> <span class="n">ro</span><span class="p">})</span>
+            <span class="n">epi_targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fm</span><span class="o">.</span><span class="n">FieldmapFile</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">meta</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">pe_dir</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">pe_dirs</span><span class="p">)):</span>
+            <span class="n">pe_ro</span> <span class="o">=</span> <span class="p">[</span><span class="n">ro</span> <span class="k">for</span> <span class="n">ro</span><span class="p">,</span> <span class="n">pe</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ro_totals</span><span class="p">,</span> <span class="n">pe_dirs</span><span class="p">)</span> <span class="k">if</span> <span class="n">pe</span> <span class="o">==</span> <span class="n">pe_dir</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">ro_time</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">pe_ro</span><span class="p">)):</span>
+                <span class="n">fmfiles</span><span class="p">,</span> <span class="n">fmpaths</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                    <span class="nb">zip</span><span class="p">(</span>
+                        <span class="o">*</span><span class="p">[</span>
+                            <span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">intended_root</span><span class="p">)))</span>
+                            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">epi_targets</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">pe_dirs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">pe_dir</span> <span class="ow">and</span> <span class="n">ro_totals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">ro_time</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">estimators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">fm</span><span class="o">.</span><span class="n">FieldmapEstimation</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="n">fm</span><span class="o">.</span><span class="n">FieldmapFile</span><span class="p">(</span>
+                                <span class="n">anat_file</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;IntendedFor&quot;</span><span class="p">:</span> <span class="n">fmpaths</span><span class="p">}</span>
+                            <span class="p">),</span>
+                            <span class="o">*</span><span class="n">fmfiles</span><span class="p">,</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">estimators</span></div>
 </pre></div>

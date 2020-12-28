@@ -1,0 +1,18 @@
+digraph structs {
+node [shape=record];
+fmap_wfinputnode [label="{IN}|{ inputnode | utility |  }|{OUT|<outfieldmap> fieldmap|<outmagnitude> magnitude}"];
+fmap_wfmagnitude_wf [label="{IN|<ininputnodemagnitude> inputnode.magnitude}|{ magnitude_wf |  |  }|{OUT|<outoutputnodefmapmask> outputnode.fmap_mask|<outoutputnodefmapref> outputnode.fmap_ref}"];
+fmap_wfphdiff_wf [label="{IN|<ininputnodemagnitude> inputnode.magnitude|<ininputnodemask> inputnode.mask|<ininputnodephase> inputnode.phase}|{ phdiff_wf |  |  }|{OUT|<outoutputnodefieldmap> outputnode.fieldmap}"];
+fmap_wffmap_postproc_wf [label="{IN|<ininputnodefmap> inputnode.fmap|<ininputnodefmapmask> inputnode.fmap_mask|<ininputnodefmapref> inputnode.fmap_ref}|{ fmap_postproc_wf |  |  }|{OUT|<outoutputnodeoutfmap> outputnode.out_fmap}"];
+fmap_wfoutputnode [label="{IN|<infmap> fmap|<infmapmask> fmap_mask|<infmapref> fmap_ref}|{ outputnode | utility |  }|{OUT}"];
+fmap_wffmap_postproc_wf:outoutputnodeoutfmap:e -> fmap_wfoutputnode:infmap:w;
+fmap_wfinputnode:outfieldmap:e -> fmap_wfphdiff_wf:ininputnodephase:w;
+fmap_wfinputnode:outmagnitude:e -> fmap_wfmagnitude_wf:ininputnodemagnitude:w;
+fmap_wfmagnitude_wf:outoutputnodefmapmask:e -> fmap_wffmap_postproc_wf:ininputnodefmapmask:w;
+fmap_wfmagnitude_wf:outoutputnodefmapmask:e -> fmap_wfoutputnode:infmapmask:w;
+fmap_wfmagnitude_wf:outoutputnodefmapmask:e -> fmap_wfphdiff_wf:ininputnodemask:w;
+fmap_wfmagnitude_wf:outoutputnodefmapref:e -> fmap_wffmap_postproc_wf:ininputnodefmapref:w;
+fmap_wfmagnitude_wf:outoutputnodefmapref:e -> fmap_wfoutputnode:infmapref:w;
+fmap_wfmagnitude_wf:outoutputnodefmapref:e -> fmap_wfphdiff_wf:ininputnodemagnitude:w;
+fmap_wfphdiff_wf:outoutputnodefieldmap:e -> fmap_wffmap_postproc_wf:ininputnodefmap:w;
+}

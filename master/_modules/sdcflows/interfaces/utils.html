@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.interfaces.utils &mdash; sdcflows 2.0.0rc5 documentation</title>
+  <title>sdcflows.interfaces.utils &mdash; sdcflows 2.0.0rc6.dev5 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc5
+                2.0.0rc6.dev5
               </div>
             
           
@@ -178,24 +178,17 @@
 
 <span class="k">class</span> <span class="nc">_FlattenInputSpec</span><span class="p">(</span><span class="n">BaseInterfaceInputSpec</span><span class="p">):</span>
     <span class="n">in_data</span> <span class="o">=</span> <span class="n">InputMultiObject</span><span class="p">(</span>
-        <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-        <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;list of input data&quot;</span><span class="p">,</span>
+        <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;list of input data&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">in_meta</span> <span class="o">=</span> <span class="n">InputMultiObject</span><span class="p">(</span>
-        <span class="n">traits</span><span class="o">.</span><span class="n">DictStrAny</span><span class="p">,</span>
-        <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;list of metadata&quot;</span><span class="p">,</span>
+        <span class="n">traits</span><span class="o">.</span><span class="n">DictStrAny</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;list of metadata&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">max_trs</span> <span class="o">=</span> <span class="n">traits</span><span class="o">.</span><span class="n">Int</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">usedefault</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;only pick first TRs&quot;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">_FlattenOutputSpec</span><span class="p">(</span><span class="n">TraitedSpec</span><span class="p">):</span>
     <span class="n">out_list</span> <span class="o">=</span> <span class="n">OutputMultiObject</span><span class="p">(</span>
-        <span class="n">traits</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span>
-            <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-            <span class="n">traits</span><span class="o">.</span><span class="n">DictStrAny</span><span class="p">,</span>
-        <span class="p">),</span>
+        <span class="n">traits</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span><span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">traits</span><span class="o">.</span><span class="n">DictStrAny</span><span class="p">,),</span>
         <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;list of output files&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">out_data</span> <span class="o">=</span> <span class="n">OutputMultiObject</span><span class="p">(</span><span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
