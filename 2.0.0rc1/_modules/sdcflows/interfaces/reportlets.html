@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.interfaces.reportlets &mdash; sdcflows 2.0.0rc6.dev5 documentation</title>
+  <title>sdcflows.interfaces.reportlets &mdash; sdcflows 2.0.0rc6.dev7 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc6.dev5
+                2.0.0rc6.dev7
               </div>
             
           
@@ -233,7 +233,7 @@
                     <span class="k">break</span>
 
         <span class="k">if</span> <span class="n">isdefined</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">moving</span><span class="p">):</span>
-            <span class="n">movnii</span> <span class="o">=</span> <span class="n">load_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">moving</span><span class="p">)</span>
+            <span class="n">movnii</span> <span class="o">=</span> <span class="n">rotate_affine</span><span class="p">(</span><span class="n">load_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">moving</span><span class="p">),</span> <span class="n">rot</span><span class="o">=</span><span class="n">canonical_r</span><span class="p">)</span>
 
         <span class="n">contour_nii</span> <span class="o">=</span> <span class="n">mask_nii</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">isdefined</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">mask</span><span class="p">):</span>
