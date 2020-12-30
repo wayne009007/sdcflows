@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdcflows.workflows.fit.syn &mdash; sdcflows 2.0.0rc6.dev9 documentation</title>
+  <title>sdcflows.workflows.fit.syn &mdash; sdcflows 2.0.0rc6.dev11 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0.0rc6.dev9
+                2.0.0rc6.dev11
               </div>
             
           
@@ -288,6 +288,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span> <span class="k">as</span> <span class="n">pkgrf</span>
+    <span class="kn">from</span> <span class="nn">packaging.version</span> <span class="kn">import</span> <span class="n">parse</span> <span class="k">as</span> <span class="n">parseversion</span><span class="p">,</span> <span class="n">Version</span>
     <span class="kn">from</span> <span class="nn">nipype.interfaces.image</span> <span class="kn">import</span> <span class="n">Rescale</span>
     <span class="kn">from</span> <span class="nn">niworkflows.interfaces.fixes</span> <span class="kn">import</span> <span class="p">(</span>
         <span class="n">FixHeaderApplyTransforms</span> <span class="k">as</span> <span class="n">ApplyTransforms</span><span class="p">,</span>
@@ -304,6 +305,12 @@
         <span class="n">DEFAULT_ZOOMS_MM</span><span class="p">,</span>
     <span class="p">)</span>
 
+    <span class="n">ants_version</span> <span class="o">=</span> <span class="n">Registration</span><span class="p">()</span><span class="o">.</span><span class="n">version</span>
+    <span class="k">if</span> <span class="n">ants_version</span> <span class="ow">and</span> <span class="n">parseversion</span><span class="p">(</span><span class="n">ants_version</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">Version</span><span class="p">(</span><span class="s2">&quot;2.2.0&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Please upgrade ANTs to 2.2 or older (</span><span class="si">{</span><span class="n">ants_version</span><span class="si">}</span><span class="s2"> found).&quot;</span>
+        <span class="p">)</span>
+
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="n">workflow</span><span class="o">.</span><span class="n">__desc__</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
 <span class="s2">A deformation field to correct for susceptibility distortions was estimated</span>
@@ -312,7 +319,7 @@
 <span class="s2">to the same-subject T1w-reference with its intensity inverted [@fieldmapless1;</span>
 <span class="s2">@fieldmapless2].</span>
 <span class="s2">Registration is performed with `antsRegistration`</span>
-<span class="s2">(ANTs </span><span class="si">{</span><span class="n">Registration</span><span class="p">()</span><span class="o">.</span><span class="n">version</span> <span class="ow">or</span> <span class="s2">&quot;-- version unknown&quot;</span><span class="si">}</span><span class="s2">), and</span>
+<span class="s2">(ANTs </span><span class="si">{</span><span class="n">ants_version</span> <span class="ow">or</span> <span class="s2">&quot;-- version unknown&quot;</span><span class="si">}</span><span class="s2">), and</span>
 <span class="s2">the process regularized by constraining deformation to be nonzero only</span>
 <span class="s2">along the phase-encoding direction, and modulated with an average fieldmap</span>
 <span class="s2">template [@fieldmapless3].</span>
