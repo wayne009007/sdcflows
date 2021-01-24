@@ -15,4 +15,5 @@ Submodules
    sdcflows.utils.epimanip
    sdcflows.utils.misc
    sdcflows.utils.phasemanip
+   sdcflows.utils.tools
    sdcflows.utils.wrangler
