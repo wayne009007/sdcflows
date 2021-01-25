@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.apply.correction &mdash; sdcflows 2.0.0rc6.dev24 documentation</title>
+  <title>sdcflows.workflows.apply.correction &mdash; sdcflows 2.0.0rc6.dev28 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.0rc6.dev24
+                2.0.0rc6.dev28
               </div>
             
           
@@ -176,7 +176,7 @@
 <span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="kn">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
 
 
-<div class="viewcode-block" id="init_unwarp_wf"><a class="viewcode-back" href="../../../../api/sdcflows.workflows.apply.correction.html#sdcflows.workflows.apply.correction.init_unwarp_wf">[docs]</a><span class="k">def</span> <span class="nf">init_unwarp_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unwarp_wf&quot;</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="init_unwarp_wf"><a class="viewcode-back" href="../../../../api/sdcflows.workflows.apply.correction.html#sdcflows.workflows.apply.correction.init_unwarp_wf">[docs]</a><span class="k">def</span> <span class="nf">init_unwarp_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unwarp_wf&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set up a workflow that unwarps the input :abbr:`EPI (echo-planar imaging)` dataset.</span>
 
@@ -196,8 +196,6 @@
 <span class="sd">        Unique name of this workflow.</span>
 <span class="sd">    debug : :obj:`bool`</span>
 <span class="sd">        Whether to run in *sloppy* mode.</span>
-<span class="sd">    mask : obj:`bool`</span>
-<span class="sd">        Generate a quick mask.</span>
 
 <span class="sd">    Inputs</span>
 <span class="sd">    ------</span>
@@ -210,13 +208,20 @@
 
 <span class="sd">    Outputs</span>
 <span class="sd">    -------</span>
+<span class="sd">    fieldmap</span>
+<span class="sd">        the displacements field interpolated from the B-Spline coefficients</span>
+<span class="sd">        and scaled by the appropriate parameters (readout time of the EPI</span>
+<span class="sd">        target and voxel size along PE).</span>
 <span class="sd">    corrected</span>
 <span class="sd">        the target EPI reference image, after applying unwarping.</span>
+<span class="sd">    corrected_mask</span>
+<span class="sd">        a fast mask calculated from the corrected EPI reference.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">niworkflows.interfaces.fixes</span> <span class="kn">import</span> <span class="n">FixHeaderApplyTransforms</span> <span class="k">as</span> <span class="n">ApplyTransforms</span>
-    <span class="kn">from</span> <span class="nn">...interfaces.epi</span> <span class="kn">import</span> <span class="n">GetReadoutTime</span><span class="p">,</span> <span class="n">EPIMask</span>
+    <span class="kn">from</span> <span class="nn">...interfaces.epi</span> <span class="kn">import</span> <span class="n">GetReadoutTime</span>
     <span class="kn">from</span> <span class="nn">...interfaces.bspline</span> <span class="kn">import</span> <span class="n">Coefficients2Warp</span>
+    <span class="kn">from</span> <span class="nn">..ancillary</span> <span class="kn">import</span> <span class="n">init_brainextraction_wf</span>
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
@@ -234,6 +239,7 @@
     <span class="n">unwarp</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
         <span class="n">ApplyTransforms</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;BSpline&quot;</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unwarp&quot;</span>
     <span class="p">)</span>
+    <span class="n">brainextraction_wf</span> <span class="o">=</span> <span class="n">init_brainextraction_wf</span><span class="p">()</span>
 
     <span class="c1"># fmt:off</span>
     <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
@@ -247,19 +253,11 @@
                              <span class="p">(</span><span class="s2">&quot;distorted&quot;</span><span class="p">,</span> <span class="s2">&quot;input_image&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">resample</span><span class="p">,</span> <span class="n">unwarp</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_warp&quot;</span><span class="p">,</span> <span class="s2">&quot;transforms&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">resample</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_field&quot;</span><span class="p">,</span> <span class="s2">&quot;fieldmap&quot;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">unwarp</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;output_image&quot;</span><span class="p">,</span> <span class="s2">&quot;corrected&quot;</span><span class="p">)]),</span>
-    <span class="p">])</span>
-    <span class="c1"># fmt:on</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">mask</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">workflow</span>
-
-    <span class="n">epi_mask</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">EPIMask</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;epi_mask&quot;</span><span class="p">)</span>
-
-    <span class="c1"># fmt:off</span>
-    <span class="n">workflow</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
-        <span class="p">(</span><span class="n">unwarp</span><span class="p">,</span> <span class="n">epi_mask</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;output_image&quot;</span><span class="p">,</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
-        <span class="p">(</span><span class="n">epi_mask</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;corrected_mask&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">unwarp</span><span class="p">,</span> <span class="n">brainextraction_wf</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;output_image&quot;</span><span class="p">,</span> <span class="s2">&quot;inputnode.in_file&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">brainextraction_wf</span><span class="p">,</span> <span class="n">outputnode</span><span class="p">,</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;outputnode.out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;corrected&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;outputnode.out_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;corrected_mask&quot;</span><span class="p">),</span>
+        <span class="p">]),</span>
     <span class="p">])</span>
     <span class="c1"># fmt:on</span>
     <span class="k">return</span> <span class="n">workflow</span></div>
@@ -322,6 +320,7 @@
             <dd><a href="../../../../../1.3.2/index.html">1.3.2</a></dd>
             <dd><a href="../../../../../1.3.3/index.html">1.3.3</a></dd>
             <dd><a href="correction.html">1.4.0rc0</a></dd>
+            <dd><a href="../../../../../2.0.0/index.html">2.0.0</a></dd>
             <dd><a href="../../../../../2.0.0rc1/index.html">2.0.0rc1</a></dd>
             <dd><a href="../../../../../2.0.0rc2/index.html">2.0.0rc2</a></dd>
             <dd><a href="../../../../../2.0.0rc3/index.html">2.0.0rc3</a></dd>
@@ -331,13 +330,13 @@
         <dl>
             <dt>Branches</dt>
             <dd><a href="../../../../../dev_1.4.0/index.html">dev/1.4.0</a></dd>
-            <dd><a href="../../../../../enh_use-pr-174/index.html">enh/use-pr-174</a></dd>
             <dd><a href="../../../../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../../../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../../../../../maint_1.2.x/index.html">maint/1.2.x</a></dd>
             <dd><a href="../../../../../maint_1.3.x/index.html">maint/1.3.x</a></dd>
             <dd><a href="../../../../../maint_travis-gh-action-migration/index.html">maint/travis-gh-action-migration</a></dd>
             <dd><a href="../../../../../master/index.html">master</a></dd>
+            <dd><a href="../../../../../rel_2.0.0/index.html">rel/2.0.0</a></dd>
             <dd><a href="../../../../../rel_2.0.0rc3/index.html">rel/2.0.0rc3</a></dd>
         </dl>
     </div>

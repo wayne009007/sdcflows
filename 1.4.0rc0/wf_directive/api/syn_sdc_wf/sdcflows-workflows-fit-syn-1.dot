@@ -9,7 +9,7 @@ strict digraph  {
 "unwarp_ref (fixes)";
 "prior2epi (fixes)";
 "extract_field (utility)";
-"epi_mask (epi)";
+brainextraction_wf;
 "bs_filter (bspline)";
 "outputnode (utility)";
 "atlas_msk (nibabel)";
@@ -26,7 +26,7 @@ strict digraph  {
 "invert_t1w (image)" -> "anat2epi (fixes)";
 "anat2epi (fixes)" -> "deoblique (utils)";
 "deoblique (utils)" -> "syn (fixes)";
-"reoblique (utils)" -> "epi_mask (epi)";
+"reoblique (utils)" -> brainextraction_wf;
 "reoblique (utils)" -> "bs_filter (bspline)";
 "reoblique (utils)" -> "outputnode (utility)";
 "syn (fixes)" -> "extract_field (utility)";
@@ -34,8 +34,8 @@ strict digraph  {
 "unwarp_ref (fixes)" -> "reoblique (utils)";
 "prior2epi (fixes)" -> "atlas_msk (nibabel)";
 "extract_field (utility)" -> "reoblique (utils)";
-"epi_mask (epi)" -> "bs_filter (bspline)";
-"epi_mask (epi)" -> "outputnode (utility)";
+brainextraction_wf -> "bs_filter (bspline)";
+brainextraction_wf -> "outputnode (utility)";
 "bs_filter (bspline)" -> "outputnode (utility)";
 "atlas_msk (nibabel)" -> "deoblique (utils)";
 }

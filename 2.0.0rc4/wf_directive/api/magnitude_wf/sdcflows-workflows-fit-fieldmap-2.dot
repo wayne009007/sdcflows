@@ -1,11 +1,9 @@
 strict digraph  {
 "inputnode (utility)";
 "magmrg (images)";
-"n4_correct (ants)";
-"bet (masks)";
+brainextraction_wf;
 "outputnode (utility)";
 "inputnode (utility)" -> "magmrg (images)";
-"magmrg (images)" -> "n4_correct (ants)";
-"n4_correct (ants)" -> "bet (masks)";
-"bet (masks)" -> "outputnode (utility)";
+"magmrg (images)" -> brainextraction_wf;
+brainextraction_wf -> "outputnode (utility)";
 }

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>What’s new? &mdash; sdcflows 2.0.0rc6.dev24 documentation</title>
+  <title>What’s new? &mdash; sdcflows 2.0.0rc6.dev28 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                2.0.0rc6.dev24
+                2.0.0rc6.dev28
               </div>
             
           
@@ -94,7 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">Library API (application program interface)</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">What’s new?</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#tbd">2.0.0 (TBD)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#january-25-2021">2.0.0 (January 25, 2021)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#x-series">1.3.x series</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#september-4-2020">1.3.3 (September 4, 2020)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#august-14-2020">1.3.2 (August 14, 2020)</a></li>
@@ -198,9 +198,9 @@
 
 <div class="section" id="what-s-new">
 <h1>What’s new?<a class="headerlink" href="#what-s-new" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="tbd">
-<h2>2.0.0 (TBD)<a class="headerlink" href="#tbd" title="Permalink to this headline">¶</a></h2>
-<p>The <em>SDCFlows</em> 2.0.x series are released with a comprehensive overhaul of the software’s API.
+<div class="section" id="january-25-2021">
+<h2>2.0.0 (January 25, 2021)<a class="headerlink" href="#january-25-2021" title="Permalink to this headline">¶</a></h2>
+<p>The <em>SDCFlows</em> 2.0.x series are released after a comprehensive overhaul of the software’s API.
 This overhaul has the vision of converting <em>SDCFlows</em> into some sort of subordinate pipeline
 to other <em>d/fMRIPrep</em>, inline with <em>sMRIPrep</em>’s approach.
 The idea is to consider fieldmaps a first-citizen input, for which derivatives are generated
@@ -244,9 +244,15 @@ coefficients.</p></li>
 </div>
 <p>Some of the most prominent pull-requests conducive to this release are:</p>
 <ul class="simple">
+<li><p>FIX: Fast &amp; accurate brain extraction of magnitude images without FSL BET (#174)</p></li>
+<li><p>FIX: svgutils 0.3.2 breaks our reportlets (#175)</p></li>
+<li><p>FIX: Misconfigured test of unwarping workflow (#170)</p></li>
+<li><p>FIX: Cleanup annoying isolated dots in reportlets + new tests (#168)</p></li>
 <li><p>FIX: Make images “plumb” before running ANTs-SyN (and roll-back afterwards) (#165)</p></li>
 <li><p>FIX: Convert SEI fieldmaps given in rad/s into Hz (#127)</p></li>
 <li><p>FIX: Limit <code class="docutils literal notranslate"><span class="pre">3dQwarp</span></code> to maximum 4 CPUs for stability reasons (#128)</p></li>
+<li><p>ENH: Adopt new brain extraction algorithm in magnitude preparation workflow (#176)</p></li>
+<li><p>ENH: Add “<em>fieldmap-less</em>” estimations to default heuristics (#166)</p></li>
 <li><p>ENH: Add one test for the SDC-SyN workflow (#164)</p></li>
 <li><p>ENH: Generate a simple mask after correction (#161)</p></li>
 <li><p>ENH: Increase unit-tests coverage of <code class="docutils literal notranslate"><span class="pre">sdcflows.fieldmaps</span></code> (#159)</p></li>
@@ -267,6 +273,8 @@ coefficients.</p></li>
 <li><p>DOC: Minor improvements to the literate workflows descriptions. (#162)</p></li>
 <li><p>DOC: Fix typo in docstring (#155)</p></li>
 <li><p>DOC: Enable NiPype’s sphinx-extension to better render Interfaces (#131)</p></li>
+<li><p>MAINT: Docker - Update base Ubuntu image &amp; ANTs, makefile (#173)</p></li>
+<li><p>MAINT: Retouch several tests and improve ANTs version handling of SyN workflow (#172)</p></li>
 <li><p>MAINT: Drop Python 3.6 (#160)</p></li>
 <li><p>MAINT: Enable Git-archive protocol with setuptools-scm-archive (#153)</p></li>
 <li><p>MAINT: Migrate TravisCI -&gt; GH Actions (completion) (#138)</p></li>
@@ -524,6 +532,7 @@ and <a class="reference external" href="https://github.com/nipreps/sdcflows/comm
             <dd><a href="1.3.2/changes.html">1.3.2</a></dd>
             <dd><a href="1.3.3/changes.html">1.3.3</a></dd>
             <dd><a href="1.4.0rc0/changes.html">1.4.0rc0</a></dd>
+            <dd><a href="2.0.0/changes.html">2.0.0</a></dd>
             <dd><a href="2.0.0rc1/changes.html">2.0.0rc1</a></dd>
             <dd><a href="2.0.0rc2/changes.html">2.0.0rc2</a></dd>
             <dd><a href="2.0.0rc3/changes.html">2.0.0rc3</a></dd>
@@ -533,13 +542,13 @@ and <a class="reference external" href="https://github.com/nipreps/sdcflows/comm
         <dl>
             <dt>Branches</dt>
             <dd><a href="dev_1.4.0/changes.html">dev/1.4.0</a></dd>
-            <dd><a href="enh_use-pr-174/changes.html">enh/use-pr-174</a></dd>
             <dd><a href="feat_new-api/changes.html">feat/new-api</a></dd>
             <dd><a href="maint_1.0.x/changes.html">maint/1.0.x</a></dd>
             <dd><a href="maint_1.2.x/changes.html">maint/1.2.x</a></dd>
             <dd><a href="maint_1.3.x/changes.html">maint/1.3.x</a></dd>
             <dd><a href="maint_travis-gh-action-migration/changes.html">maint/travis-gh-action-migration</a></dd>
             <dd><a href="master/changes.html">master</a></dd>
+            <dd><a href="rel_2.0.0/changes.html">rel/2.0.0</a></dd>
             <dd><a href="rel_2.0.0rc3/changes.html">rel/2.0.0rc3</a></dd>
         </dl>
     </div>

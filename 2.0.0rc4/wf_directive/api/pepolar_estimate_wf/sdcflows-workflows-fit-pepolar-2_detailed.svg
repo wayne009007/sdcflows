@@ -156,7 +156,7 @@
 <polygon fill="#000000" stroke="#000000" points="728.3498,-539.3731 738,-535 727.729,-532.4007 728.3498,-539.3731"/>
 </g>
 <!-- pepolar_estimate_wfconcat_blips&#45;&gt;pepolar_estimate_wftopup -->
-<g id="edge1" class="edge">
+<g id="edge2" class="edge">
 <title>pepolar_estimate_wfconcat_blips:e&#45;&gt;pepolar_estimate_wftopup:w</title>
 <path fill="none" stroke="#000000" d="M412,-649C420.9443,-649 414.5017,-637.1459 421,-631 530.0053,-527.9047 582.1504,-495.4539 727.8096,-494.0482"/>
 <polygon fill="#000000" stroke="#000000" points="728.0167,-497.5474 738,-494 727.9835,-490.5474 728.0167,-497.5474"/>
@@ -170,58 +170,58 @@
 <!-- pepolar_estimate_wffix_coeff -->
 <g id="node6" class="node">
 <title>pepolar_estimate_wffix_coeff</title>
-<polygon fill="none" stroke="#000000" points="500,-327.5 500,-396.5 740,-396.5 740,-327.5 500,-327.5"/>
-<text text-anchor="middle" x="540" y="-381.3" font-family="Times,serif" font-size="14.00" fill="#000000">IN</text>
-<polyline fill="none" stroke="#000000" points="500,-373.5 580,-373.5 "/>
-<text text-anchor="middle" x="540" y="-358.3" font-family="Times,serif" font-size="14.00" fill="#000000">fmap_ref</text>
-<polyline fill="none" stroke="#000000" points="500,-350.5 580,-350.5 "/>
-<text text-anchor="middle" x="540" y="-335.3" font-family="Times,serif" font-size="14.00" fill="#000000">in_coeff</text>
-<polyline fill="none" stroke="#000000" points="580,-327.5 580,-396.5 "/>
-<text text-anchor="middle" x="618.5" y="-381.3" font-family="Times,serif" font-size="14.00" fill="#000000">fix_coeff</text>
-<polyline fill="none" stroke="#000000" points="580,-373.5 657,-373.5 "/>
-<text text-anchor="middle" x="618.5" y="-358.3" font-family="Times,serif" font-size="14.00" fill="#000000">bspline</text>
-<polyline fill="none" stroke="#000000" points="580,-350.5 657,-350.5 "/>
-<text text-anchor="middle" x="618.5" y="-335.3" font-family="Times,serif" font-size="14.00" fill="#000000"> </text>
-<polyline fill="none" stroke="#000000" points="657,-327.5 657,-396.5 "/>
-<text text-anchor="middle" x="698.5" y="-375.8" font-family="Times,serif" font-size="14.00" fill="#000000">OUT</text>
-<polyline fill="none" stroke="#000000" points="657,-362.5 740,-362.5 "/>
-<text text-anchor="middle" x="698.5" y="-341.3" font-family="Times,serif" font-size="14.00" fill="#000000">out_coeff</text>
+<polygon fill="none" stroke="#000000" points="495,-327.5 495,-396.5 735,-396.5 735,-327.5 495,-327.5"/>
+<text text-anchor="middle" x="535" y="-381.3" font-family="Times,serif" font-size="14.00" fill="#000000">IN</text>
+<polyline fill="none" stroke="#000000" points="495,-373.5 575,-373.5 "/>
+<text text-anchor="middle" x="535" y="-358.3" font-family="Times,serif" font-size="14.00" fill="#000000">fmap_ref</text>
+<polyline fill="none" stroke="#000000" points="495,-350.5 575,-350.5 "/>
+<text text-anchor="middle" x="535" y="-335.3" font-family="Times,serif" font-size="14.00" fill="#000000">in_coeff</text>
+<polyline fill="none" stroke="#000000" points="575,-327.5 575,-396.5 "/>
+<text text-anchor="middle" x="613.5" y="-381.3" font-family="Times,serif" font-size="14.00" fill="#000000">fix_coeff</text>
+<polyline fill="none" stroke="#000000" points="575,-373.5 652,-373.5 "/>
+<text text-anchor="middle" x="613.5" y="-358.3" font-family="Times,serif" font-size="14.00" fill="#000000">bspline</text>
+<polyline fill="none" stroke="#000000" points="575,-350.5 652,-350.5 "/>
+<text text-anchor="middle" x="613.5" y="-335.3" font-family="Times,serif" font-size="14.00" fill="#000000"> </text>
+<polyline fill="none" stroke="#000000" points="652,-327.5 652,-396.5 "/>
+<text text-anchor="middle" x="693.5" y="-375.8" font-family="Times,serif" font-size="14.00" fill="#000000">OUT</text>
+<polyline fill="none" stroke="#000000" points="652,-362.5 735,-362.5 "/>
+<text text-anchor="middle" x="693.5" y="-341.3" font-family="Times,serif" font-size="14.00" fill="#000000">out_coeff</text>
 </g>
 <!-- pepolar_estimate_wftopup&#45;&gt;pepolar_estimate_wffix_coeff -->
 <g id="edge13" class="edge">
 <title>pepolar_estimate_wftopup:e&#45;&gt;pepolar_estimate_wffix_coeff:w</title>
-<path fill="none" stroke="#000000" d="M1068,-560C1124.4444,-560 1106.6293,-474.1552 1068,-433 981.443,-340.7833 586.557,-489.2167 500,-397 492.4314,-388.9366 487.7622,-374.6482 491.2847,-367.0615"/>
-<polygon fill="#000000" stroke="#000000" points="493.1103,-370.0488 500,-362 489.5948,-363.9955 493.1103,-370.0488"/>
+<path fill="none" stroke="#000000" d="M1068,-560C1124.4444,-560 1106.6407,-474.1445 1068,-433 980.6584,-339.9988 582.3416,-490.0012 495,-397 487.4292,-388.9386 482.7609,-374.6494 486.2842,-367.062"/>
+<polygon fill="#000000" stroke="#000000" points="488.1104,-370.0489 495,-362 484.5948,-363.9957 488.1104,-370.0489"/>
 </g>
 <!-- pepolar_estimate_wftopup&#45;&gt;pepolar_estimate_wffix_coeff -->
 <g id="edge16" class="edge">
 <title>pepolar_estimate_wftopup:e&#45;&gt;pepolar_estimate_wffix_coeff:w</title>
-<path fill="none" stroke="#000000" d="M1068,-514C1104,-514 1092.6376,-459.2486 1068,-433 981.443,-340.7833 586.557,-489.2167 500,-397 485.1148,-381.1415 476.9968,-350.7532 490.3075,-341.644"/>
-<polygon fill="#000000" stroke="#000000" points="491.2736,-345.0084 500,-339 489.4314,-338.2552 491.2736,-345.0084"/>
+<path fill="none" stroke="#000000" d="M1068,-514C1104,-514 1092.6448,-459.2418 1068,-433 980.6584,-339.9988 582.3416,-490.0012 495,-397 480.1104,-381.1456 471.9954,-350.7545 485.3072,-341.6443"/>
+<polygon fill="#000000" stroke="#000000" points="486.2738,-345.0086 495,-339 484.4314,-338.2554 486.2738,-345.0086"/>
 </g>
 <!-- pepolar_estimate_wfmerge_corrected -->
 <g id="node7" class="node">
 <title>pepolar_estimate_wfmerge_corrected</title>
-<polygon fill="none" stroke="#000000" points="758.5,-327.5 758.5,-396.5 1039.5,-396.5 1039.5,-327.5 758.5,-327.5"/>
-<text text-anchor="middle" x="792.5" y="-375.8" font-family="Times,serif" font-size="14.00" fill="#000000">IN</text>
-<polyline fill="none" stroke="#000000" points="758.5,-362.5 826.5,-362.5 "/>
-<text text-anchor="middle" x="792.5" y="-341.3" font-family="Times,serif" font-size="14.00" fill="#000000">in_files</text>
-<polyline fill="none" stroke="#000000" points="826.5,-327.5 826.5,-396.5 "/>
-<text text-anchor="middle" x="896.5" y="-381.3" font-family="Times,serif" font-size="14.00" fill="#000000">merge_corrected</text>
-<polyline fill="none" stroke="#000000" points="826.5,-373.5 966.5,-373.5 "/>
-<text text-anchor="middle" x="896.5" y="-358.3" font-family="Times,serif" font-size="14.00" fill="#000000">images</text>
-<polyline fill="none" stroke="#000000" points="826.5,-350.5 966.5,-350.5 "/>
-<text text-anchor="middle" x="896.5" y="-335.3" font-family="Times,serif" font-size="14.00" fill="#000000"> </text>
-<polyline fill="none" stroke="#000000" points="966.5,-327.5 966.5,-396.5 "/>
-<text text-anchor="middle" x="1003" y="-375.8" font-family="Times,serif" font-size="14.00" fill="#000000">OUT</text>
-<polyline fill="none" stroke="#000000" points="966.5,-362.5 1039.5,-362.5 "/>
-<text text-anchor="middle" x="1003" y="-341.3" font-family="Times,serif" font-size="14.00" fill="#000000">out_avg</text>
+<polygon fill="none" stroke="#000000" points="753.5,-327.5 753.5,-396.5 1034.5,-396.5 1034.5,-327.5 753.5,-327.5"/>
+<text text-anchor="middle" x="787.5" y="-375.8" font-family="Times,serif" font-size="14.00" fill="#000000">IN</text>
+<polyline fill="none" stroke="#000000" points="753.5,-362.5 821.5,-362.5 "/>
+<text text-anchor="middle" x="787.5" y="-341.3" font-family="Times,serif" font-size="14.00" fill="#000000">in_files</text>
+<polyline fill="none" stroke="#000000" points="821.5,-327.5 821.5,-396.5 "/>
+<text text-anchor="middle" x="891.5" y="-381.3" font-family="Times,serif" font-size="14.00" fill="#000000">merge_corrected</text>
+<polyline fill="none" stroke="#000000" points="821.5,-373.5 961.5,-373.5 "/>
+<text text-anchor="middle" x="891.5" y="-358.3" font-family="Times,serif" font-size="14.00" fill="#000000">images</text>
+<polyline fill="none" stroke="#000000" points="821.5,-350.5 961.5,-350.5 "/>
+<text text-anchor="middle" x="891.5" y="-335.3" font-family="Times,serif" font-size="14.00" fill="#000000"> </text>
+<polyline fill="none" stroke="#000000" points="961.5,-327.5 961.5,-396.5 "/>
+<text text-anchor="middle" x="998" y="-375.8" font-family="Times,serif" font-size="14.00" fill="#000000">OUT</text>
+<polyline fill="none" stroke="#000000" points="961.5,-362.5 1034.5,-362.5 "/>
+<text text-anchor="middle" x="998" y="-341.3" font-family="Times,serif" font-size="14.00" fill="#000000">out_avg</text>
 </g>
 <!-- pepolar_estimate_wftopup&#45;&gt;pepolar_estimate_wfmerge_corrected -->
 <g id="edge14" class="edge">
 <title>pepolar_estimate_wftopup:e&#45;&gt;pepolar_estimate_wfmerge_corrected:w</title>
-<path fill="none" stroke="#000000" d="M1068,-560C1124.4444,-560 1105.5397,-475.1515 1068,-433 975.7518,-329.4192 850.2482,-500.5808 758,-397 752.4162,-390.7302 748.8462,-366.1208 751.7435,-353.1313"/>
-<polygon fill="#000000" stroke="#000000" points="754.6758,-355.0598 758,-345 749.1279,-350.7911 754.6758,-355.0598"/>
+<path fill="none" stroke="#000000" d="M1068,-560C1124.4444,-560 1105.578,-475.1173 1068,-433 974.1879,-327.8559 846.8121,-502.1441 753,-397 747.4105,-390.7353 743.8431,-366.1235 746.7423,-353.1324"/>
+<polygon fill="#000000" stroke="#000000" points="749.6754,-355.0597 753,-345 744.1277,-350.7908 749.6754,-355.0597"/>
 </g>
 <!-- pepolar_estimate_wfoutputnode -->
 <g id="node9" class="node">
@@ -278,42 +278,42 @@
 <!-- pepolar_estimate_wffix_coeff&#45;&gt;pepolar_estimate_wfoutputnode -->
 <g id="edge3" class="edge">
 <title>pepolar_estimate_wffix_coeff:e&#45;&gt;pepolar_estimate_wfoutputnode:w</title>
-<path fill="none" stroke="#000000" d="M740,-345C747.2216,-345 773.9145,-226.1273 779,-221 824.3057,-175.3221 984.4688,-131.7779 1057.83,-127.796"/>
-<polygon fill="#000000" stroke="#000000" points="1058.1061,-131.2895 1068,-127.5 1057.9024,-124.2925 1058.1061,-131.2895"/>
+<path fill="none" stroke="#000000" d="M735,-345C743,-345 740.1419,-333.1287 735,-327 675.825,-256.468 590.175,-361.532 531,-291 511.0038,-267.1661 510.9766,-244.811 531,-221 606.904,-130.738 929.2325,-127.6058 1057.9751,-127.5033"/>
+<polygon fill="#000000" stroke="#000000" points="1058.0012,-131.0034 1068,-127.5 1057.9988,-124.0034 1058.0012,-131.0034"/>
 </g>
-<!-- pepolar_estimate_wfepi_mask -->
+<!-- pepolar_estimate_wfbrainextraction_wf -->
 <g id="node8" class="node">
-<title>pepolar_estimate_wfepi_mask</title>
-<polygon fill="none" stroke="#000000" points="788,-221.5 788,-290.5 1002,-290.5 1002,-221.5 788,-221.5"/>
-<text text-anchor="middle" x="818" y="-269.8" font-family="Times,serif" font-size="14.00" fill="#000000">IN</text>
-<polyline fill="none" stroke="#000000" points="788,-256.5 848,-256.5 "/>
-<text text-anchor="middle" x="818" y="-235.3" font-family="Times,serif" font-size="14.00" fill="#000000">in_file</text>
-<polyline fill="none" stroke="#000000" points="848,-221.5 848,-290.5 "/>
-<text text-anchor="middle" x="890" y="-275.3" font-family="Times,serif" font-size="14.00" fill="#000000">epi_mask</text>
-<polyline fill="none" stroke="#000000" points="848,-267.5 932,-267.5 "/>
-<text text-anchor="middle" x="890" y="-252.3" font-family="Times,serif" font-size="14.00" fill="#000000">epi</text>
-<polyline fill="none" stroke="#000000" points="848,-244.5 932,-244.5 "/>
-<text text-anchor="middle" x="890" y="-229.3" font-family="Times,serif" font-size="14.00" fill="#000000"> </text>
-<polyline fill="none" stroke="#000000" points="932,-221.5 932,-290.5 "/>
-<text text-anchor="middle" x="967" y="-269.8" font-family="Times,serif" font-size="14.00" fill="#000000">OUT</text>
-<polyline fill="none" stroke="#000000" points="932,-256.5 1002,-256.5 "/>
-<text text-anchor="middle" x="967" y="-235.3" font-family="Times,serif" font-size="14.00" fill="#000000">out_file</text>
+<title>pepolar_estimate_wfbrainextraction_wf</title>
+<polygon fill="none" stroke="#000000" points="540.5,-221.5 540.5,-290.5 1001.5,-290.5 1001.5,-221.5 540.5,-221.5"/>
+<text text-anchor="middle" x="609" y="-269.8" font-family="Times,serif" font-size="14.00" fill="#000000">IN</text>
+<polyline fill="none" stroke="#000000" points="540.5,-256.5 677.5,-256.5 "/>
+<text text-anchor="middle" x="609" y="-235.3" font-family="Times,serif" font-size="14.00" fill="#000000">inputnode.in_file</text>
+<polyline fill="none" stroke="#000000" points="677.5,-221.5 677.5,-290.5 "/>
+<text text-anchor="middle" x="753.5" y="-275.3" font-family="Times,serif" font-size="14.00" fill="#000000">brainextraction_wf</text>
+<polyline fill="none" stroke="#000000" points="677.5,-267.5 829.5,-267.5 "/>
+<text text-anchor="middle" x="753.5" y="-252.3" font-family="Times,serif" font-size="14.00" fill="#000000"> </text>
+<polyline fill="none" stroke="#000000" points="677.5,-244.5 829.5,-244.5 "/>
+<text text-anchor="middle" x="753.5" y="-229.3" font-family="Times,serif" font-size="14.00" fill="#000000"> </text>
+<polyline fill="none" stroke="#000000" points="829.5,-221.5 829.5,-290.5 "/>
+<text text-anchor="middle" x="915.5" y="-269.8" font-family="Times,serif" font-size="14.00" fill="#000000">OUT</text>
+<polyline fill="none" stroke="#000000" points="829.5,-256.5 1001.5,-256.5 "/>
+<text text-anchor="middle" x="915.5" y="-235.3" font-family="Times,serif" font-size="14.00" fill="#000000">outputnode.out_mask</text>
 </g>
-<!-- pepolar_estimate_wfmerge_corrected&#45;&gt;pepolar_estimate_wfepi_mask -->
+<!-- pepolar_estimate_wfmerge_corrected&#45;&gt;pepolar_estimate_wfbrainextraction_wf -->
 <g id="edge10" class="edge">
-<title>pepolar_estimate_wfmerge_corrected:e&#45;&gt;pepolar_estimate_wfepi_mask:w</title>
-<path fill="none" stroke="#000000" d="M1040,-345C1048,-345 1045.2416,-333.0436 1040,-327 965.8724,-241.5301 862.1276,-376.4699 788,-291 775.5785,-276.6779 767.9843,-250.8615 778.4134,-242.0462"/>
-<polygon fill="#000000" stroke="#000000" points="779.5295,-245.3641 788,-239 777.4096,-238.6928 779.5295,-245.3641"/>
+<title>pepolar_estimate_wfmerge_corrected:e&#45;&gt;pepolar_estimate_wfbrainextraction_wf:w</title>
+<path fill="none" stroke="#000000" d="M1035,-345C1043,-345 1040.4478,-332.8584 1035,-327 959.8945,-246.2339 615.1055,-371.7661 540,-291 534.2826,-284.8517 530.7732,-260.1872 533.7136,-247.1585"/>
+<polygon fill="#000000" stroke="#000000" points="536.6688,-249.0575 540,-239 531.1239,-244.785 536.6688,-249.0575"/>
 </g>
 <!-- pepolar_estimate_wfmerge_corrected&#45;&gt;pepolar_estimate_wfoutputnode -->
 <g id="edge11" class="edge">
 <title>pepolar_estimate_wfmerge_corrected:e&#45;&gt;pepolar_estimate_wfoutputnode:w</title>
-<path fill="none" stroke="#000000" d="M1040,-345C1053.1315,-345 1053.3669,-136.1144 1063.627,-89.6047"/>
-<polygon fill="#000000" stroke="#000000" points="1066.8254,-91.0295 1068,-80.5 1060.5154,-87.9988 1066.8254,-91.0295"/>
+<path fill="none" stroke="#000000" d="M1035,-345C1061.7245,-345 1042.9744,-129.6377 1060.8171,-87.5747"/>
+<polygon fill="#000000" stroke="#000000" points="1063.3315,-90.0108 1068,-80.5 1058.4194,-85.0237 1063.3315,-90.0108"/>
 </g>
-<!-- pepolar_estimate_wfepi_mask&#45;&gt;pepolar_estimate_wfoutputnode -->
-<g id="edge2" class="edge">
-<title>pepolar_estimate_wfepi_mask:e&#45;&gt;pepolar_estimate_wfoutputnode:w</title>
+<!-- pepolar_estimate_wfbrainextraction_wf&#45;&gt;pepolar_estimate_wfoutputnode -->
+<g id="edge1" class="edge">
+<title>pepolar_estimate_wfbrainextraction_wf:e&#45;&gt;pepolar_estimate_wfoutputnode:w</title>
 <path fill="none" stroke="#000000" d="M1002,-239C1016.3708,-239 1042.7103,-138.7633 1060.3537,-111.3548"/>
 <polygon fill="#000000" stroke="#000000" points="1062.8904,-113.7813 1068,-104.5 1058.2177,-108.5691 1062.8904,-113.7813"/>
 </g>

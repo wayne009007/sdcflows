@@ -19,5 +19,6 @@ Submodules
 
 .. toctree::
 
+   sdcflows.workflows.ancillary
    sdcflows.workflows.base
    sdcflows.workflows.outputs

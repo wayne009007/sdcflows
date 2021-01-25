@@ -7,7 +7,7 @@ strict digraph  {
 "merge_corrected (images)";
 "fix_coeff (bspline)";
 "outputnode (utility)";
-"epi_mask (epi)";
+brainextraction_wf;
 "inputnode (utility)" -> "flatten (utils)";
 "flatten (utils)" -> "readout_time (epi)";
 "flatten (utils)" -> "concat_blips (nibabel)";
@@ -17,8 +17,8 @@ strict digraph  {
 "topup (fsl)" -> "merge_corrected (images)";
 "topup (fsl)" -> "fix_coeff (bspline)";
 "topup (fsl)" -> "outputnode (utility)";
-"merge_corrected (images)" -> "epi_mask (epi)";
+"merge_corrected (images)" -> brainextraction_wf;
 "merge_corrected (images)" -> "outputnode (utility)";
 "fix_coeff (bspline)" -> "outputnode (utility)";
-"epi_mask (epi)" -> "outputnode (utility)";
+brainextraction_wf -> "outputnode (utility)";
 }

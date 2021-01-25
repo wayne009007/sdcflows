@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.interfaces.utils &mdash; sdcflows 2.0.0rc6.dev24 documentation</title>
+  <title>sdcflows.interfaces.utils &mdash; sdcflows 2.0.0rc6.dev28 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.0rc6.dev24
+                2.0.0rc6.dev28
               </div>
             
           
@@ -186,17 +186,24 @@
 
 <span class="k">class</span> <span class="nc">_FlattenInputSpec</span><span class="p">(</span><span class="n">BaseInterfaceInputSpec</span><span class="p">):</span>
     <span class="n">in_data</span> <span class="o">=</span> <span class="n">InputMultiObject</span><span class="p">(</span>
-        <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;list of input data&quot;</span><span class="p">,</span>
+        <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;list of input data&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">in_meta</span> <span class="o">=</span> <span class="n">InputMultiObject</span><span class="p">(</span>
-        <span class="n">traits</span><span class="o">.</span><span class="n">DictStrAny</span><span class="p">,</span> <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;list of metadata&quot;</span><span class="p">,</span>
+        <span class="n">traits</span><span class="o">.</span><span class="n">DictStrAny</span><span class="p">,</span>
+        <span class="n">mandatory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;list of metadata&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">max_trs</span> <span class="o">=</span> <span class="n">traits</span><span class="o">.</span><span class="n">Int</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">usedefault</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;only pick first TRs&quot;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">_FlattenOutputSpec</span><span class="p">(</span><span class="n">TraitedSpec</span><span class="p">):</span>
     <span class="n">out_list</span> <span class="o">=</span> <span class="n">OutputMultiObject</span><span class="p">(</span>
-        <span class="n">traits</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span><span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">traits</span><span class="o">.</span><span class="n">DictStrAny</span><span class="p">,),</span>
+        <span class="n">traits</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span>
+            <span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">traits</span><span class="o">.</span><span class="n">DictStrAny</span><span class="p">,</span>
+        <span class="p">),</span>
         <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;list of output files&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">out_data</span> <span class="o">=</span> <span class="n">OutputMultiObject</span><span class="p">(</span><span class="n">File</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
@@ -577,6 +584,7 @@
             <dd><a href="../../../../1.3.2/index.html">1.3.2</a></dd>
             <dd><a href="../../../../1.3.3/index.html">1.3.3</a></dd>
             <dd><a href="../../../../1.4.0rc0/index.html">1.4.0rc0</a></dd>
+            <dd><a href="../../../../2.0.0/index.html">2.0.0</a></dd>
             <dd><a href="../../../../2.0.0rc1/index.html">2.0.0rc1</a></dd>
             <dd><a href="../../../../2.0.0rc2/index.html">2.0.0rc2</a></dd>
             <dd><a href="utils.html">2.0.0rc3</a></dd>
@@ -586,13 +594,13 @@
         <dl>
             <dt>Branches</dt>
             <dd><a href="../../../../dev_1.4.0/index.html">dev/1.4.0</a></dd>
-            <dd><a href="../../../../enh_use-pr-174/index.html">enh/use-pr-174</a></dd>
             <dd><a href="../../../../feat_new-api/index.html">feat/new-api</a></dd>
             <dd><a href="../../../../maint_1.0.x/index.html">maint/1.0.x</a></dd>
             <dd><a href="../../../../maint_1.2.x/index.html">maint/1.2.x</a></dd>
             <dd><a href="../../../../maint_1.3.x/index.html">maint/1.3.x</a></dd>
             <dd><a href="../../../../maint_travis-gh-action-migration/index.html">maint/travis-gh-action-migration</a></dd>
             <dd><a href="../../../../master/index.html">master</a></dd>
+            <dd><a href="../../../../rel_2.0.0/index.html">rel/2.0.0</a></dd>
             <dd><a href="../../../../rel_2.0.0rc3/index.html">rel/2.0.0rc3</a></dd>
         </dl>
     </div>
