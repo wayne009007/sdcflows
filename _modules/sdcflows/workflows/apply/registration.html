@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.apply.registration &mdash; sdcflows 2.0.0rc6.dev28 documentation</title>
+  <title>sdcflows.workflows.apply.registration &mdash; sdcflows 2.0.1.dev2 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.0rc6.dev28
+                2.0.1.dev2
               </div>
             
           
@@ -183,7 +183,10 @@
 
 
 <div class="viewcode-block" id="init_coeff2epi_wf"><a class="viewcode-back" href="../../../../api/sdcflows.workflows.apply.registration.html#sdcflows.workflows.apply.registration.init_coeff2epi_wf">[docs]</a><span class="k">def</span> <span class="nf">init_coeff2epi_wf</span><span class="p">(</span>
-    <span class="n">omp_nthreads</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">write_coeff</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fmap2field_wf&quot;</span><span class="p">,</span>
+    <span class="n">omp_nthreads</span><span class="p">,</span>
+    <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">write_coeff</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fmap2field_wf&quot;</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Move the field coefficients on to the target (distorted) EPI space.</span>
@@ -257,7 +260,10 @@
     <span class="p">)</span>
 
     <span class="n">coregister</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
-        <span class="n">Registration</span><span class="p">(</span><span class="n">from_file</span><span class="o">=</span><span class="n">ants_settings</span><span class="p">,</span> <span class="n">output_warped_image</span><span class="o">=</span><span class="kc">True</span><span class="p">,),</span>
+        <span class="n">Registration</span><span class="p">(</span>
+            <span class="n">from_file</span><span class="o">=</span><span class="n">ants_settings</span><span class="p">,</span>
+            <span class="n">output_warped_image</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">),</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;coregister&quot;</span><span class="p">,</span>
         <span class="n">n_procs</span><span class="o">=</span><span class="n">omp_nthreads</span><span class="p">,</span>
     <span class="p">)</span>
