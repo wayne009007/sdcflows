@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.fit.syn &mdash; sdcflows 2.0.1.dev5 documentation</title>
+  <title>sdcflows.workflows.fit.syn &mdash; sdcflows 2.0.1.dev9 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.1.dev5
+                2.0.1.dev9
               </div>
             
           
@@ -228,6 +228,13 @@
 <span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="kn">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
 
 <span class="n">DEFAULT_MEMORY_MIN_GB</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">INPUT_FIELDS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;epi_ref&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;epi_mask&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;anat_brain&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;std2anat_xfm&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;anat2epi_xfm&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="init_syn_sdc_wf"><a class="viewcode-back" href="../../../../api/sdcflows.workflows.fit.syn.html#sdcflows.workflows.fit.syn.init_syn_sdc_wf">[docs]</a><span class="k">def</span> <span class="nf">init_syn_sdc_wf</span><span class="p">(</span>
@@ -330,12 +337,7 @@
 <span class="s2">along the phase-encoding direction, and modulated with an average fieldmap</span>
 <span class="s2">template [@fieldmapless3].</span>
 <span class="s2">&quot;&quot;&quot;</span>
-    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
-        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">&quot;epi_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;epi_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;anat_brain&quot;</span><span class="p">,</span> <span class="s2">&quot;std2anat_xfm&quot;</span><span class="p">,</span> <span class="s2">&quot;anat2epi_xfm&quot;</span><span class="p">]</span>
-        <span class="p">),</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inputnode&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">INPUT_FIELDS</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inputnode&quot;</span><span class="p">)</span>
     <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
         <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">([</span><span class="s2">&quot;fmap&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_coeff&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_mask&quot;</span><span class="p">]),</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;outputnode&quot;</span><span class="p">,</span>

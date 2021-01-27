@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.fit.fieldmap &mdash; sdcflows 2.0.1.dev5 documentation</title>
+  <title>sdcflows.workflows.fit.fieldmap &mdash; sdcflows 2.0.1.dev9 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.1.dev5
+                2.0.1.dev9
               </div>
             
           
@@ -267,6 +267,8 @@
 <span class="kn">from</span> <span class="nn">nipype.interfaces</span> <span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">niu</span>
 <span class="kn">from</span> <span class="nn">niworkflows.engine.workflows</span> <span class="kn">import</span> <span class="n">LiterateWorkflow</span> <span class="k">as</span> <span class="n">Workflow</span>
 
+<span class="n">INPUT_FIELDS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;magnitude&quot;</span><span class="p">,</span> <span class="s2">&quot;fieldmap&quot;</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="init_fmap_wf"><a class="viewcode-back" href="../../../../api/sdcflows.workflows.fit.fieldmap.html#sdcflows.workflows.fit.fieldmap.init_fmap_wf">[docs]</a><span class="k">def</span> <span class="nf">init_fmap_wf</span><span class="p">(</span><span class="n">omp_nthreads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;phasediff&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fmap_wf&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -327,9 +329,7 @@
     <span class="p">)</span>
 
     <span class="n">workflow</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
-        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;magnitude&quot;</span><span class="p">,</span> <span class="s2">&quot;fieldmap&quot;</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inputnode&quot;</span>
-    <span class="p">)</span>
+    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="n">INPUT_FIELDS</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inputnode&quot;</span><span class="p">)</span>
     <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
         <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;fmap&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_ref&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;fmap_coeff&quot;</span><span class="p">]),</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;outputnode&quot;</span><span class="p">,</span>

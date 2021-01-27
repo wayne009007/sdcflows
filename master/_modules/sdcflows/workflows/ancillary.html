@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.workflows.ancillary &mdash; sdcflows 2.0.1.dev5 documentation</title>
+  <title>sdcflows.workflows.ancillary &mdash; sdcflows 2.0.1.dev9 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                2.0.1.dev5
+                2.0.1.dev9
               </div>
             
           
@@ -189,6 +189,8 @@
 <span class="sd">    ------</span>
 <span class="sd">    in_file : :obj:`str`</span>
 <span class="sd">        the GRE magnitude or EPI reference to be brain-extracted</span>
+<span class="sd">    bspline_dist : :obj:`int`, optional</span>
+<span class="sd">        Integer to replace default distance of b-spline separation for N4</span>
 
 <span class="sd">    Outputs</span>
 <span class="sd">    -------</span>
@@ -209,7 +211,14 @@
 
     <span class="n">wf</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;in_file&quot;</span><span class="p">,)),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inputnode&quot;</span><span class="p">)</span>
+    <span class="n">inputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+        <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
+            <span class="n">fields</span><span class="o">=</span><span class="p">(</span>
+                <span class="s2">&quot;in_file&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;bspline_dist&quot;</span>
+            <span class="p">)</span>
+        <span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inputnode&quot;</span><span class="p">)</span>
     <span class="n">outputnode</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
         <span class="n">niu</span><span class="o">.</span><span class="n">IdentityInterface</span><span class="p">(</span>
             <span class="n">fields</span><span class="o">=</span><span class="p">(</span>
@@ -241,6 +250,7 @@
     <span class="c1"># fmt:off</span>
     <span class="n">wf</span><span class="o">.</span><span class="n">connect</span><span class="p">([</span>
         <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">clipper_pre</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;in_file&quot;</span><span class="p">,</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
+        <span class="p">(</span><span class="n">inputnode</span><span class="p">,</span> <span class="n">n4</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;bspline_dist&quot;</span><span class="p">,</span> <span class="s2">&quot;bspline_fitting_distance&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">clipper_pre</span><span class="p">,</span> <span class="n">n4</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;input_image&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">n4</span><span class="p">,</span> <span class="n">clipper_post</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;output_image&quot;</span><span class="p">,</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
         <span class="p">(</span><span class="n">clipper_post</span><span class="p">,</span> <span class="n">masker</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;out_file&quot;</span><span class="p">,</span> <span class="s2">&quot;in_file&quot;</span><span class="p">)]),</span>
