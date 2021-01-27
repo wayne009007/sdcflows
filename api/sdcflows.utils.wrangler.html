@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>sdcflows.utils.wrangler module &mdash; sdcflows 2.0.0 documentation</title>
+  <title>sdcflows.utils.wrangler module &mdash; sdcflows 2.0.1.dev5 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                2.0.0
+                2.0.1.dev5
               </div>
             
           
@@ -187,12 +187,9 @@
   
 
 
-    
-    
 
 
 
-    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../master/api/sdcflows.utils.wrangler.html"><b>Warning:</b> This document is for an old version of sdcflows. The main version is master.</a></p>
 <div class="section" id="module-sdcflows.utils.wrangler">
 <span id="sdcflows-utils-wrangler-module"></span><h1>sdcflows.utils.wrangler module<a class="headerlink" href="#module-sdcflows.utils.wrangler" title="Permalink to this headline">¶</a></h1>
 <p>Find fieldmaps on the BIDS inputs for <abbr title="susceptibility distortion correction">SDC</abbr>.</p>
@@ -357,6 +354,28 @@ the mandatory <code class="docutils literal notranslate"><span class="pre">Phase
 <span class="go">                    bids_id=&#39;auto_00013&#39;)]</span>
 </pre></div>
 </div>
+<p>This function should also correctly investigate multi-session datasets:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">find_estimators</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">layout</span><span class="o">=</span><span class="n">layouts</span><span class="p">[</span><span class="s1">&#39;ds000206&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">subject</span><span class="o">=</span><span class="s2">&quot;05&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">fmapless</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">force_fmapless</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>  
+<span class="go">[]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">find_estimators</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">layout</span><span class="o">=</span><span class="n">layouts</span><span class="p">[</span><span class="s1">&#39;ds000206&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">subject</span><span class="o">=</span><span class="s2">&quot;05&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">fmapless</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">force_fmapless</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>  
+<span class="go">[FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.ANAT: 5&gt;,</span>
+<span class="go">                    bids_id=&#39;auto_00014&#39;),</span>
+<span class="go">FieldmapEstimation(sources=&lt;2 files&gt;, method=&lt;EstimatorType.ANAT: 5&gt;,</span>
+<span class="go">                   bids_id=&#39;auto_00015&#39;)]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -399,7 +418,7 @@ the mandatory <code class="docutils literal notranslate"><span class="pre">Phase
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: 2.0.0
+        v: master
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
